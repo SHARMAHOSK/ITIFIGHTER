@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">ITIFighter</string>
+    <string name="sign_in">Sign In</string>
+    <string name="email">Email</string>
+    <string name="login_to_continue_your_account">Login to continue your account</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account">Don\'t have an account</string>
+    <string name="register">Register</string>
+    <string name="please_wait">Please wait…</string>
+    <string name="already_have_an_account">Already have an account</string>
+    <string name="name">Name</string>
+    <string name="mobile">Mobile</string>
+    <string name="state">State</string>
+    <string name="trade">Trade</string>
+    <string name="logout">Logout</string>
+</resources>
