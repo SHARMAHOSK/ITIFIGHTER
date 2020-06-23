@@ -6,14 +6,14 @@
     tools:context=".PreviousPaper">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+<!--    <TextView
         android:id="@+id/ppTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textAlignment="center"
         android:text="Previous Paper"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold" />-->
 
     <ListView
         android:id="@+id/branch_list"

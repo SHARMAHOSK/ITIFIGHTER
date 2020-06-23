@@ -1,5 +1,6 @@
 package com.example.itifighter;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,8 +42,13 @@ public class PreviousPaper extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private List<String> list, examList;
+    private ListView listView, examListView;
+
     private View ppView;
     private FirebaseFirestore db;
+
+    private Context mContext;
 
     public PreviousPaper() {
         // Required empty public constructor
@@ -72,6 +80,7 @@ public class PreviousPaper extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         db = FirebaseFirestore.getInstance();
+       mContext = getContext();
     }
 
     @Override
@@ -89,15 +98,43 @@ public class PreviousPaper extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    List<String> list = new ArrayList<>();
+                    list = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         list.add(document.getString("Name"));
                     }
                     Log.d(TAG, list.toString());
-                    ArrayAdapter adapter = new ArrayAdapter<String>(getContext(),
+                    ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                             R.layout.activity__branch_list_view, list);
 
-                    ListView listView = (ListView) _ppView.findViewById(R.id.branch_list);
+                    listView = (ListView) _ppView.findViewById(R.id.branch_list);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view,
+                                                int position, long id) {
+                            /*Toast.makeText(mContext,
+                                    "Clicked ListItem: " + list.get(position), Toast.LENGTH_LONG)
+                                    .show();*/
+                            db.collection("branch/00"+(position+1)+"/exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        examList = new ArrayList<>();
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            examList.add(document.getString("Name"));
+                                        }
+                                        Log.d(TAG, examList.toString());
+                                        ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
+                                                R.layout.activity__branch_list_view, examList);
+
+                                        examListView = (ListView) _ppView.findViewById(R.id.branch_list);
+                                        examListView.setAdapter(adapter);
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
+                        }
+                    });
                     listView.setAdapter(adapter);
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
