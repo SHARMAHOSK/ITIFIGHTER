@@ -30,6 +30,9 @@ public class dashboard extends AppCompatActivity{
         tabLayout.addTab(tabLayout.newTab().setText("Previous Paper"));
         tabLayout.addTab(tabLayout.newTab().setText("Mock Test"));
         tabLayout.addTab(tabLayout.newTab().setText("Daily Live Test"));
+        tabLayout.addTab(tabLayout.newTab().setText("Test Series"));
+        tabLayout.addTab(tabLayout.newTab().setText("My Test Series"));
+
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         final MyAdapter adapter = new MyAdapter(this,getSupportFragmentManager(),
                 tabLayout.getTabCount());

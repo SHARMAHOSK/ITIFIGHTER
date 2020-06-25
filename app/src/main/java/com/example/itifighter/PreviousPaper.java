@@ -1,12 +1,30 @@
 package com.example.itifighter;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +41,14 @@ public class PreviousPaper extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private List<String> list, examList;
+    private ListView listView, examListView;
+
+    private View ppView;
+    private FirebaseFirestore db;
+
+    private Context mContext;
 
     public PreviousPaper() {
         // Required empty public constructor
@@ -53,12 +79,67 @@ public class PreviousPaper extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        db = FirebaseFirestore.getInstance();
+       mContext = getContext();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_previous_paper, container, false);
+        ppView =  inflater.inflate(R.layout.fragment_previous_paper, container, false);
+        CustomizeView(ppView);
+        return ppView;
+    }
+
+    private void CustomizeView(final View _ppView) {
+        //TextView tv = _ppView.findViewById(R.id.ppTextView);
+        db.collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    list = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        list.add(document.getString("Name"));
+                    }
+                    Log.d(TAG, list.toString());
+                    ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
+                            R.layout.activity__branch_list_view, list);
+
+                    listView = (ListView) _ppView.findViewById(R.id.branch_list);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view,
+                                                int position, long id) {
+                            /*Toast.makeText(mContext,
+                                    "Clicked ListItem: " + list.get(position), Toast.LENGTH_LONG)
+                                    .show();*/
+                            db.collection("branch/00"+(position+1)+"/exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        examList = new ArrayList<>();
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            examList.add(document.getString("Name"));
+                                        }
+                                        Log.d(TAG, examList.toString());
+                                        ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
+                                                R.layout.activity__branch_list_view, examList);
+
+                                        examListView = (ListView) _ppView.findViewById(R.id.branch_list);
+                                        examListView.setAdapter(adapter);
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    listView.setAdapter(adapter);
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
     }
 }

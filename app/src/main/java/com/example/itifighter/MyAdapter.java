@@ -25,6 +25,12 @@ public class MyAdapter extends FragmentPagerAdapter {
             case 2:
                 LiveTest LTFragment = new LiveTest();
                 return LTFragment;
+            case 3:
+                TestSeries TSFragment = new TestSeries();
+                return TSFragment;
+            case 4:
+                MyTestSeries MTSFragment = new MyTestSeries();
+                return MTSFragment;
             default:
                 return null;
         }
