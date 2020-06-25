@@ -4,16 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.itifighter.MyAdapter;
 import com.example.itifighter.R;
+import com.google.android.material.tabs.TabLayout;
 
 public class HomeFragment extends Fragment {
 
@@ -21,15 +18,47 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        super.onCreate(savedInstanceState);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-       /* final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+
+        /*Button logout = findViewById(R.id.logout);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        logout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onClick(View view) {
+            mFirebaseAuth.signOut();
+            startActivity(new Intent(dashboard.this,Login.class));
+            finish();
             }
         });*/
+
+        TabLayout tabLayout = root.findViewById(R.id.tabLayoutX);
+        viewPager = root.findViewById(R.id.viewPagerX);
+        tabLayout.addTab(tabLayout.newTab().setText("Previous Paper"));
+        tabLayout.addTab(tabLayout.newTab().setText("Mock Test"));
+        tabLayout.addTab(tabLayout.newTab().setText("Daily Live Test"));
+        tabLayout.addTab(tabLayout.newTab().setText("Test Series"));
+        tabLayout.addTab(tabLayout.newTab().setText("My Test Series"));
+
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        final MyAdapter adapter = new MyAdapter(getFragmentManager(),
+                tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
         return root;
     }
+
 }

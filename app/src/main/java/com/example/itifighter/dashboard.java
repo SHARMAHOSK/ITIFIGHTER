@@ -34,7 +34,7 @@ public class dashboard extends AppCompatActivity{
         tabLayout.addTab(tabLayout.newTab().setText("My Test Series"));
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        final MyAdapter adapter = new MyAdapter(this,getSupportFragmentManager(),
+        final MyAdapter adapter = new MyAdapter(getSupportFragmentManager(),
                 tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

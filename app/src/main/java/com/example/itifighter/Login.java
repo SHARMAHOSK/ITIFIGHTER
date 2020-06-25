@@ -37,7 +37,7 @@ public class Login extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if( mFirebaseAuth.getCurrentUser() != null ){
                     Toast.makeText(Login.this,"You are logged in",Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Login.this,dashboard.class));
+                    startActivity(new Intent(Login.this,MainDashbord.class));
                     finish();
                 }
                 else{
@@ -74,7 +74,7 @@ public class Login extends AppCompatActivity {
                                 Toast.makeText(Login.this, "invalid email or password !", Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(Login.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(Login.this,dashboard.class));
+                                startActivity(new Intent(Login.this,MainDashbord.class));
                                 finish();
                             }
                         }
