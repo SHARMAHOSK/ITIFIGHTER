@@ -84,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity{
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
                                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                                        startActivity(new Intent(RegisterActivity.this,dashboard.class));
+                                        startActivity(new Intent(RegisterActivity.this,MainDashbord.class));
                                         finish();
                                     }
                                 });

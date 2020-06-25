@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-class MyAdapter extends FragmentPagerAdapter {
+public class MyAdapter extends FragmentPagerAdapter {
     Context context;
     int totalTabs;
     public MyAdapter(Context c, FragmentManager fm, int totalTabs) {

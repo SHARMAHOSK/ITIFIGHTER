@@ -24,6 +24,6 @@
         android:lineSpacingExtra="31sp"
         android:layout_marginBottom="175dp"
         android:layout_alignParentBottom="true"
-        android:text="@string/please_wait"
-        />
+        android:text="@string/please_wait" />
+
 </RelativeLayout>

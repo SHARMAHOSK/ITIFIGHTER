@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+
+<RelativeLayout android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_login">
-
+    android:background="@drawable/bg_login"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="com.example.itifighter.dashboard">
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+        android:id="@+id/tabLayoutX"
+        android:background="@drawable/bg_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
+        android:id="@+id/viewPagerX"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tabLayout"
+        android:layout_below="@id/tabLayoutX"
         android:layout_centerInParent="true"
-        android:layout_marginTop="100dp" />
+        android:layout_marginTop="100dp" >
+
+    </androidx.viewpager.widget.ViewPager>
 </RelativeLayout>
