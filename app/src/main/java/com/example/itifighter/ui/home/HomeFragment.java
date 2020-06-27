@@ -19,7 +19,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_Menu_home, container, false);
 
         /*Button logout = findViewById(R.id.logout);
         mFirebaseAuth = FirebaseAuth.getInstance();

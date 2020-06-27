@@ -9,26 +9,31 @@
             android:icon="@drawable/home_foreground"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_profile"
             android:icon="@drawable/profile_foreground"
             android:title="@string/my_Profile" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_chat"
             android:icon="@drawable/chat_foreground"
             android:title="@string/Discussion" />
         <item
+            android:id="@+id/nav_group"
             android:icon="@drawable/group_foreground"
             android:title="@string/groups" />
         <item
+            android:id="@+id/nav_share"
             android:icon="@drawable/share_foreground"
             android:title="@string/share" />
         <item
+            android:id="@+id/nav_rating"
             android:icon="@drawable/rating_foreground"
             android:title="@string/rating" />
         <item
+            android:id="@+id/nav_change"
             android:icon="@drawable/change_foreground"
             android:title="@string/change" />
         <item
+            android:id="@+id/nav_logout"
             android:icon="@drawable/logout_foreground"
             android:title="@string/logout" />
     </group>
