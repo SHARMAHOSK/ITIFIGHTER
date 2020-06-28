@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/price"
             android:layout_marginRight="15dp"
-            android:text="Subjects:" />
+            android:text="Items:" />
 
         <TextView
             android:id="@+id/subjectCount"
