@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +24,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.security.auth.Subject;
 
 import static android.content.ContentValues.TAG;
 
@@ -42,13 +45,19 @@ public class PreviousPaper extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private List<String> list, examList;
+    /*private List<String> examList;*/
+    /*private List<String> list;*/
+    private ArrayList<CustomListItem> Subjects, Exams;
     private ListView listView, examListView;
 
     private View ppView;
     private FirebaseFirestore db;
 
     private Context mContext;
+
+    //boolean loadingFinished = true;
+
+    //private ProgressBar spinner;
 
     public PreviousPaper() {
         // Required empty public constructor
@@ -88,6 +97,13 @@ public class PreviousPaper extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ppView =  inflater.inflate(R.layout.fragment_previous_paper, container, false);
+        //this.spinner = R.layout.fragment_previous_paper.findViewById(R.id.progressBar1);
+
+        //loadingFinished = false;
+
+        //SHOW LOADING IF IT ISNT ALREADY VISIBLE
+        //this.spinner.setVisibility(View.VISIBLE);
+
         CustomizeView(ppView);
         return ppView;
     }
@@ -97,16 +113,35 @@ public class PreviousPaper extends Fragment {
         db.collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                //loadingFinished = true;
+                //HIDE LOADING IT HAS FINISHED
+                //spinner.setVisibility(View.GONE);
+
                 if (task.isSuccessful()) {
-                    list = new ArrayList<>();
+                    /*list = new ArrayList<>();*/
+                    Subjects = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        list.add(document.getString("Name"));
+                        /*list.add(document.getString("Name"));*/
+                        /*Subjects.add(new CustomListItem(document.getString("Name"),
+                                        document.getString("Description"),
+                                        document.getDouble("Price"),
+                                        document.getString("Image"),
+                                        *//*getExamCount(document.getId())*//*5));*/
+                        Subjects.add(new CustomListItem(document.getString("Name"),
+                                        "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
+                                        0.00, "sample_fitter_background", 5));
                     }
-                    Log.d(TAG, list.toString());
-                    ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
-                            R.layout.activity__branch_list_view, list);
+                    /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
+                            R.layout.activity__branch_list_view, list);*/
+
+
+                    //create our new array adapter
+                    ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
+
 
                     listView = (ListView) _ppView.findViewById(R.id.branch_list);
+
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
@@ -118,13 +153,24 @@ public class PreviousPaper extends Fragment {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                     if (task.isSuccessful()) {
-                                        examList = new ArrayList<>();
+                                        /*examList = new ArrayList<>();*/
+                                        Exams = new ArrayList<>();
                                         for (QueryDocumentSnapshot document : task.getResult()) {
-                                            examList.add(document.getString("Name"));
+                                            /*examList.add(document.getString("Name"));*/
+                                            /*Exams.add(new CustomListItem(document.getString("Name"),
+                                        document.getString("Description"),
+                                        document.getDouble("Price"),
+                                        document.getString("Image"),
+                                        *//*getExamCount(document.getId())*//*5));*/
+                                            Exams.add(new CustomListItem(document.getString("Name"),
+                                                    "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
+                                                    0.00, "sample_fitter_background", 4));
                                         }
-                                        Log.d(TAG, examList.toString());
-                                        ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
-                                                R.layout.activity__branch_list_view, examList);
+                                        /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
+                                                R.layout.activity__branch_list_view, examList);*/
+
+                                        //create our new array adapter
+                                        ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);
 
                                         examListView = (ListView) _ppView.findViewById(R.id.branch_list);
                                         examListView.setAdapter(adapter);
@@ -142,4 +188,19 @@ public class PreviousPaper extends Fragment {
             }
         });
     }
+
+    /*private int getExamCount(String id) {
+        String path = "branch/"+id+"/exam";
+        db.collection(path).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                //cannot return from inside of inside coz inside of inside is void...
+                    task.getResult().size();
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }*/
 }

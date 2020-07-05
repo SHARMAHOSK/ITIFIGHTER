@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".MainDashboard" />
+        <activity android:name=".MainDashbord" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".Login" />
         <activity android:name=".MainActivity">
