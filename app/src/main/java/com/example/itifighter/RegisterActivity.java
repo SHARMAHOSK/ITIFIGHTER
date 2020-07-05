@@ -61,6 +61,7 @@ public class RegisterActivity extends AppCompatActivity{
                 final String state = etState.getText().toString().trim();
                 final String trade = etTrade.getText().toString().trim();
                 final String pass = etPassword.getText().toString();
+                final String role = "student";
                 if(validate(name,email,mobile,state,trade,pass)){
                     mFirebaseAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -77,6 +78,7 @@ public class RegisterActivity extends AppCompatActivity{
                                 branch.put("Mobile",mobile);
                                 branch.put("State",state);
                                 branch.put("Trade",trade);
+                                branch.put("Role",role);
                                 reference.set(branch).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {

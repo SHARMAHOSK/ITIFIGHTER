@@ -1,26 +1,35 @@
 package com.example.itifighter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.itifighterAdmin.AdminUpdatePpPdfs;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class Login extends AppCompatActivity {
 
     private EditText email, password;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +46,26 @@ public class Login extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if( mFirebaseAuth.getCurrentUser() != null ){
                     Toast.makeText(Login.this,"You are logged in",Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Login.this, MainDashboard.class));
-                    finish();
+                    db.collection("users").document(""+mFirebaseAuth.getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                            @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                //Log.w(TAG, "Listen failed.", e);
+                                return;
+                            }
+                            if (snapshot != null && snapshot.exists()) {
+                                //Log.d(TAG, "Current data: " + snapshot.getData());
+                                Toast.makeText(Login.this, "welcome "+ snapshot.get("Role"), Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(Login.this, snapshot.get("Role").toString().contains("admin") ? AdminUpdatePpPdfs.class : MainDashboard.class));
+                                finish();
+                            } else {
+                                //zLog.d(TAG, "Current data: null");
+                            }
+                        }
+                    });
+                    /*startActivity(new Intent(Login.this, MainDashboard.class));
+                    finish();*/
                 }
                 else{
                     Toast.makeText(Login.this,"Please Login..",Toast.LENGTH_SHORT).show();
@@ -74,8 +101,26 @@ public class Login extends AppCompatActivity {
                                 Toast.makeText(Login.this, "invalid email or password !", Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(Login.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(Login.this, MainDashboard.class));
-                                finish();
+                                db.collection("users").document(""+mFirebaseAuth.getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                                        @Nullable FirebaseFirestoreException e) {
+                                        if (e != null) {
+                                            //Log.w(TAG, "Listen failed.", e);
+                                            return;
+                                        }
+                                        if (snapshot != null && snapshot.exists()) {
+                                            //Log.d(TAG, "Current data: " + snapshot.getData());
+                                            Toast.makeText(Login.this, "welcome "+ snapshot.get("Role"), Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(Login.this, snapshot.get("Role").toString().contains("admin") ? AdminUpdatePpPdfs.class : MainDashboard.class));
+                                            finish();
+                                        } else {
+                                            //zLog.d(TAG, "Current data: null");
+                                        }
+                                    }
+                                });
+                                //startActivity(new Intent(Login.this, MainDashboard.class));
+                                //finish();
                             }
                         }
                     });
