@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -15,11 +16,9 @@ import com.google.android.material.tabs.TabLayout;
 public class HomeFragment extends Fragment {
 
     private ViewPager viewPager;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        View root = inflater.inflate(R.layout.fragment_Menu_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_menu_home, container, false);
 
         /*Button logout = findViewById(R.id.logout);
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -27,7 +26,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
             mFirebaseAuth.signOut();
-            startActivity(new Intent(dashboard.this,Login.class));
+            startActivity(new Intent(HomeFragment.this,Login.class));
             finish();
             }
         });*/

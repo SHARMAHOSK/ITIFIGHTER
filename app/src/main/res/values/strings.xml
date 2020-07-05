@@ -13,23 +13,37 @@
     <string name="mobile">Mobile</string>
     <string name="state">State</string>
     <string name="trade">Trade</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="my_Profile">My Profile</string>
-    <string name="Discussion">Discussion</string>
-    <string name="groups">Groups</string>
+    <string name="menu_Profile">My Profile</string>
+    <string name="menu_chat">Discussion</string>
     <string name="share">Share</string>
     <string name="rating">Rating</string>
     <string name="change">Change Password</string>
     <string name="logout">Logout</string>
     <string name="username">ITIFighter</string>
     <string name="userEmail">itifighter@yahoo.com</string>
+    <string name="menu_groups">Groups</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="todo">TODO</string>
+    <string name="user_email">Wiliam@gmail.com</string>
+    <string name="UserNameX">Wiliam Snoe</string>
+    <string name="LiveTest">Daily Test</string>
+    <string name="TestSeries">Series</string>
+    <string name="Score">My Score</string>
+    <string name="TestX">125</string>
+    <string name="Series">1205</string>
+    <string name="ScoreX">360</string>
+    <string name="Mobile">+91 9551324852</string>
+    <string name="ip">127.0.0.1</string>
+    <string name="stateX">Uttar Pradesh</string>
+    <string name="TradeX">Fitter</string>
+    <string name="designed_by_n_sharmask_amp_aj"><![CDATA[Designed by \n Sharmask & AJ]]></string>
+    <string name="phone">phone</string>
+    <string name="value">value</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 </resources>

@@ -2,7 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+        android:id="@+id/nav_share"
+        android:icon="@drawable/share_foreground"
+        android:title="@string/share" />
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/logout_foreground"
+        android:title="@string/logout"
+        android:visible="true"
+        app:showAsAction="never"
+        />
 </menu>

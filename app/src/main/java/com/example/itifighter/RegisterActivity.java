@@ -19,7 +19,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -70,21 +69,19 @@ public class RegisterActivity extends AppCompatActivity{
                                 Toast.makeText(RegisterActivity.this,"Something error ! try again",Toast.LENGTH_SHORT).show();
                             }
                             else{
-                                String UserId = Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid();
-                                Map<String, Object> user = new HashMap<>();
-                                Map<String,Map<String,Object>> branch = new HashMap<>();
-                                user.put("Name", name);
-                                user.put("Email",email);
-                                user.put("Mobile",mobile);
-                                user.put("State",state);
-                                user.put("Trade",trade);
-                                branch.put(UserId,user);
-                                db.collection("users").add(branch).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    private static final String TAG = "";
+                                final String UserId = Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid();
+                                Map<String,String> branch = new HashMap<>();
+                                DocumentReference reference = db.collection("users").document(UserId);
+                                branch.put("Name", name);
+                                branch.put("Email",email);
+                                branch.put("Mobile",mobile);
+                                branch.put("State",state);
+                                branch.put("Trade",trade);
+                                reference.set(branch).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                                        startActivity(new Intent(RegisterActivity.this,MainDashbord.class));
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("Success", "DocumentSnapshot added with ID: " + UserId);
+                                        startActivity(new Intent(RegisterActivity.this, MainDashboard.class));
                                         finish();
                                     }
                                 });

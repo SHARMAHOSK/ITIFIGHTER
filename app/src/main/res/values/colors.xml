@@ -6,5 +6,8 @@
     <color name="view_gray">#8d95989a</color>
     <color name="dark_blue">#3023AE</color>
     <color name="silver">#C0C0C0</color>
+    <color name="startblue">#0000FF</color>
+    <color name="startblue30">#4DADD8E6</color>
+    <color name="toolX">#4D0000FF</color>
 
 </resources>
