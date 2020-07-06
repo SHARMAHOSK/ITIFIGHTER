@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name="com.example.itifighterAdmin.AdminUpdatePpPdfs"></activity>
+        <activity android:name=".LoadPdf"></activity>
+        <activity android:name="com.example.itifighterAdmin.AdminUpdatePpPdfs" />
         <activity android:name=".MainDashboard" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".Login" />

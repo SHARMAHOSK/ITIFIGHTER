@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.itifighter.LoadPdf;
 import com.example.itifighter.MainDashboard;
 import com.example.itifighter.RegisterActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -108,7 +109,8 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
     //so we are not explaining it
     private void uploadFile(Uri data) {
         progressBar.setVisibility(View.VISIBLE);
-        StorageReference sRef = mStorageReference.child(Constants.STORAGE_PATH_UPLOADS + System.currentTimeMillis() + ".pdf");
+        final String pdfName = ""+System.currentTimeMillis()+".pdf";
+        StorageReference sRef = mStorageReference.child(Constants.STORAGE_PATH_UPLOADS + pdfName);
         sRef.putFile(data)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
@@ -119,12 +121,12 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
                         final String fileName = editTextFilename.getText().toString();
                         DocumentReference reference = mDatabaseReference.document(fileName);
                         Map<String,String> branch = new HashMap<>();
-                        branch.put("Download URL", "mot coded yet...");
+                        branch.put("Name", pdfName);
                         reference.set(branch).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Log.d("Success", "pdf added with name: " + fileName);
-                                Toast.makeText(AdminUpdatePpPdfs.this, "pdf added with name: " + fileName, Toast.LENGTH_LONG).show();
+                                Log.d("Success", "pdf added with name: " + fileName+"["+pdfName+"]");
+                                Toast.makeText(AdminUpdatePpPdfs.this, "pdf added with name: " + fileName+"["+pdfName+"]", Toast.LENGTH_LONG).show();
                                 finish();
                             }
                         });
@@ -154,7 +156,7 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
                 getPDF();
                 break;
             case R.id.textViewUploads:
-                /*startActivity(new Intent(this, ViewUploadsActivity.class));*/
+                startActivity(new Intent(this, LoadPdf.class));
                 break;
         }
     }
