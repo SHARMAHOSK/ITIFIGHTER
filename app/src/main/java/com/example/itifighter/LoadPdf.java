@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.github.barteksc.pdfviewer.PDFView;
@@ -23,6 +24,7 @@ public class LoadPdf extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_load_pdf);
 
         pdfView= (PDFView)findViewById(R.id.pdfView);
