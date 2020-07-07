@@ -24,7 +24,7 @@ public class LoadPdf extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_load_pdf);
 
         pdfView= (PDFView)findViewById(R.id.pdfView);
@@ -33,7 +33,7 @@ public class LoadPdf extends AppCompatActivity {
         mmFirebaseStorageRef=mFirebaseStorage.getReference().child("uploads");
         final long ONE_MEGABYTE = 1024 * 1024;
 
-        mmFirebaseStorageRef.child("1593991378325.pdf").getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        mmFirebaseStorageRef.child(getIntent().getStringExtra("pdf")).getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 pdfView.fromBytes(bytes).load();

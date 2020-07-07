@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.itifighterAdmin.AdminUpdatePpPdfs;
+import com.example.itifighterAdmin.admin_section_list;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -57,7 +58,7 @@ public class Login extends AppCompatActivity {
                             if (snapshot != null && snapshot.exists()) {
                                 //Log.d(TAG, "Current data: " + snapshot.getData());
                                 Toast.makeText(Login.this, "welcome "+ snapshot.get("Role"), Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(Login.this, snapshot.get("Role").toString().contains("admin") ? AdminUpdatePpPdfs.class : MainDashboard.class));
+                                startActivity(new Intent(Login.this, snapshot.get("Role").toString().contains("admin") ? admin_section_list.class : MainDashboard.class));
                                 finish();
                             } else {
                                 //zLog.d(TAG, "Current data: null");

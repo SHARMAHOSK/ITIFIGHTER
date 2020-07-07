@@ -45,6 +45,7 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
     TextView textViewStatus;
     EditText editTextFilename;
     ProgressBar progressBar;
+    String targetSubject, targetExam;
 
     //the firebase objects for storage and database
     StorageReference mStorageReference;
@@ -55,9 +56,13 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_update_pp_pdfs);
 
+        targetSubject = getIntent().getStringExtra("subject");
+        targetExam = getIntent().getStringExtra("exam");
+
         //getting firebase objects
         mStorageReference = FirebaseStorage.getInstance().getReference();
-        mDatabaseReference = FirebaseFirestore.getInstance().collection(Constants.DATABASE_PATH_UPLOADS);
+        //mDatabaseReference = FirebaseFirestore.getInstance().collection(Constants.DATABASE_PATH_UPLOADS);
+        mDatabaseReference = FirebaseFirestore.getInstance().collection("branch").document(targetSubject).collection("exam").document(targetExam).collection("pdf");
 
         //getting the views
         textViewStatus = (TextView) findViewById(R.id.textViewStatus);
@@ -66,7 +71,6 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
 
         //attaching listeners to views
         findViewById(R.id.buttonUploadFile).setOnClickListener(this);
-        findViewById(R.id.textViewUploads).setOnClickListener(this);
     }
 
     //this function will get the pdf from the storage
@@ -127,6 +131,10 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
                             public void onSuccess(Void aVoid) {
                                 Log.d("Success", "pdf added with name: " + fileName+"["+pdfName+"]");
                                 Toast.makeText(AdminUpdatePpPdfs.this, "pdf added with name: " + fileName+"["+pdfName+"]", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(AdminUpdatePpPdfs.this, admin_pdf_list.class);
+                                intent.putExtra("subject", targetSubject);
+                                intent.putExtra("exam", targetExam);
+                                startActivity(intent);
                                 finish();
                             }
                         });
@@ -154,9 +162,6 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
         switch (view.getId()) {
             case R.id.buttonUploadFile:
                 getPDF();
-                break;
-            case R.id.textViewUploads:
-                startActivity(new Intent(this, LoadPdf.class));
                 break;
         }
     }
