@@ -2,25 +2,16 @@ package com.example.itifighterAdmin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.itifighter.LoadPdf;
-import com.example.itifighter.MainDashboard;
-import com.example.itifighter.RegisterActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -61,7 +52,6 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
 
         //getting firebase objects
         mStorageReference = FirebaseStorage.getInstance().getReference();
-        //mDatabaseReference = FirebaseFirestore.getInstance().collection(Constants.DATABASE_PATH_UPLOADS);
         mDatabaseReference = FirebaseFirestore.getInstance().collection("branch").document(targetSubject).collection("exam").document(targetExam).collection("pdf");
 
         //getting the views

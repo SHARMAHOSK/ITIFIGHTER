@@ -1,6 +1,7 @@
 package com.example.itifighter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.itifighterAdmin.admin_pdf_list;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,10 +47,14 @@ public class PreviousPaper extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private int currentLayer = 0;   //0=subjects, 1=exams, 2=pdfS
+    private int currentSubjectPos = 0, currentExamPos = 0, currentPdfPos = 0;   //records which item was clicked in previous list
+
     /*private List<String> examList;*/
     /*private List<String> list;*/
     private ArrayList<CustomListItem> Subjects, Exams;
-    private ListView listView, examListView;
+    private ListView listView/*, examListView, pdfListView*/;
+    private ArrayList<String> PdfS, pdfFile;
 
     private View ppView;
     private FirebaseFirestore db;
@@ -103,13 +109,12 @@ public class PreviousPaper extends Fragment {
 
         //SHOW LOADING IF IT ISNT ALREADY VISIBLE
         //this.spinner.setVisibility(View.VISIBLE);
-
+        listView = (ListView) ppView.findViewById(R.id.branch_list);
         CustomizeView(ppView);
         return ppView;
     }
 
-    private void CustomizeView(final View _ppView) {
-        //TextView tv = _ppView.findViewById(R.id.ppTextView);
+    void LoadSubjects(final View _ppView){
         db.collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -119,7 +124,6 @@ public class PreviousPaper extends Fragment {
                 //spinner.setVisibility(View.GONE);
 
                 if (task.isSuccessful()) {
-                    /*list = new ArrayList<>();*/
                     Subjects = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         /*list.add(document.getString("Name"));*/
@@ -129,8 +133,8 @@ public class PreviousPaper extends Fragment {
                                         document.getString("Image"),
                                         *//*getExamCount(document.getId())*//*5));*/
                         Subjects.add(new CustomListItem(document.getString("Name"),
-                                        "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
-                                        0.00, "sample_fitter_background", 5));
+                                "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
+                                0.00, "cccc.png", 5));
                     }
                     /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                             R.layout.activity__branch_list_view, list);*/
@@ -140,7 +144,8 @@ public class PreviousPaper extends Fragment {
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
 
 
-                    listView = (ListView) _ppView.findViewById(R.id.branch_list);
+                    /*listView = (ListView) _ppView.findViewById(R.id.branch_list);*/
+                    listView.setAdapter(adapter);
 
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -149,44 +154,102 @@ public class PreviousPaper extends Fragment {
                             /*Toast.makeText(mContext,
                                     "Clicked ListItem: " + list.get(position), Toast.LENGTH_LONG)
                                     .show();*/
-                            db.collection("branch/00"+(position+1)+"/exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        /*examList = new ArrayList<>();*/
-                                        Exams = new ArrayList<>();
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            /*examList.add(document.getString("Name"));*/
+                            currentSubjectPos = position;
+                            LoadExams(_ppView);
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    LoadSubjects(_ppView);
+                }
+            }
+        });
+    }
+
+    void LoadExams(final View __ppView){
+        db.collection("branch/00"+(currentSubjectPos+1)+"/exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    /*examList = new ArrayList<>();*/
+                    Exams = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        /*examList.add(document.getString("Name"));*/
                                             /*Exams.add(new CustomListItem(document.getString("Name"),
                                         document.getString("Description"),
                                         document.getDouble("Price"),
                                         document.getString("Image"),
                                         *//*getExamCount(document.getId())*//*5));*/
-                                            Exams.add(new CustomListItem(document.getString("Name"),
-                                                    "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
-                                                    0.00, "sample_fitter_background", 4));
-                                        }
+                        Exams.add(new CustomListItem(document.getString("Name"),
+                                "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
+                                0.00, "sample_fitter_background", 4));
+                    }
                                         /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                                                 R.layout.activity__branch_list_view, examList);*/
 
-                                        //create our new array adapter
-                                        ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);
+                    //create our new array adapter
+                    ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);
 
-                                        examListView = (ListView) _ppView.findViewById(R.id.branch_list);
-                                        examListView.setAdapter(adapter);
-                                    } else {
-                                        Log.d(TAG, "Error getting documents: ", task.getException());
-                                    }
-                                }
-                            });
+                                        /*examListView = (ListView) _ppView.findViewById(R.id.branch_list);
+                                        examListView.setAdapter(adapter);*/
+                    listView.setAdapter(adapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view,
+                                                int position, long id) {
+                            /*Toast.makeText(mContext,
+                                    "Clicked ListItem: " + list.get(position), Toast.LENGTH_LONG)
+                                    .show();*/
+                            currentExamPos = position;
+                            LoadPdfS(__ppView);
                         }
                     });
-                    listView.setAdapter(adapter);
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
+                    LoadExams(__ppView);
                 }
             }
         });
+    }
+
+    void LoadPdfS(final View _ppView){
+        db.collection("branch/00"+(currentSubjectPos+1)+"/exam/00"+(currentExamPos+1)+"/pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    PdfS = new ArrayList<>();
+                    pdfFile = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        PdfS.add(document.getId());
+                        pdfFile.add(""+document.getString("Name"));
+                    }
+                    ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
+                            R.layout.activity__branch_list_view, PdfS);
+                    listView.setAdapter(adapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view,
+                                                int position, long id) {
+
+
+                            Intent intent = new Intent(mContext, LoadPdf.class);
+                            intent.putExtra("pdf", pdfFile.get(position));
+                            startActivity(intent);
+
+                        }
+
+                    });
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    LoadPdfS(_ppView);
+                }
+            }
+        });
+    }
+
+    private void CustomizeView(final View _ppView) {
+        //TextView tv = _ppView.findViewById(R.id.ppTextView);
+        LoadSubjects(_ppView);
     }
 
     /*private int getExamCount(String id) {

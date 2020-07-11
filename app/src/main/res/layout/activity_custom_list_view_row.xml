@@ -1,5 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_row_selector"
+    android:padding="8dp" >
+
+    <!-- Thumbnail Image -->
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="8dp" />
+
+    <!-- Movie Title -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/thumbnail"
+        android:layout_toRightOf="@id/thumbnail"
+        android:textSize="@dimen/title"
+        android:textStyle="bold" />
+
+<!--    &lt;!&ndash; Rating &ndash;&gt;
+    <TextView
+        android:id="@+id/rating"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_marginTop="1dip"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:textSize="@dimen/rating" />-->
+
+    <!-- Genre -->
+    <TextView
+        android:id="@+id/genre"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/thumbnail"
+        android:textColor="@color/genre"
+        android:textSize="@dimen/genre" />
+
+<!--    &lt;!&ndash; Release Year &ndash;&gt;
+    <TextView
+        android:id="@+id/releaseYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/year"
+        android:textSize="@dimen/year" />-->
+
+</RelativeLayout>
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,6 +69,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:contentDescription="Property Image" />
 
     <LinearLayout
@@ -37,7 +96,7 @@
             android:textSize="15sp" />
     </LinearLayout>
 
-    <RelativeLayout
+    &lt;!&ndash;<RelativeLayout
         android:id="@+id/pricingSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -68,6 +127,6 @@
             android:layout_toRightOf="@id/subCount"
             android:text="5" />
 
-    </RelativeLayout>
+    </RelativeLayout>&ndash;&gt;
 
-</RelativeLayout>
+</RelativeLayout>-->

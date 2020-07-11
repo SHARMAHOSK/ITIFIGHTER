@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name="com.example.itifighterAdmin.admin_pdf_list"></activity>
+        <activity android:name="com.example.itifighterAdmin.admin_pdf_list" />
         <activity android:name="com.example.itifighterAdmin.admin_subject_list" />
         <activity android:name="com.example.itifighterAdmin.admin_pp_list" />
         <activity android:name="com.example.itifighterAdmin.admin_section_list" />
