@@ -3,6 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="white">#FFFFFF</color>
     <color name="view_gray">#8d95989a</color>
     <color name="dark_blue">#3023AE</color>
     <color name="silver">#C0C0C0</color>
@@ -15,5 +16,6 @@
     <color name="list_row_hover_start_color">#ebeef0</color>
     <color name="list_row_hover_end_color">#ebeef0</color>
     <color name="genre">#666666</color>
+    <color name="black">#000000</color>
 
 </resources>

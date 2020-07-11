@@ -70,7 +70,7 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
 
         // thumbnail image
         Glide.with(context)
-                .load(mmFirebaseStorageRef.child("cccc.png"))
+                .load(mmFirebaseStorageRef.child(/*"cccc.png"*/property.getImageUrl()))
                 .into(thumbNail);
         //display trimmed excerpt for description
         int descriptionLength = property.getDescription().length();
