@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">ITIFighter</string>
     <string name="sign_in">Sign In</string>
     <string name="email">Email</string>
@@ -41,9 +41,62 @@
     <string name="ip">127.0.0.1</string>
     <string name="stateX">Uttar Pradesh</string>
     <string name="TradeX">Fitter</string>
-    <string name="designed_by_n_sharmask_amp_aj"><![CDATA[Designed by \n Sharmask & AJ]]></string>
+    <string name="designed_by_n_sharmask_amp_aj"><![CDATA[Designed & Devloped by \n Sharmask & AJ]]></string>
     <string name="phone">phone</string>
     <string name="value">value</string>
+    <string name="rate_our_app">Rate our app</string>
+    <string name="rate_our_previous_paper">Rate our previous Paper</string>
+    <string name="rate_our_mock_test">Rate our mock test</string>
+    <string name="rate_our_test_series">Rate our Tets series</string>
+    <string name="rate_our_daily_live_test">Rate our daily live test</string>
+    <string name="submit">submit</string>
+    <string name="oldpassword">Old Password</string>
+    <string name="newpassword">New Password</string>
+    <string name="confirmpassword">Confirm Password</string>
     <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="twitterUsername">\@joeytribbiani</string>
+    <string name="joey_tribbiani">Joey Tribbiani</string>
+    <string name="new_york_usa">new york, usa</string>
+    <string name="_453k">453K</string>
+    <string name="followers">followers</string>
+    <string name="_873">873</string>
+    <string name="following">following</string>
+    <string name="facebook_com_joeytrib">facebook.com/joeytrib</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="_1_202_555_0157" tools:ignore="TypographyDashes">+1–202–555-0157</string>
+    <string name="MyScore">My Score</string>
+    <string name="MyRank">My Rank</string>
+    <string name="add">Add</string>
+    <string name="discription">Discription</string>
+    <string name="title">title</string>
+
+    <string-array name="social_name">
+        <item>facebook</item>
+        <item>instagram</item>
+        <item>twitter</item>
+        <item>youtube</item>
+        <item>gmail</item>
+        <item>linkdin</item>
+        <item>search</item>
+        <item>telegram</item>
+        <item>viber</item>
+        <item>tiktok</item>
+        <item>whatsapp</item>
+    </string-array>
+    <string-array name="social_disc">
+        <item>facebook is the useful app</item>
+        <item>instagram is the useful app</item>
+        <item>twitter is the useful app</item>
+        <item>youtube is the useful app</item>
+        <item>gmail is the useful app</item>
+        <item>linkdin is the useful app</item>
+        <item>search is the useful app</item>
+        <item>telegram is the useful app</item>
+        <item>viber is the useful app</item>
+        <item>tiktok is the useless app</item>
+        <item>whatsapp is the useful app</item>
+    </string-array>
 
 </resources>
