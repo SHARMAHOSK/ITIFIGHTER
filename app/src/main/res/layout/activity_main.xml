@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/splash_screen_bg"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -12,6 +13,8 @@
         android:layout_height="200dp"
         android:layout_gravity="center"
         android:layout_centerInParent="true"
+        app:civ_border_color="@color/startblue30"
+        app:civ_border_width="8dp"
         android:src="@drawable/logo"/>
 
     <ProgressBar
@@ -33,6 +36,6 @@
         android:gravity="center"
         android:text="@string/designed_by_n_sharmask_amp_aj"
         android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="12sp" />
 
 </RelativeLayout>

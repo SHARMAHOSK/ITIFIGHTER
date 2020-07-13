@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,11 +29,9 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
-
 import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends  Fragment {
@@ -46,13 +45,12 @@ public class ProfileFragment extends  Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_menu_profile, container, false);
         UserImage = root.findViewById(R.id.UserImageX);
+        final ImageButton imageButton = root.findViewById(R.id.UserImageY);
         final TextView UserName = root.findViewById(R.id.UserNameX);
-        final TextView Live = root.findViewById(R.id.TestX);
-        final TextView UserSeries = root.findViewById(R.id.SeriesX);
         final TextView UserScore = root.findViewById(R.id.ScoreX);
+        final TextView UserRank = root.findViewById(R.id.RankX);
         final TextView UserEmail = root.findViewById(R.id.UserEmailX);
         final TextView UserMobile = root.findViewById(R.id.UserMobileX);
-        final TextView UserIp = root.findViewById(R.id.UserIpX);
         final TextView UserState = root.findViewById(R.id.UserStateX);
         final TextView UserTrade = root.findViewById(R.id.UserTradeX);
         final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -65,14 +63,12 @@ public class ProfileFragment extends  Fragment {
                assert documentSnapshot != null;
                UserEmail.setText(documentSnapshot.getString("Email"));
                UserMobile.setText(documentSnapshot.getString("Mobile"));
-               UserIp.setText("6951.0.0.1");
                UserName.setText(documentSnapshot.getString("Name"));
                UserState.setText(documentSnapshot.getString("State"));
                UserTrade.setText(documentSnapshot.getString("Trade"));
-               Live.setText("122");
                UserScore.setText("100");
-               UserSeries.setText("540");
-               UserImage.setOnClickListener(new View.OnClickListener() {
+               UserRank.setText("540");
+               imageButton.setOnClickListener(new View.OnClickListener() {
                    @Override
                    public void onClick(View view) {
                         chooseImage();
