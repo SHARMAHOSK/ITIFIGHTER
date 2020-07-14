@@ -28,6 +28,7 @@ public class admin_pp_list extends AppCompatActivity {
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
     ArrayList<String> Exams=new ArrayList<String>();
     ArrayList<String> ExamIds=new ArrayList<String>();
+    int count = -1;
     ListView ppListView;
     String targetSubject;
     CollectionReference mDatabaseReference;
@@ -40,11 +41,9 @@ public class admin_pp_list extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_pp_list);
-
-        mDatabaseReference = FirebaseFirestore.getInstance().collection("branch").document(targetSubject).collection("exam");
-
         Intent intent = getIntent();
         targetSubject = intent.getStringExtra("subject");
+        mDatabaseReference = FirebaseFirestore.getInstance().collection("branch").document(targetSubject).collection("exam");
 
         ppListView = findViewById(R.id.listPPAdmin);
 
@@ -57,7 +56,7 @@ public class admin_pp_list extends AppCompatActivity {
                         Exams.add(""+document.getString("Name"));
                         ExamIds.add((""+document.getId()));
                     }
-
+                    count = Exams.size();
                     adapter=new ArrayAdapter<String>(admin_pp_list.this,
                             android.R.layout.simple_list_item_1,
                             Exams);
@@ -74,12 +73,12 @@ public class admin_pp_list extends AppCompatActivity {
                                     int position, long id) {
 
 
-                        Intent intent = new Intent(admin_pp_list.this, admin_pdf_list.class);
-                        intent.putExtra("subject", targetSubject);
-                        intent.putExtra("exam", ExamIds.get(position));
-                        startActivity(intent);
+                Intent intent = new Intent(admin_pp_list.this, admin_pdf_list.class);
+                intent.putExtra("subject", targetSubject);
+                intent.putExtra("exam", ExamIds.get(position));
+                startActivity(intent);
 
-                }
+            }
 
         });
     }
@@ -91,5 +90,21 @@ public class admin_pp_list extends AppCompatActivity {
         intent.putExtra("subject", targetSubject);
         intent.putExtra("exam", targetExam);
         startActivity(intent);*/
+        if(count < 0)
+            return;
+        Intent intent = new Intent(admin_pp_list.this, admin_add_exam.class);
+        intent.putExtra("count", count);
+        intent.putExtra("subject", getIntent().getStringExtra("subject"));
+        startActivityForResult(intent, 1);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                String newExam = data.getStringExtra("newExam");
+                adapter.add(newExam);
+            }
+        }
     }
 }

@@ -113,7 +113,7 @@ public class Login extends AppCompatActivity {
                                         if (snapshot != null && snapshot.exists()) {
                                             //Log.d(TAG, "Current data: " + snapshot.getData());
                                             Toast.makeText(Login.this, "welcome "+ snapshot.get("Role"), Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(Login.this, snapshot.get("Role").toString().contains("admin") ? AdminUpdatePpPdfs.class : MainDashboard.class));
+                                            startActivity(new Intent(Login.this, snapshot.get("Role").toString().contains("admin") ? admin_section_list.class : MainDashboard.class));
                                             finish();
                                         } else {
                                             //zLog.d(TAG, "Current data: null");

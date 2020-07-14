@@ -1,55 +1,109 @@
 package com.example.itifighterAdmin;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.itifighter.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 public class admin_subject_list extends AppCompatActivity {
 
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
-    ArrayList<String> listItems=new ArrayList<>();
+    ArrayList<String> listItems = new ArrayList<>();
+    ArrayList<String> ItemId = new ArrayList<>();
     ListView sectionListView;
+    int count = -1;
+    CollectionReference mDatabaseReference;
 
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LIST_VIEW
     ArrayAdapter<String> adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_subject_list);
 
+        mDatabaseReference = FirebaseFirestore.getInstance().collection("branch");
+
         sectionListView = findViewById(R.id.adminListSubject);
 
-        listItems.add("Fitter");
+        /*listItems.add("Fitter");
         listItems.add("Turner");
         listItems.add("Machinist");
         listItems.add("Electrician");
-        listItems.add("Copa");
+        listItems.add("Copa");*/
 
-        adapter=new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                listItems);
-        sectionListView.setAdapter(adapter);
-
-        sectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mDatabaseReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                if(true || getIntent().getStringExtra("section") == "pp"){
-                        Intent intent = new Intent(admin_subject_list.this, admin_pp_list.class);
-                        intent.putExtra("subject", "00"+(position+1));
-                        startActivity(intent);
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    listItems = new ArrayList<>();
+                    ItemId = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        listItems.add("" + document.getString("Name"));
+                        ItemId.add("" + document.getId());
+                    }
+                    count = listItems.size();
+                    adapter = new ArrayAdapter<>(getApplicationContext(),
+                            android.R.layout.simple_list_item_1,
+                            listItems);
+                    sectionListView.setAdapter(adapter);
+                    sectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view,
+                                                int position, long id) {
+                            if (true || getIntent().getStringExtra("section") == "pp") {
+                                Intent intent = new Intent(admin_subject_list.this, admin_pp_list.class);
+                                intent.putExtra("subject", ItemId.get(position));
+                                Toast.makeText(admin_subject_list.this, intent.getStringExtra("subject") + "=" + ItemId.get(position), Toast.LENGTH_SHORT).show();
+                                startActivity(intent);
+                            }
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }
         });
+    }
+
+    //METHOD WHICH WILL HANDLE DYNAMIC INSERTION
+    public void addSubject(View v) {
+        if(count < 0)
+            return;
+        Intent intent = new Intent(admin_subject_list.this, admin_add_subject.class);
+        intent.putExtra("count", count);
+        intent.putExtra("section", getIntent().getStringExtra("section"));
+        startActivityForResult(intent, 1);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                String newSubject = data.getStringExtra("newSubject");
+                adapter.add(newSubject);
+            }
+        }
     }
 }
