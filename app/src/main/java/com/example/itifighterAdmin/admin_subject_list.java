@@ -32,6 +32,7 @@ public class admin_subject_list extends AppCompatActivity {
     ArrayList<String> ItemId = new ArrayList<>();
     ListView sectionListView;
     int count = -1;
+    int targetSubject = -1;
     CollectionReference mDatabaseReference;
 
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LIST_VIEW
@@ -73,10 +74,8 @@ public class admin_subject_list extends AppCompatActivity {
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
                             if (true || getIntent().getStringExtra("section") == "pp") {
-                                Intent intent = new Intent(admin_subject_list.this, admin_pp_list.class);
-                                intent.putExtra("subject", ItemId.get(position));
-                                Toast.makeText(admin_subject_list.this, intent.getStringExtra("subject") + "=" + ItemId.get(position), Toast.LENGTH_SHORT).show();
-                                startActivity(intent);
+                                targetSubject = position;
+                                SubjectOptions(view);
                             }
                         }
                     });
@@ -85,6 +84,11 @@ public class admin_subject_list extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void SubjectOptions(View v) {
+        Intent intent = new Intent(admin_subject_list.this, admin_item_options.class);
+        startActivityForResult(intent, 0);
     }
 
     //METHOD WHICH WILL HANDLE DYNAMIC INSERTION
@@ -99,11 +103,58 @@ public class admin_subject_list extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+        if (requestCode == 0) {
             if(resultCode == RESULT_OK) {
-                String newSubject = data.getStringExtra("newSubject");
-                adapter.add(newSubject);
+                int option = data.getIntExtra("option", 0);
+                if(option == 1)
+                    EditSubject();
+                else if(option == 2)
+                    OpenSubject();
             }
         }
+        else if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                String newSubject = data.getStringExtra("newSubject");
+                //adapter.add(newSubject);
+                mDatabaseReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            listItems = new ArrayList<>();
+                            ItemId = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                listItems.add("" + document.getString("Name"));
+                                ItemId.add("" + document.getId());
+                            }
+                            count = listItems.size();
+                            adapter = new ArrayAdapter<>(getApplicationContext(),
+                                    android.R.layout.simple_list_item_1,
+                                    listItems);
+                            sectionListView.setAdapter(adapter);
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    private void EditSubject() {
+        if(targetSubject < 0)
+            return;
+        Intent intent = new Intent(admin_subject_list.this, admin_edit_subject.class);
+        intent.putExtra("target", ItemId.get(targetSubject));
+        intent.putExtra("section", getIntent().getStringExtra("section"));
+        startActivityForResult(intent, 1);
+    }
+
+    private void OpenSubject() {
+        if(targetSubject < 0)
+            return;
+        Intent intent = new Intent(admin_subject_list.this, admin_pp_list.class);
+        intent.putExtra("subject", ItemId.get(targetSubject));
+        Toast.makeText(admin_subject_list.this, intent.getStringExtra("subject") + "=" + ItemId.get(targetSubject), Toast.LENGTH_SHORT).show();
+        startActivity(intent);
     }
 }

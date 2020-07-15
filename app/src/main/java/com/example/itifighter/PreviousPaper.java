@@ -127,14 +127,14 @@ public class PreviousPaper extends Fragment {
                     Subjects = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         /*list.add(document.getString("Name"));*/
-                        /*Subjects.add(new CustomListItem(document.getString("Name"),
-                                        document.getString("Description"),
-                                        document.getDouble("Price"),
-                                        document.getString("Image"),
-                                        *//*getExamCount(document.getId())*//*5));*/
                         Subjects.add(new CustomListItem(document.getString("Name"),
+                                        document.getString("Description"),
+                                        0.00,
+                                        document.getString("Image"),
+                                        /*getExamCount(document.getId())*/5));
+                        /*Subjects.add(new CustomListItem(document.getString("Name"),
                                 "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
-                                0.00, "cccc.png", 5));
+                                0.00, "cccc.png", 5));*/
                     }
                     /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                             R.layout.activity__branch_list_view, list);*/

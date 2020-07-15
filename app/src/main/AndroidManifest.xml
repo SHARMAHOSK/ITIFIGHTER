@@ -12,6 +12,11 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
         <activity
+            android:name="com.example.itifighterAdmin.admin_item_options"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity android:name="com.example.itifighterAdmin.admin_edit_subject"
+            android:theme="@style/Theme.AppCompat.Dialog"/>
+        <activity
             android:name="com.example.itifighterAdmin.admin_add_exam"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity

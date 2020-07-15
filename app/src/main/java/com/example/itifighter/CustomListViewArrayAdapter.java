@@ -66,19 +66,27 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
 
         topicHeader.setText(property.getTopicHeader());
 
-        mmFirebaseStorageRef=mFirebaseStorage.getReference().child("uploads");
+        mmFirebaseStorageRef=mFirebaseStorage.getReference().child("logos");
 
         // thumbnail image
-        Glide.with(context)
-                .load(mmFirebaseStorageRef.child(/*"cccc.png"*/property.getImageUrl()))
-                .into(thumbNail);
+        if(property.getImageUrl() != null){
+            if(property.getImageUrl().trim().length() > 0){
+                Glide.with(context)
+                        .load(mmFirebaseStorageRef.child(/*"cccc.png"*/property.getImageUrl()))
+                        .into(thumbNail);
+            }
+        }
         //display trimmed excerpt for description
-        int descriptionLength = property.getDescription().length();
-        if(descriptionLength >= 100){
-            String descriptionTrim = property.getDescription().substring(0, 100) + "...";
-            description.setText(descriptionTrim);
+        if(property.getDescription() != null){
+            int descriptionLength = property.getDescription().length();
+            if(descriptionLength >= 100){
+                String descriptionTrim = property.getDescription().substring(0, 100) + "...";
+                description.setText(descriptionTrim);
+            }else{
+                description.setText(property.getDescription());
+            }
         }else{
-            description.setText(property.getDescription());
+            description.setText("--");
         }
 
         //get the image associated with this property
