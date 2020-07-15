@@ -128,7 +128,7 @@ public class PreviousPaper extends Fragment {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         /*list.add(document.getString("Name"));*/
                         Subjects.add(new CustomListItem(document.getString("Name"),
-                                        document.getString("Description"),
+                                        document.getString("description"),
                                         0.00,
                                         document.getString("Image"),
                                         /*getExamCount(document.getId())*/5));
