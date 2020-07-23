@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.itifighterAdmin.admin_add_exam">
+    tools:context="com.example.itifighterAdmin.pp.admin_add_exam">
 
     <EditText
         android:id="@+id/NewExamName"

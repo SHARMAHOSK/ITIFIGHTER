@@ -1,9 +1,8 @@
-package com.example.itifighterAdmin;
+package com.example.itifighterAdmin.pp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,7 +42,7 @@ public class admin_pp_list extends AppCompatActivity {
         setContentView(R.layout.activity_admin_pp_list);
         Intent intent = getIntent();
         targetSubject = intent.getStringExtra("subject");
-        mDatabaseReference = FirebaseFirestore.getInstance().collection("branch").document(targetSubject).collection("exam");
+        mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document("pp").collection("branch").document(targetSubject).collection("exam");
 
         ppListView = findViewById(R.id.listPPAdmin);
 

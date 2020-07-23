@@ -6,12 +6,22 @@
     tools:context=".MockTest">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!--    <TextView
+            android:id="@+id/ppTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAlignment="center"
+            android:text="Previous Paper"
+            android:textSize="16sp"
+            android:textStyle="bold" />-->
+
+    <ListView
+        android:id="@+id/mt_branch_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textAlignment="center"
-        android:text="Mock Test"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content"
+        android:divider="@color/list_divider"
+        android:dividerHeight="1dp"
+        android:listSelector="@drawable/list_row_selector">
+    </ListView>
 
 </FrameLayout>

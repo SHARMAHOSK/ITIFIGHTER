@@ -1,4 +1,4 @@
-package com.example.itifighterAdmin;
+package com.example.itifighterAdmin.pp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.itifighterAdmin.Constants;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -52,7 +54,7 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
 
         //getting firebase objects
         mStorageReference = FirebaseStorage.getInstance().getReference();
-        mDatabaseReference = FirebaseFirestore.getInstance().collection("branch").document(targetSubject).collection("exam").document(targetExam).collection("pdf");
+        mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document("pp").collection("branch").document(targetSubject).collection("exam").document(targetExam).collection("pdf");
 
         //getting the views
         textViewStatus = (TextView) findViewById(R.id.textViewStatus);

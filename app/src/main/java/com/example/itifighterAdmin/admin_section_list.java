@@ -43,12 +43,18 @@ public class admin_section_list extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                if (position == 0) {
-                    Intent intent = new Intent(admin_section_list.this, admin_subject_list.class);
-                    //intent.putExtra("subject", "001");  //replace with call to subject list view in mid
-                    intent.putExtra("section", "pp");
-                    startActivity(intent);
+                String target = "pp";
+                switch(position){
+                    case 0:
+                        target = "pp";
+                        break;
+                    case 1:
+                        target = "mt";
+                        break;
                 }
+                Intent intent = new Intent(admin_section_list.this, admin_subject_list.class);
+                intent.putExtra("section", target);
+                startActivity(intent);
             }
         });
     }

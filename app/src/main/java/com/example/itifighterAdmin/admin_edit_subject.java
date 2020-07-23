@@ -29,6 +29,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class admin_edit_subject extends AppCompatActivity {
@@ -47,7 +48,7 @@ public class admin_edit_subject extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_edit_subject);
 
-        mDatabaseReference = FirebaseFirestore.getInstance().collection("branch");
+        mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(Objects.requireNonNull(getIntent().getStringExtra("section"))).collection("branch");
         mStorageReference = FirebaseStorage.getInstance().getReference();
 
         name = findViewById(R.id.EdtSubjectName);
@@ -67,6 +68,14 @@ public class admin_edit_subject extends AppCompatActivity {
                         imgName = document.getString(("Image"));
 
                         ready = true;
+
+                        name.setText(subName);
+                        desc.setText(subDesc);
+                        if(imgName.trim().length() > 0){
+                            Glide.with(getApplicationContext())
+                                    .load(mStorageReference.child(Constants.STORAGE_PATH_LOGOS + imgName))
+                                    .into(subImg);
+                        }
                     } else {
                         Log.d("LOGGER", "No such document");
                     }

@@ -1,7 +1,6 @@
 package com.example.itifighterAdmin;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.itifighter.R;
+import com.example.itifighterAdmin.pp.admin_pp_list;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -22,6 +22,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
@@ -44,7 +45,7 @@ public class admin_subject_list extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_subject_list);
 
-        mDatabaseReference = FirebaseFirestore.getInstance().collection("branch");
+        mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(Objects.requireNonNull(getIntent().getStringExtra("section"))).collection("branch");
 
         sectionListView = findViewById(R.id.adminListSubject);
 
@@ -73,10 +74,8 @@ public class admin_subject_list extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            if (true || getIntent().getStringExtra("section") == "pp") {
                                 targetSubject = position;
                                 SubjectOptions(view);
-                            }
                         }
                     });
                 } else {
@@ -152,9 +151,19 @@ public class admin_subject_list extends AppCompatActivity {
     private void OpenSubject() {
         if(targetSubject < 0)
             return;
-        Intent intent = new Intent(admin_subject_list.this, admin_pp_list.class);
-        intent.putExtra("subject", ItemId.get(targetSubject));
-        Toast.makeText(admin_subject_list.this, intent.getStringExtra("subject") + "=" + ItemId.get(targetSubject), Toast.LENGTH_SHORT).show();
-        startActivity(intent);
+        Intent intent;
+        if(getIntent().getStringExtra("section").contains("pp")){
+            intent = new Intent(admin_subject_list.this, admin_pp_list.class);
+            intent.putExtra("subject", ItemId.get(targetSubject));
+            Toast.makeText(admin_subject_list.this, intent.getStringExtra("subject") + "=" + ItemId.get(targetSubject), Toast.LENGTH_SHORT).show();
+            startActivity(intent);
+        }else if(getIntent().getStringExtra("section").contains("mt")){
+            intent = new Intent(admin_subject_list.this, admin_chapter_list.class);
+            intent.putExtra("subject", ItemId.get(targetSubject));
+            intent.putExtra("section", getIntent().getStringExtra("section"));
+            Toast.makeText(admin_subject_list.this, intent.getStringExtra("subject") + "=" + ItemId.get(targetSubject), Toast.LENGTH_SHORT).show();
+            startActivity(intent);
+        }
+
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.itifighter">
+    package="com.example.itifighter" >
 
     <application
         android:allowBackup="true"
@@ -10,28 +10,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup">
+        tools:ignore="AllowBackup" >
+        <activity android:name="com.example.itifighterAdmin.admin_upload_excel" >
+        </activity>
+        <activity android:name="com.example.itifighterAdmin.admin_mockChapQoes_list" />
+        <activity
+            android:name="com.example.itifighterAdmin.admin_add_chapter"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity android:name="com.example.itifighterAdmin.admin_chapter_list" />
         <activity
             android:name="com.example.itifighterAdmin.admin_item_options"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name="com.example.itifighterAdmin.admin_edit_subject"
-            android:theme="@style/Theme.AppCompat.Dialog"/>
         <activity
-            android:name="com.example.itifighterAdmin.admin_add_exam"
+            android:name="com.example.itifighterAdmin.admin_edit_subject"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity
+            android:name="com.example.itifighterAdmin.pp.admin_add_exam"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name="com.example.itifighterAdmin.admin_add_subject"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name="com.example.itifighterAdmin.admin_pdf_list" />
+        <activity android:name="com.example.itifighterAdmin.pp.admin_pdf_list" />
         <activity android:name="com.example.itifighterAdmin.admin_subject_list" />
-        <activity android:name="com.example.itifighterAdmin.admin_pp_list" />
+        <activity android:name="com.example.itifighterAdmin.pp.admin_pp_list" />
         <activity android:name="com.example.itifighterAdmin.admin_section_list" />
         <activity android:name=".LoadPdf" />
-        <activity android:name="com.example.itifighterAdmin.AdminUpdatePpPdfs" />
+        <activity android:name="com.example.itifighterAdmin.pp.AdminUpdatePpPdfs" />
         <activity android:name=".MainDashboard" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".Login" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
