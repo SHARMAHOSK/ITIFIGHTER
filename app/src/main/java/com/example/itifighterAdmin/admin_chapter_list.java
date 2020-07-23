@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import com.example.itifighter.R;
 import com.example.itifighterAdmin.pp.admin_add_exam;
-import com.example.itifighterAdmin.pp.admin_mockChapQoes_list;
+import com.example.itifighterAdmin.admin_mockChapQoes_list;
 import com.example.itifighterAdmin.pp.admin_pdf_list;
 import com.example.itifighterAdmin.pp.admin_pp_list;
 import com.google.android.gms.tasks.OnCompleteListener;

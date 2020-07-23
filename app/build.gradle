@@ -50,4 +50,5 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.firebaseui:firebase-ui-storage:4.3.2'
     implementation 'com.firebaseui:firebase-ui-firestore:4.1.0'
+    implementation 'net.sourceforge.jexcelapi:jxl:2.6.12'
 }

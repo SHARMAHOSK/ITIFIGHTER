@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.itifighter.LoadPdf;
 import com.example.itifighter.R;
@@ -33,6 +34,7 @@ public class admin_mockChapQoes_list extends AppCompatActivity {
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
     ArrayAdapter<String> adapter;
     ListView quesListView;
+    int count = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +42,14 @@ public class admin_mockChapQoes_list extends AppCompatActivity {
         setContentView(R.layout.activity_admin_mock_chap_qoes_list);
 
         targetSection = getIntent().getStringExtra("section");
+        if(targetSection == null)
+            Toast.makeText(this, "target section null", Toast.LENGTH_SHORT).show();
         targetSubject = getIntent().getStringExtra("subject");
+        if(targetSubject == null)
+            Toast.makeText(this, "target subject null", Toast.LENGTH_SHORT).show();
         targetChapter = getIntent().getStringExtra("chapter");
+        if(targetChapter == null)
+            Toast.makeText(this, "target chapter null", Toast.LENGTH_SHORT).show();
 
         quesListView = findViewById(R.id.listMockQuesAdmin);
 
@@ -57,6 +65,8 @@ public class admin_mockChapQoes_list extends AppCompatActivity {
                         quesID.add(""+document.getId());
                         quesName.add(""+document.getString("question"));
                     }
+
+                    count = quesID.size();
 
                     adapter=new ArrayAdapter<String>(admin_mockChapQoes_list.this,
                             android.R.layout.simple_list_item_1,
@@ -85,11 +95,14 @@ public class admin_mockChapQoes_list extends AppCompatActivity {
 
     //METHOD WHICH WILL HANDLE DYNAMIC INSERTION
     public void UploadMockQuestions(View v) {
+        if(count < 0)
+            return;
         //adapter.add("New Item");
         Intent intent = new Intent(admin_mockChapQoes_list.this, admin_upload_excel.class);
         intent.putExtra("subject", targetSubject);
         intent.putExtra("chapter", targetChapter);
         intent.putExtra("section", targetSection);
+        intent.putExtra("count", count);
         startActivity(intent);
     }
 }
