@@ -1,6 +1,8 @@
 package com.example.itifighterAdmin;
 
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable {
     private String question = "";
     private String answer = "";
     private String option1 = "";

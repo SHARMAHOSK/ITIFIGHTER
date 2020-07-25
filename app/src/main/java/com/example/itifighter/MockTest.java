@@ -1,6 +1,7 @@
 package com.example.itifighter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,12 +15,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.itifighterAdmin.Question;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
@@ -41,6 +44,7 @@ public class MockTest extends Fragment {
 
     private ArrayList<CustomListItem> Subjects;
     private ArrayList<String> Chapters;
+    private ArrayList<Question> questions;
     private ListView listView;
 
     private View mtView;
@@ -193,12 +197,45 @@ public class MockTest extends Fragment {
                                     "Clicked ListItem: " + list.get(position), Toast.LENGTH_LONG)
                                     .show();*/
                             currentChapterPos = position;
-                            //LoadTest(__mtView);
+                            LoadTest(__mtView);
                         }
                     });
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                     LoadChapters(__mtView);
+                }
+            }
+        });
+    }
+
+    private void LoadTest(final View __mtView) {
+        db.collection("section").document("mt").collection("branch").document("00"+(currentSubjectPos+1)).collection("chapter").document("00"+(currentChapterPos+1)).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    /*examList = new ArrayList<>();*/
+                    questions = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        /*examList.add(document.getString("Name"));*/
+                                            /*Exams.add(new CustomListItem(document.getString("Name"),
+                                        document.getString("Description"),
+                                        document.getDouble("Price"),
+                                        document.getString("Image"),
+                                        *//*getExamCount(document.getId())*//*5));*/
+                        /*Exams.add(new CustomListItem(document.getString("Name"),
+                                "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
+                                0.00, "sample_fitter_background", 4));*/
+                        questions.add(new Question(document.getString("question"), document.getString("option1"),
+                                document.getString("option2"), document.getString("option3"),
+                                document.getString("option4"), document.getString("answer")));
+                    }
+
+                    Intent myIntent = new Intent(getContext(), TestQuestionsActivity.class);
+                    myIntent.putExtra("questions", (Serializable) questions);
+                    startActivity(myIntent);
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    LoadTest(__mtView);
                 }
             }
         });
