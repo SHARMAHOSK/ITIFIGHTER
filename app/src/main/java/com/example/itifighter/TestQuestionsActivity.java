@@ -5,7 +5,9 @@ import android.annotation.SuppressLint;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -17,7 +19,9 @@ import android.widget.Toast;
 
 import com.example.itifighterAdmin.Question;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,7 +52,8 @@ public class TestQuestionsActivity extends AppCompatActivity {
     RadioGroup radioGroup;
     int currentQues = 0; //may also be used to go back to a particular question.
     List<Question> questions;
-    TextView questionText;
+    int[] sub_ans;
+    TextView questionText, timerText;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -138,7 +143,11 @@ public class TestQuestionsActivity extends AppCompatActivity {
         radioGroup = findViewById(R.id.radioGroup1);
         radioGroup.setOnCheckedChangeListener(radioListener);
         questionText = findViewById(R.id.questionText);
-        questions = (List<Question>) getIntent().getSerializableExtra("questions");;  //= question list from prev activity
+        timerText = findViewById(R.id.TestTimer);
+        questions = (List<Question>) getIntent().getSerializableExtra("questions");  //= question list from prev activity
+        sub_ans = new int[questions.size()];
+        Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
+        Arrays.fill(sub_ans, -1);
         /*my territory ends here.... idk what the hell is beyond here.*/
     }
 
@@ -148,6 +157,20 @@ public class TestQuestionsActivity extends AppCompatActivity {
         super.onResume();
         //build our first question
         buildQuestion(0);
+        new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                timerText.setText("seconds remaining: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                timerText.setText("done!");
+                Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
+                intent.putExtra("sub_ans", sub_ans);
+                intent.putExtra("questions", (Serializable) questions);
+                startActivity(intent);
+            }
+        }.start();
     }
 
     /**
@@ -166,19 +189,19 @@ public class TestQuestionsActivity extends AppCompatActivity {
                     break;
                 case R.id.radioButton4:
                     Toast.makeText(TestQuestionsActivity.this, "option 4", Toast.LENGTH_SHORT).show();
-                    submitAnswer(3);
+                    submitAnswer(4);
                     break;
                 case R.id.radioButton3:
                     Toast.makeText(TestQuestionsActivity.this, "option 3", Toast.LENGTH_SHORT).show();
-                    submitAnswer(2);
+                    submitAnswer(3);
                     break;
                 case R.id.radioButton2:
                     Toast.makeText(TestQuestionsActivity.this, "option 2", Toast.LENGTH_SHORT).show();
-                    submitAnswer(1);
+                    submitAnswer(2);
                     break;
                 case R.id.radioButton:
                     Toast.makeText(TestQuestionsActivity.this, "option 1", Toast.LENGTH_SHORT).show();
-                    submitAnswer(0);
+                    submitAnswer(1);
                     break;
             }
         }
@@ -235,8 +258,14 @@ public class TestQuestionsActivity extends AppCompatActivity {
         //call on next/submit click
         //currently ato-submit by on radio button lick listener above.
         //collect student answers in an array and proceed to next ques if not last.
+        Toast.makeText(this, "saving ans index: "+currentQues, Toast.LENGTH_LONG).show();
+        sub_ans[currentQues] = i;
         if(++currentQues > questions.size()){
             //submit test.
+            Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
+            intent.putExtra("sub_ans", sub_ans);
+            intent.putExtra("questions", (Serializable) questions);
+            startActivity(intent);
         }else{
             buildQuestion(currentQues);
         }

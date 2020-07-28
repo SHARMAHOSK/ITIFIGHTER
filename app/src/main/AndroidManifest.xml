@@ -11,12 +11,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
+        <activity android:name=".TestResultActivity"></activity>
         <activity
             android:name=".TestQuestionsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_test_questions"
-            android:theme="@style/FullscreenTheme"></activity>
-        <activity android:name="com.example.itifighterAdmin.admin_upload_excel"></activity>
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name="com.example.itifighterAdmin.admin_upload_excel" />
         <activity android:name="com.example.itifighterAdmin.admin_mockChapQoes_list" />
         <activity
             android:name="com.example.itifighterAdmin.admin_add_chapter"
