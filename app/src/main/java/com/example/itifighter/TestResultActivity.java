@@ -33,6 +33,7 @@ public class TestResultActivity extends AppCompatActivity {
 
         for(int i=0; i< sub_ans.length; i++){
             //result[i] = ""+i;
+            Toast.makeText(this, ""+questions.get(i).getAnswer(), Toast.LENGTH_LONG).show();
             result[i] = sub_ans[i] == -1 ? "skipped" : sub_ans[i] == Integer.parseInt(questions.get(i).getAnswer()) ? "right" : "wrong";
         }
 
