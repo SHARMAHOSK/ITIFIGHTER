@@ -33,7 +33,7 @@ public class TestResultActivity extends AppCompatActivity {
 
         for(int i=0; i< sub_ans.length; i++){
             //result[i] = ""+i;
-            result[i] = sub_ans[i] == -1 ? "skipped" : sub_ans[i] == Integer.parseInt(questions.get(i).getOption1()) ? "right" : "wrong";
+            result[i] = sub_ans[i] == -1 ? "skipped" : sub_ans[i] == Integer.parseInt(questions.get(i).getAnswer()) ? "right" : "wrong";
         }
 
         ArrayAdapter adapter = new ArrayAdapter<String>(TestResultActivity.this,
