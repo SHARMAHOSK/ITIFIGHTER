@@ -43,7 +43,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/name"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#C0C0C0"
+                    android:textColorHint="#696969"
                     android:textSize="16sp"
                     android:textStyle="normal"
                     android:autofillHints=""
@@ -52,7 +52,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/view_gray"
+                    android:background="#696969"
                     android:layout_marginTop="8dp"
                     />
 
@@ -65,7 +65,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/email"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#C0C0C0"
+                    android:textColorHint="#696969"
                     android:textSize="16sp"
                     android:textStyle="normal"
                     android:autofillHints=""
@@ -74,7 +74,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/view_gray"
+                    android:background="#696969"
                     android:layout_marginTop="8dp"
                     />
                 <EditText
@@ -86,7 +86,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/mobile"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#C0C0C0"
+                    android:textColorHint="#696969"
                     android:textSize="16sp"
                     android:textStyle="normal"
                     android:autofillHints=""
@@ -95,7 +95,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/view_gray"
+                    android:background="#696969"
                     android:layout_marginTop="8dp"
                     />
                 <EditText
@@ -107,7 +107,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/state"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#C0C0C0"
+                    android:textColorHint="#696969"
                     android:textSize="16sp"
                     android:textStyle="normal"
                     android:autofillHints=""
@@ -116,7 +116,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/view_gray"
+                    android:background="#696969"
                     android:layout_marginTop="8dp"
                     />
                 <EditText
@@ -128,7 +128,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/trade"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#C0C0C0"
+                    android:textColorHint="#696969"
                     android:textSize="16sp"
                     android:textStyle="normal"
                     android:autofillHints=""
@@ -137,7 +137,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/view_gray"
+                    android:background="#696969"
                     android:layout_marginTop="8dp"
                     />
 
@@ -152,7 +152,7 @@
                     android:hint="@string/password"
                     android:inputType="textPassword"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#C0C0C0"
+                    android:textColorHint="#696969"
                     android:textSize="16sp"
 
                     android:textStyle="normal"
@@ -161,7 +161,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/view_gray"
+                    android:background="#696969"
                     android:layout_marginTop="8dp"
                     />
 
@@ -196,7 +196,7 @@
                         android:layout_marginTop="20.8dp"
                         android:textSize="18sp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="#C0C0C0"
+                        android:textColor="#696969"
                         android:lineSpacingExtra="26sp"
                         android:text="@string/already_have_an_account"/>
 
@@ -211,7 +211,7 @@
                         android:gravity="center"
                         android:lineSpacingExtra="26sp"
                         android:text="@string/login"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/startblue"
                         android:textSize="18sp"
                         android:textStyle="normal" />
 

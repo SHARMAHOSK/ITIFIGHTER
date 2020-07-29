@@ -10,7 +10,7 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayoutX"
-        app:tabSelectedTextColor="#3023AE"
+        app:tabSelectedTextColor="@color/white"
         app:tabIndicatorColor="@color/colorAccent"
         android:layout_height="?attr/actionBarSize"
         app:tabIndicatorHeight="2dp"

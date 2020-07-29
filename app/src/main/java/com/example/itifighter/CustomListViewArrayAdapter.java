@@ -88,11 +88,9 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
         }else{
             description.setText("--");
         }
-
         //get the image associated with this property
         /*int imageID = context.getResources().getIdentifier(property.getImageUrl(), "drawable", context.getPackageName());
         thumbNail.setImageResource(imageID);*/
-
         return view;
     }
 }

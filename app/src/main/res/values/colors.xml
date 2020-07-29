@@ -35,4 +35,7 @@
 
     <color name="black_overlay">#66000000</color>
 
+    <color name="green1">#29CF40</color>
+    <color name="blue2">#0033cc</color>
+
 </resources>

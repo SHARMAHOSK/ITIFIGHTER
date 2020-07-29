@@ -35,7 +35,7 @@
         android:layout_marginBottom="40dp"
         android:gravity="center"
         android:text="@string/designed_by_n_sharmask_amp_aj"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/black"
         android:textSize="12sp" />
 
 </RelativeLayout>

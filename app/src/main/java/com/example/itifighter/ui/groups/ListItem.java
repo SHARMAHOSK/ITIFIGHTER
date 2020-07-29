@@ -1,18 +1,17 @@
 package com.example.itifighter.ui.groups;
 
 public class ListItem {
-    private String name;
-    private String desc;
-    //private String Image;
+    private String name,desc,url;
     public ListItem(){}
-    public ListItem(String name, String desc){
+    public ListItem(String name, String desc, String url){
         this.name = name;
         this.desc = desc;
-        //this.Image = Image;
+        this.url = url;
     }
     public String getName(){return name;}
     public String getDesc(){return desc;}
     public void setName(String name){this.name=name;}
     public void setDesc(String desc){this.desc=desc;}
-    //public String getImage(){return Image;}
+    public void setUrl(String url){this.url=url;}
+    public String getUrl(){return url;}
 }

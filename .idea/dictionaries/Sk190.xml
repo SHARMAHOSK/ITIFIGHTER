@@ -2,6 +2,12 @@
   <dictionary name="Sk190">
     <words>
       <w>appspot</w>
+      <w>bhosk</w>
+      <w>binded</w>
+      <w>chatmessage</w>
+      <w>chatroom</w>
+      <w>chatrooms</w>
+      <w>checkmark</w>
       <w>confirmpassword</w>
       <w>devloped</w>
       <w>discription</w>
@@ -9,12 +15,16 @@
       <w>imgbutton</w>
       <w>instagram</w>
       <w>itifighter</w>
+      <w>joeytrib</w>
+      <w>linkdin</w>
       <w>linkedin</w>
       <w>linlay</w>
       <w>newpassword</w>
       <w>oldpassword</w>
       <w>rellay</w>
       <w>sharmask</w>
+      <w>shubham</w>
+      <w>snoe</w>
       <w>startblue</w>
       <w>startloading</w>
       <w>tiktok</w>
@@ -22,6 +32,7 @@
       <w>uploded</w>
       <w>viber</w>
       <w>whatsapp</w>
+      <w>wiliam</w>
     </words>
   </dictionary>
 </component>

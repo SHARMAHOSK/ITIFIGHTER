@@ -2,11 +2,10 @@ package com.example.itifighter;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
-import com.example.itifighter.ui.home.HomeFragment;
 
 public class MyAdapter extends FragmentPagerAdapter {
     Context context;
@@ -15,6 +14,7 @@ public class MyAdapter extends FragmentPagerAdapter {
         super(fm);
         this.totalTabs = totalTabs;
     }
+    @NonNull
     public Fragment getItem(int position) {
         switch (position) {
             case 0:

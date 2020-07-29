@@ -31,12 +31,12 @@
     <fragment
         android:id="@+id/nav_change"
         android:name="com.example.itifighter.ui.change.ChangeFragment"
-        android:label="fragment_change"
+        android:label="Change Password"
         tools:layout="@layout/fragment_menu_change" />
     <fragment
         android:id="@+id/nav_rating"
         android:name="com.example.itifighter.ui.rating.RatingFragment"
-        android:label="fragment_rating"
+        android:label="Rating"
         tools:layout="@layout/fragment_menu_rating" />
 
 </navigation>
