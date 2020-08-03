@@ -50,6 +50,8 @@ public class MockTest extends Fragment {
     private View mtView;
     private FirebaseFirestore db;
 
+    int _mpq, timer;
+
     private Context mContext;
 
     //boolean loadingFinished = true;
@@ -230,8 +232,10 @@ public class MockTest extends Fragment {
                                 document.getString("option4"), document.getString("answer")));
                     }
 
-                    Intent myIntent = new Intent(getContext(), TestQuestionsActivity.class);
+                    Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
                     myIntent.putExtra("questions", (Serializable) questions);
+                    myIntent.putExtra("_mpq", 2);
+                    myIntent.putExtra("timer", 45);
                     startActivity(myIntent);
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());

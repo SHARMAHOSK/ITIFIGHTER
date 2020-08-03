@@ -124,6 +124,12 @@
     <string name="action_create_chatroom">Create Chatroom</string>
     <string name="action_leave_chatroom">Leave chatroom</string>
     <string name="action_chatroom_user_list">User list</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
 
 
 </resources>

@@ -30,5 +30,12 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="CustomFullScreenStyle" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">@color/black_overlay</item>
+<!--        <item name="android:windowNoTitle">true</item>
+<item name="windowActionBar">false</item>-->
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
 
 </resources>

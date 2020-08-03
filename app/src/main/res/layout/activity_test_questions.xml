@@ -1,135 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    android:weightSum="100"
+    android:orientation="vertical"
     tools:context=".TestQuestionsActivity">
-
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
+        android:orientation="vertical"
+        android:weightSum="100">
         <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:background="@color/white"
             android:orientation="horizontal"
-            tools:ignore="UselessParent">
-
-            <Button
-                android:id="@+id/dummy_button"
-                style="?metaButtonBarButtonStyle"
+            android:weightSum="10">
+            <TextView
+                android:id="@+id/TestTimer"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dummy_button" />
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:gravity="center"
+                android:keepScreenOn="true"
+                android:text="Time left"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:onClick="OpenQuesNavPanel"
+                android:background="@drawable/open_quesnumwindow_icon"/>
+
 
         </LinearLayout>
-    </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:weightSum="10">
 
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
-    <!--<TextView
-        android:id="@+id/fullscreen_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:text="@string/dummy_content"
-        android:textColor="#33b5e5"
-        android:textSize="50sp"
-        android:textStyle="bold" />-->
+            <TextView
+                android:id="@+id/QuesNum"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:gravity="center"
+                android:keepScreenOn="true"
+                android:text="Ques Num"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/fullscreen_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/Marks"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:gravity="center"
+                android:keepScreenOn="true"
+                android:text="+1"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/TestTimer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:keepScreenOn="true"
-            android:text="Time left"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/questionText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_weight="35"
+            android:layout_height="0dp"
             android:gravity="center"
             android:keepScreenOn="true"
             android:text="dummy_question"
+            android:background="@color/black"
             android:textColor="#33b5e5"
-            android:textSize="40sp"
-            android:textStyle="normal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/TestTimer" />
+            android:textSize="20sp"
+            android:textStyle="normal" />
 
         <RadioGroup
             android:id="@+id/radioGroup1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/questionText">
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:layout_weight="40"
+            android:background="@color/white"
+            android:weightSum="40">
 
             <RadioButton
                 android:id="@+id/radioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:text="New RadioButton"
+                android:layout_weight="10"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <RadioButton
                 android:id="@+id/radioButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:text="New RadioButton"
+                android:layout_weight="10"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <RadioButton
                 android:id="@+id/radioButton3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:text="New RadioButton"
+                android:layout_weight="10"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <RadioButton
                 android:id="@+id/radioButton4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:text="New RadioButton"
+                android:layout_height="0dp"
+                android:layout_weight="10"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </RadioGroup>
 
-        <Button
-            android:id="@+id/submitBtn"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="SUBMIT"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup1" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="5"
+            android:weightSum="1">
+            <TextView
+                android:id="@+id/QuesFeedback"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.65"
+                android:gravity="center"
+                android:keepScreenOn="true"
+                android:text="      Something wrong with this question?"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="normal" />
+            <TextView
+                android:id="@+id/QuesFeedbackSelect"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.35"
+                android:gravity="center_vertical"
+                android:keepScreenOn="true"
+                android:text="  Give feedback!"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="5"
+            android:weightSum="10"
+            android:background="@color/white"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/skipBtn"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="match_parent"
+                android:text="Skip"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:onClick="SkipQuestion"/>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="match_parent">
+                <Button
+                    android:id="@+id/submitBtn"
+                    style="?metaButtonBarButtonStyle"
+                    android:textColor="@color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:text="SUBMIT"
+                    android:onClick="SubmitAns"/>
+
+                <Button
+                    android:id="@+id/nextBtn"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:text="Next"
+                    android:onClick="SubmitAns"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/QuesNavPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center |right"
+        android:weightSum="100">
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="20"
+            android:onClick="CloseQuesNavPanel"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="80"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:weightSum="100"
+            android:paddingHorizontal="15sp">
+            <TextView
+                android:id="@+id/TestTitle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="center |left"
+                android:background="@color/white"
+                android:layout_weight="10"
+                android:text="TITLE HERE"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="90"/>
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>
