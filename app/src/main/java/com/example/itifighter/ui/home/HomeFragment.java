@@ -4,35 +4,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
-
-import com.example.itifighter.MainActivity;
 import com.example.itifighter.MyAdapter;
 import com.example.itifighter.R;
 import com.google.android.material.tabs.TabLayout;
-
 public class HomeFragment extends Fragment {
 
     private ViewPager viewPager;
     TabLayout tabLayout;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_menu_home, container, false);
-
-        /*Button logout = findViewById(R.id.logout);
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            mFirebaseAuth.signOut();
-            startActivity(new Intent(HomeFragment.this,Login.class));
-            finish();
-            }
-        });*/
-
+        final View root = inflater.inflate(R.layout.fragment_menu_home, container, false);
         tabLayout = root.findViewById(R.id.tabLayoutX);
         viewPager = root.findViewById(R.id.viewPagerX);
         tabLayout.addTab(tabLayout.newTab().setText("Previous Paper"));
@@ -58,9 +42,7 @@ public class HomeFragment extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-
         tabLayout.post(mTabLayout_config);
-
         return root;
     }
 
@@ -70,7 +52,7 @@ public class HomeFragment extends Fragment {
         public void run()
         {
 
-            if(tabLayout.getWidth() < getContext().getResources().getDisplayMetrics().widthPixels)
+            if(tabLayout.getWidth() < requireContext().getResources().getDisplayMetrics().widthPixels)
             {
                 tabLayout.setTabMode(TabLayout.MODE_FIXED);
                 ViewGroup.LayoutParams mParams = tabLayout.getLayoutParams();

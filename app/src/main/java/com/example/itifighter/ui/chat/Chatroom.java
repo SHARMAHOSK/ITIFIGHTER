@@ -3,6 +3,8 @@ package com.example.itifighter.ui.chat;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 public class Chatroom implements Parcelable {
 
     private String title;
@@ -51,6 +53,7 @@ public class Chatroom implements Parcelable {
         this.chatroom_id = chatroom_id;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Chatroom{" +

@@ -5,7 +5,6 @@ import android.app.Application;
 public class UserClient extends Application {
 
     private User user = null;
-
     public User getUser() {
         return user;
     }

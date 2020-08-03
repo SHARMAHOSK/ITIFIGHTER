@@ -130,6 +130,13 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="payment_gateway">Payment Gateway</string>
+    <string name="www_google_com">www.noobworm.xyz</string>
+    <string name="paytm_integrations">Payment integration</string>
+    <string name="order_id">order id</string>
+    <string name="customer_id">customer_id</string>
+    <string name="price">price</string>
+    <string name="start_payment">start payment</string>
 
 
 </resources>

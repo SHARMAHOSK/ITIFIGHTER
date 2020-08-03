@@ -37,5 +37,8 @@
 
     <color name="green1">#29CF40</color>
     <color name="blue2">#0033cc</color>
+    <color name="textPrimary">#333333</color>
+    <color name="textPrimaryLight">#BEBEBE</color>
+    <color name="inputHint">#5C707070</color>
 
 </resources>

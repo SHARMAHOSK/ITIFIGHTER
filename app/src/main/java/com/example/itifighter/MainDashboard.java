@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -26,7 +29,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -52,14 +54,6 @@ public class MainDashboard extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        ImageButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -68,6 +62,29 @@ public class MainDashboard extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        final ImageButton fab = findViewById(R.id.fab);
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+                if(destination.getLabel() != null && destination.getLabel().toString().equals("Home")){
+                    fab.setEnabled(true);
+                    fab.setVisibility(View.VISIBLE);
+                }
+                else{
+                    fab.setEnabled(false);
+                    fab.setVisibility(View.GONE);
+                }
+            }
+        });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainDashboard.this,"success",Toast.LENGTH_LONG)
+                        .show();
+                //openWhatsApp(view);
+                startPayment();
+            }
+        });
         ImageView image = findViewById(R.id.HeaderImage);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String Uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
@@ -100,6 +117,21 @@ public class MainDashboard extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void startPayment() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage("Are you sure to start payment ?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()                 {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(MainDashboard.this,Payment.class));
+                        finish();
+                    }
+                }).setNegativeButton("No", null);
+
+        AlertDialog alert1 = alert.create();
+        alert1.show();
     }
 
     @Override
@@ -158,5 +190,17 @@ public class MainDashboard extends AppCompatActivity {
 
         AlertDialog alert1 = alert.create();
         alert1.show();
+    }
+
+    public void openWhatsApp(View view) {
+        try {
+            String text = "This is a test";// Replace with your message.
+            String toNumber = "918840699736";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + toNumber + "&text=" + text));
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

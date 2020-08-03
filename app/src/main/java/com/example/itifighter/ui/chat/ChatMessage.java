@@ -1,5 +1,7 @@
 package com.example.itifighter.ui.chat;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
@@ -54,6 +56,7 @@ public class ChatMessage {
         this.timestamp = timestamp;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "ChatMessage{" +

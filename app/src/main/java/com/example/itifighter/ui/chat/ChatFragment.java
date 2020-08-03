@@ -105,7 +105,6 @@ public class ChatFragment extends Fragment implements
 
                             }
                             mChatMessageRecyclerAdapter.notifyDataSetChanged();
-
                         }
                     }
                 });
@@ -145,10 +144,9 @@ public class ChatFragment extends Fragment implements
     }
 
     private void initChatroomRecyclerView(){
-        mChatMessageRecyclerAdapter = new ChatMessageRecyclerAdapter(mMessages, new ArrayList<User>(), getContext());
+        mChatMessageRecyclerAdapter = new ChatMessageRecyclerAdapter(mMessages, getContext());
         mChatMessageRecyclerView.setAdapter(mChatMessageRecyclerAdapter);
         mChatMessageRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         mChatMessageRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v,
@@ -170,8 +168,7 @@ public class ChatFragment extends Fragment implements
         });
 
     }
-
-
+    
     private void insertNewMessage(){
         String message = mMessage.getText().toString();
         if(!message.equals("")){
@@ -190,7 +187,6 @@ public class ChatFragment extends Fragment implements
             User user = new User(email,id,name);
             Log.d(TAG, "insertNewMessage: retrieved user client: " + user.toString());
             newChatMessage.setUser(user);
-
             newMessageDoc.set(newChatMessage).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {

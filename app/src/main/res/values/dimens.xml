@@ -15,4 +15,6 @@
     <dimen name="contact_name">15sp</dimen>
     <dimen name="contact_number">12sp</dimen>
 
+    <dimen name="textMedium">18sp</dimen>
+    <dimen name="marginSmall">8dp</dimen>
 </resources>
