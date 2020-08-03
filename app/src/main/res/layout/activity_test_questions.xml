@@ -211,7 +211,6 @@
         android:id="@+id/QuesNavPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center |right"
         android:weightSum="100">
         <ImageView
             android:layout_width="0dp"
@@ -230,14 +229,23 @@
                 android:id="@+id/TestTitle"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:gravity="center |left"
+                android:gravity="center_vertical"
                 android:background="@color/white"
                 android:layout_weight="10"
                 android:text="TITLE HERE"/>
-            <Button
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="90"/>
+                android:layout_weight="90">
+
+
+                <LinearLayout
+                    android:id="@+id/tableLayoutList"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"/>
+
+            </ScrollView>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

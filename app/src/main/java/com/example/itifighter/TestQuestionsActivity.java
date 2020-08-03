@@ -101,6 +101,83 @@ public class TestQuestionsActivity extends AppCompatActivity {
         sub_ans = new int[questions.size()];
         Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
         Arrays.fill(sub_ans, -1);
+
+        int ii=1;
+        while(ii*5<=questions.size()){
+            fillQuesNumTable(quesNavPanel, ii*5);
+            ii++;
+        }
+        ii--;
+        ii *= 5;
+        ii++;
+        final int ii1 = ii;
+        if(ii <= questions.size()){/*
+            LinearLayout ll = quesNavPanel.findViewById(R.id.tableLayoutList);
+            View mTableRow = null;
+            mTableRow = View.inflate(this, R.layout.activity_test_quesnumlist_row, null);
+            Button b1 = mTableRow.findViewById(R.id.B1);
+            b1.setVisibility(View.VISIBLE);
+            b1.setText(ii);
+            b1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    JumpTopQuestion(ii1-1);
+                }
+            });
+            ii++;
+            if(ii <= questions.size()){
+                final int ii2 = ii;
+                Button b2 = mTableRow.findViewById(R.id.B2);
+                b2.setVisibility(View.VISIBLE);
+                b2.setText(ii);
+                b2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        JumpTopQuestion(ii2-1);
+                    }
+                });
+                ii++;
+                if(ii <= questions.size()){
+                    final int ii3 = ii;
+                    Button b3 = mTableRow.findViewById(R.id.B3);
+                    b3.setVisibility(View.VISIBLE);
+                    b3.setText(ii);
+                    b3.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            JumpTopQuestion(ii3-1);
+                        }
+                    });
+                    ii++;
+                    if(ii <= questions.size()){
+                        final int ii4 = ii;
+                        Button b4 = mTableRow.findViewById(R.id.B4);
+                        b4.setVisibility(View.VISIBLE);
+                        b4.setText(ii);
+                        b4.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                JumpTopQuestion(ii4-1);
+                            }
+                        });
+                        ii++;
+                        if(ii <= questions.size()){
+                            final int ii5 = ii;
+                            Button b5 = mTableRow.findViewById(R.id.B5);
+                            b5.setVisibility(View.VISIBLE);
+                            b5.setText(ii);
+                            b5.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    JumpTopQuestion(ii5-1);
+                                }
+                            });
+                        }
+                    }
+                }
+            }*/
+        }
+
         /*my territory ends here.... idk what the hell is beyond here.*/
     }
 
@@ -124,6 +201,70 @@ public class TestQuestionsActivity extends AppCompatActivity {
     /**/
 
     /*my func copied and pasted from overflow*/
+
+    private void fillQuesNumTable(View v, int i) {
+        final int i1 = i-4;
+        final int i2 = i-3;
+        final int i3 = i-2;
+        final int i4 = i-1;
+        final int i5 = i;
+        LinearLayout ll = v.findViewById(R.id.tableLayoutList);
+
+        View mTableRow = null;
+        mTableRow = View.inflate(this, R.layout.activity_test_quesnumlist_row, null);
+
+        Button b1 = mTableRow.findViewById(R.id.B1);
+        Button b2 = mTableRow.findViewById(R.id.B2);
+        Button b3 = mTableRow.findViewById(R.id.B3);
+        Button b4 = mTableRow.findViewById(R.id.B4);
+        Button b5 = mTableRow.findViewById(R.id.B5);
+        /*b1.setVisibility(View.VISIBLE);
+        b2.setVisibility(View.VISIBLE);
+        b3.setVisibility(View.VISIBLE);
+        b4.setVisibility(View.VISIBLE);
+        b5.setVisibility(View.VISIBLE);*/
+
+
+        b1.setText(""+(i-4));
+        b2.setText(""+(i-3));
+        b3.setText(""+(i-2));
+        b4.setText(""+(i-1));
+        b5.setText(""+(i));
+
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JumpTopQuestion(i1-1);
+            }
+        });
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JumpTopQuestion(i1);
+            }
+        });
+        b3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JumpTopQuestion(i2);
+            }
+        });
+        b4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JumpTopQuestion(i3);
+            }
+        });
+        b5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JumpTopQuestion(i4);
+            }
+        });
+
+        ll.addView(mTableRow);
+    }
+
     @Override
     protected void onResume() {
         if(testBegan)
@@ -223,6 +364,9 @@ public class TestQuestionsActivity extends AppCompatActivity {
 
     private void JumpTopQuestion(int question){
         buildQuestion(question);
+        ViewGroup.LayoutParams layoutParams = quesNavPanel.getLayoutParams();
+        layoutParams.width = 0;
+        quesNavPanel.setLayoutParams(layoutParams);
     }
 
     private String[] displayPossibleAnswers(int question) {

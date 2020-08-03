@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="5">
+
+    <Button
+        android:id="@+id/B1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20sp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="11sp"
+        android:layout_weight="1"
+        android:text="Q1"/>
+    <Button
+        android:id="@+id/B2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20sp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="11sp"
+        android:layout_weight="1"
+        android:text="Q2"/>
+    <Button
+        android:id="@+id/B3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20sp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="11sp"
+        android:layout_weight="1"
+        android:text="Q3"/>
+    <Button
+        android:id="@+id/B4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20sp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="11sp"
+        android:layout_weight="1"
+        android:text="Q4"/>
+    <Button
+        android:id="@+id/B5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20sp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="11sp"
+        android:layout_weight="1"
+        android:text="Q4"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
