@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="10dp"
+    android:paddingStart="15dp"
+    android:paddingEnd="60dp"
+    android:clipToPadding="false">
+
+
+    <TextView
+        android:id="@+id/chat_message_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:text="@string/rose"/>
+
+    <TextView
+        android:id="@+id/chat_message_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chat_message_username"
+        android:layout_alignStart="@+id/chat_message_username"
+        android:background="@drawable/their_message"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="16dp"
+        android:elevation="2dp"
+        android:textSize="18sp"
+        android:text="@string/how_are_you_doing_this_is_a_long_message_that_should_probably_wrap"
+        />
+
+    <TextView
+        android:id="@+id/messsage_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chat_message_message"
+        android:layout_alignStart="@+id/chat_message_message"
+        android:layout_marginStart="6sp"
+        android:textSize="10sp"
+        tools:ignore="SmallSp" />
+
+</RelativeLayout>
