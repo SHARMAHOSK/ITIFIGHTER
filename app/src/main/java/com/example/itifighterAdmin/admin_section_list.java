@@ -51,9 +51,17 @@ public class admin_section_list extends AppCompatActivity {
                     case 1:
                         target = "mt";
                         break;
+                    case 2:
+                        target = "lt";
+                        break;
                 }
-                Intent intent = new Intent(admin_section_list.this, admin_subject_list.class);
-                intent.putExtra("section", target);
+                Intent intent;
+                if(target == "lt"){
+                    intent = new Intent(admin_section_list.this, admin_live_test.class);
+                }else{
+                     intent = new Intent(admin_section_list.this, admin_subject_list.class);
+                    intent.putExtra("section", target);
+                }
                 startActivity(intent);
             }
         });

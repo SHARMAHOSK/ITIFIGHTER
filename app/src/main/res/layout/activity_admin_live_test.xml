@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+    <Button
+        android:id="@+id/addBtnLT"
+        android:text="Add New Test"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="addTest"/>
+    <ListView
+        android:id="@+id/listLiveTestsAdmin"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:drawSelectorOnTop="false"
+        />
+</LinearLayout>
+
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.itifighterAdmin.admin_live_test">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Details"
+            android:onClick="EditDetails"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Question List"
+            android:onClick="EditQuesList"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TITLE: "/>
+
+    <TextView
+        android:id="@+id/STime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="START TIME: "/>
+
+    <TextView
+        android:id="@+id/Duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TEST DURATION: "/>
+
+    <TextView
+        android:id="@+id/ltMarks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MARKS: "/>
+
+    <TextView
+        android:id="@+id/NOQs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="NUMBER OF QUESTIONS: "/>
+
+    <TextView
+        android:id="@+id/RTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="RESULT TIME: "/>
+</androidx.appcompat.widget.LinearLayoutCompat>-->

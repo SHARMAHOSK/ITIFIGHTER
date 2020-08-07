@@ -11,8 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".TestInstructionsActivity"></activity>
+        <activity android:name="com.example.itifighterAdmin.admin_add_lt"></activity>
+        <activity android:name="com.example.itifighterAdmin.admin_edit_lt_details" />
+        <activity android:name="com.example.itifighterAdmin.admin_live_test" />
+        <activity android:name=".TestInstructionsActivity" />
         <activity android:name=".TestResultActivity" />
+        <activity android:name=".Payment" />
         <activity
             android:name=".TestQuestionsActivity"
             android:theme="@style/CustomFullScreenStyle" />
