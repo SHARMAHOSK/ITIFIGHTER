@@ -4,13 +4,144 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="50"
+    android:background="@drawable/bg_login"
     tools:context=".TestResultActivity">
 
-    <ListView
+    <LinearLayout
+        android:paddingVertical="100dp"
+        android:layout_weight="25"
+        android:layout_width="150dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_height="0dp"
+        android:weightSum="9"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/marksObtained"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4.25"
+            android:textStyle="bold"
+            android:textSize="55sp"
+            android:text="25"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:background="@color/black"/>
+        <TextView
+            android:id="@+id/totalMarks"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4.25"
+            android:textStyle="bold"
+            android:textSize="55sp"
+            android:text="90"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15"
+        android:weightSum="3"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1.5"
+                android:textStyle="bold|italic"
+                android:textSize="20dp"
+                android:text="Total correct answers"/>
+            <TextView
+                android:id="@+id/TCA"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textStyle="bold|italic"
+                android:textSize="20dp"
+                android:layout_weight="0.5"
+                android:text="25"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1.5"
+                android:textStyle="bold|italic"
+                android:textSize="20dp"
+                android:text="Total wrong answers"/>
+            <TextView
+                android:id="@+id/TRA"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="0.5"
+                android:textStyle="bold|italic"
+                android:textSize="20sp"
+                android:text="47"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1.5"
+                android:textStyle="bold|italic"
+                android:textSize="20sp"
+                android:text="Total skipped questions"/>
+            <TextView
+                android:id="@+id/TSQ"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="0.5"
+                android:textStyle="bold|italic"
+                android:textSize="20sp"
+                android:text="17"/>
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:text="CONTINUE"
+        android:background="@color/startblue"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:onClick="FinishExam"/>
+
+    <!--<ListView
+        android:layout_weight="50"
         android:id="@+id/mt_result_list"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="0dp"
         android:drawSelectorOnTop="false"
         >
-    </ListView>
+    </ListView>-->
 </LinearLayout>

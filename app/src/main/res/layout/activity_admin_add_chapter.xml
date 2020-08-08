@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="150"
+    android:background="@drawable/bg_login"
     tools:context="com.example.itifighterAdmin.admin_add_chapter">
 
     <EditText
         android:id="@+id/NewChapterName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_height="0dp"
+        android:layout_weight="20"
         android:background="#00000000"
         android:hint="chapter name"
         android:textColor="#FFFFFF"
@@ -20,9 +23,8 @@
     <EditText
         android:id="@+id/NewChapterDesc"
         android:layout_width="match_parent"
-        android:layout_height="194dp"
-        android:layout_below="@+id/NewChapterName"
-        android:layout_marginTop="28dp"
+        android:layout_height="0dp"
+        android:layout_weight="20"
         android:background="#00000000"
         android:hint="chapter desc"
         android:textColor="#FFFFFF"
@@ -32,11 +34,11 @@
     <EditText
         android:id="@+id/NewChapterPrice"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/NewChapterDesc"
-        android:layout_marginTop="28dp"
+        android:layout_height="0dp"
+        android:layout_weight="20"
         android:background="#00000000"
         android:hint="chapter price"
+        android:inputType="numberDecimal"
         android:textColor="#FFFFFF"
         android:textColorHint="#C0C0C0"
         android:textSize="20sp" />
@@ -44,20 +46,53 @@
     <EditText
         android:id="@+id/NewChapterDiscount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/NewChapterPrice"
-        android:layout_marginTop="28dp"
+        android:layout_height="0dp"
+        android:layout_weight="20"
         android:background="#00000000"
         android:hint="chapter discount"
+        android:inputType="numberDecimal"
         android:textColor="#FFFFFF"
         android:textColorHint="#C0C0C0"
         android:textSize="20sp" />
 
+    <EditText
+        android:id="@+id/NewChapterMPQ"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20"
+        android:background="#00000000"
+        android:hint="marks per question"
+        android:inputType="number"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#C0C0C0"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/NewChapterTimer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20"
+        android:background="#00000000"
+        android:hint="test duration(in minutes)"
+        android:inputType="number"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#C0C0C0"
+        android:textSize="20sp" />
+
+    <ImageButton
+        android:id="@+id/AddChapterImage"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:layout_gravity="center"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:onClick="PickNewChapImage"/>
+
     <Button
         android:id="@+id/SaveNewChapter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/NewChapterDiscount"
-        android:text="Button"
+        android:layout_height="0dp"
+        android:layout_weight="20"
+        android:text="SAVE NEW CHAPTER"
         android:onClick="SaveNewChapter"/>
-</RelativeLayout>
+</LinearLayout>

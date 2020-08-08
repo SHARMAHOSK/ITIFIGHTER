@@ -1,7 +1,9 @@
 package com.example.itifighter;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -111,13 +113,13 @@ public class TestQuestionsActivity extends AppCompatActivity {
         ii *= 5;
         ii++;
         final int ii1 = ii;
-        if(ii <= questions.size()){/*
+        if(ii <= questions.size()){
             LinearLayout ll = quesNavPanel.findViewById(R.id.tableLayoutList);
             View mTableRow = null;
             mTableRow = View.inflate(this, R.layout.activity_test_quesnumlist_row, null);
             Button b1 = mTableRow.findViewById(R.id.B1);
             b1.setVisibility(View.VISIBLE);
-            b1.setText(ii);
+            b1.setText(""+ii);
             b1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -129,7 +131,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 final int ii2 = ii;
                 Button b2 = mTableRow.findViewById(R.id.B2);
                 b2.setVisibility(View.VISIBLE);
-                b2.setText(ii);
+                b2.setText(""+ii);
                 b2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -141,7 +143,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                     final int ii3 = ii;
                     Button b3 = mTableRow.findViewById(R.id.B3);
                     b3.setVisibility(View.VISIBLE);
-                    b3.setText(ii);
+                    b3.setText(""+ii);
                     b3.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -153,7 +155,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                         final int ii4 = ii;
                         Button b4 = mTableRow.findViewById(R.id.B4);
                         b4.setVisibility(View.VISIBLE);
-                        b4.setText(ii);
+                        b4.setText(""+ii);
                         b4.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -165,7 +167,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                             final int ii5 = ii;
                             Button b5 = mTableRow.findViewById(R.id.B5);
                             b5.setVisibility(View.VISIBLE);
-                            b5.setText(ii);
+                            b5.setText(""+ii);
                             b5.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -175,7 +177,8 @@ public class TestQuestionsActivity extends AppCompatActivity {
                         }
                     }
                 }
-            }*/
+            }
+            ll.addView(mTableRow);
         }
 
         /*my territory ends here.... idk what the hell is beyond here.*/
@@ -218,11 +221,11 @@ public class TestQuestionsActivity extends AppCompatActivity {
         Button b3 = mTableRow.findViewById(R.id.B3);
         Button b4 = mTableRow.findViewById(R.id.B4);
         Button b5 = mTableRow.findViewById(R.id.B5);
-        /*b1.setVisibility(View.VISIBLE);
+        b1.setVisibility(View.VISIBLE);
         b2.setVisibility(View.VISIBLE);
         b3.setVisibility(View.VISIBLE);
         b4.setVisibility(View.VISIBLE);
-        b5.setVisibility(View.VISIBLE);*/
+        b5.setVisibility(View.VISIBLE);
 
 
         b1.setText(""+(i-4));
@@ -263,6 +266,30 @@ public class TestQuestionsActivity extends AppCompatActivity {
         });
 
         ll.addView(mTableRow);
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setMessage("Do you want to Quit?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //if user pressed "yes", then he is allowed to exit from application
+                //startActivity(new Intent(TestQuestionsActivity.this, MainDashboard.class));
+                finish();
+            }
+        });
+        builder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //if user select "No", just cancel this dialog and continue with app
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert=builder.create();
+        alert.show();
     }
 
     @Override
@@ -364,6 +391,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
 
     private void JumpTopQuestion(int question){
         buildQuestion(question);
+        currentQues = question;
         ViewGroup.LayoutParams layoutParams = quesNavPanel.getLayoutParams();
         layoutParams.width = 0;
         quesNavPanel.setLayoutParams(layoutParams);
@@ -403,10 +431,28 @@ public class TestQuestionsActivity extends AppCompatActivity {
         if(++currentQues >= questions.size()){
             //confirmation box before submission.
             //submit test.
-            Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
-            intent.putExtra("sub_ans", sub_ans);
-            intent.putExtra("questions", (Serializable) questions);
-            startActivity(intent);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            builder.setMessage("Do you want to Submit?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
+                    intent.putExtra("sub_ans", sub_ans);
+                    intent.putExtra("questions", (Serializable) questions);
+                    startActivity(intent);
+                }
+            });
+            builder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //if user select "No", just cancel this dialog and continue with app
+                    dialog.cancel();
+                }
+            });
+            AlertDialog alert=builder.create();
+            alert.show();
         }else{
             if (currentQues == questions.size() - 1){
                 submitBtn.setVisibility(View.VISIBLE);
