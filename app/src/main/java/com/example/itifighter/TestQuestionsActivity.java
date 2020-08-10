@@ -21,6 +21,7 @@ import com.example.itifighterAdmin.Question;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 public class TestQuestionsActivity extends AppCompatActivity {
@@ -31,6 +32,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
     boolean testBegan = false;
     int _mpq;   //marks per question
     int timer;  //time in seconds
+    long ltt;
     int currentApiVersion;
     TextView questionText, timerText, quesNumText;
     Button submitBtn, nextBtn, skipBtn;
@@ -98,7 +100,12 @@ public class TestQuestionsActivity extends AppCompatActivity {
 
         questions = (List<Question>) getIntent().getSerializableExtra("questions");  //= question list from prev activity
         _mpq = getIntent().getIntExtra("_mpq", 1);
-        timer = getIntent().getIntExtra("timer", 60);   //default a min.
+
+        if(getIntent().getStringExtra("section").equals("lt")){
+            ltt = (getIntent().getLongExtra("timer", 0)-Calendar.getInstance().getTimeInMillis());
+        }else{
+            timer = getIntent().getIntExtra("timer", 60)*60;   //default an hour.
+        }
 
         sub_ans = new int[questions.size()];
         Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
@@ -300,7 +307,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         super.onResume();
         //build our first question
         buildQuestion(0);
-        new CountDownTimer(timer * 60 * 1000, 1000) {
+        new CountDownTimer(getIntent().getStringExtra("section").equals("lt") ? ltt : (timer * 60 * 1000), 1000) {
 
             public void onTick(long millisUntilFinished) {
                 long secs = millisUntilFinished / 1000;

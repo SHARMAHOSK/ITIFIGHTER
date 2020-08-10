@@ -2,51 +2,32 @@ package com.example.itifighterAdmin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.itifighter.R;
-import com.example.itifighterAdmin.pp.AdminUpdatePpPdfs;
-import com.example.itifighterAdmin.pp.admin_pdf_list;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
-import jxl.read.biff.BiffException;
 
 public class admin_upload_excel extends AppCompatActivity implements View.OnClickListener {
 
@@ -76,18 +57,27 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
         count = getIntent().getIntExtra("count", -1);
         if(count < 0){
             Toast.makeText(this, "go back", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(admin_upload_excel.this, admin_mockChapQoes_list.class);
-            intent.putExtra("subject", targetSubject);
-            intent.putExtra("section", targetSection);
-            intent.putExtra("chapter", targetChapter);
+            Intent intent;
+            if(targetSection.equals("lt")){
+                intent = new Intent(admin_upload_excel.this, admin_live_test.class);
+            }else{
+                intent = new Intent(admin_upload_excel.this, admin_mockChapQoes_list.class);
+                intent.putExtra("subject", targetSubject);
+                intent.putExtra("section", targetSection);
+                intent.putExtra("chapter", targetChapter);
+            }
             startActivity(intent);
             finish();
         }
 
         //getting firebase objects
         mStorageReference = FirebaseStorage.getInstance().getReference();
-        mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(targetChapter).collection("question");
+        if(targetSection.equals("lt")){
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("question");
+        }else{
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(targetChapter).collection("question");
 
+        }
         //getting the views
         textViewStatus = (TextView) findViewById(R.id.excelTextViewStatus);
         progressBar = (ProgressBar) findViewById(R.id.excelProgressbar);
@@ -125,13 +115,7 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
             //if a file is selected
             if (data.getData() != null) {
                 //uploading the file
-                try {
-                    parseFile(data.getData());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (BiffException e) {
-                    e.printStackTrace();
-                }
+                parseFile(data.getData());
             }else{
                 Toast.makeText(this, "No file chosen", Toast.LENGTH_SHORT).show();
             }
@@ -139,7 +123,7 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
     }
 
     //this method is parsing the file
-    private void parseFile(Uri data) throws IOException, BiffException {
+    private void parseFile(Uri data) {
         progressBar.setVisibility(View.VISIBLE);
         /*final String pdfName = ""+System.currentTimeMillis()+".pdf";
         StorageReference sRef = mStorageReference.child(Constants.STORAGE_PATH_UPLOADS + pdfName);
@@ -184,79 +168,82 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
                 });*/
 
         questions = new ArrayList<>();
-        InputStream fis = null;
-
-        File temp= File.createTempFile("tempExcel",".xls",admin_upload_excel.this.getCacheDir());
-
-        OutputStream out = null;
-        try{
-            fis = getContentResolver().openInputStream(data);;
-            /*
-            out = new FileOutputStream(temp);
-            copyFile(fis, out);
-            fis.close();
-            out.flush();
-            out.close();
-            out = null;*/
+        try (InputStream fis = getContentResolver().openInputStream(data)) {
             WorkbookSettings ws = new WorkbookSettings();
             ws.setGCDisabled(true);
+            assert fis != null;
             workbook = Workbook.getWorkbook(fis);
 
             Sheet sheet = workbook.getSheet(0);
-            for(int i =0; i < sheet.getRows(); i++){
+            for (int i = 0; i < sheet.getRows(); i++) {
                 Cell[] row = sheet.getRow(i);
-                Toast.makeText(this, "rows: "+sheet.getRows()+" cols: "+sheet.getRow(0).length, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "rows: " + sheet.getRows() + " cols: " + sheet.getRow(0).length, Toast.LENGTH_SHORT).show();
                 //make class for question module and add properties like new Question(row[0].getContents, row[1].getContents, ...);
-                if(row.length > 5)
-                questions.add(new Question(row[0].getContents(), row[1].getContents(), row[2].getContents(), row[3].getContents(), row[4].getContents(), row[5].getContents()));
+                if (row.length > 5)
+                    questions.add(new Question(row[0].getContents(), row[1].getContents(), row[2].getContents(), row[3].getContents(), row[4].getContents(), row[5].getContents()));
             }
 
-            WriteBatch batch = FirebaseFirestore.getInstance().batch();
-
-            for (Question ques: questions) {
-                DocumentReference nycRef = mDatabaseReference.document("Question "+ (++count));
-                batch.set(nycRef, ques);
+            if(targetSubject.equals("lt")){
+                mDatabaseReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            WriteBatch batch2 = FirebaseFirestore.getInstance().batch();
+                            for(QueryDocumentSnapshot doc : Objects.requireNonNull(task.getResult())){
+                                batch2.delete(doc.getReference());
+                            }
+                            batch2.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    count = 0;
+                                    BatchUploadQuestions();
+                                }
+                            });
+                        }
+                    }
+                });
+            }else{
+                BatchUploadQuestions();
             }
-
-            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    //Toast.makeText(admin_upload_excel.this, "questions added successfully", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(admin_upload_excel.this, admin_mockChapQoes_list.class);
-                    intent.putExtra("subject", targetSubject);
-                    intent.putExtra("section", targetSection);
-                    intent.putExtra("chapter", targetChapter);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "some error occurred while parsing.", Toast.LENGTH_SHORT).show();
-        }finally {
-            if(fis != null){
-                fis.close();
-            }
         }
         
         
+    }
+
+    private void BatchUploadQuestions() {
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+
+        for (Question ques : questions) {
+            DocumentReference nycRef = mDatabaseReference.document("Question " + (++count));
+            batch.set(nycRef, ques);
+        }
+
+        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(admin_upload_excel.this, "questions added successfully", Toast.LENGTH_LONG).show();
+                Intent intent;
+                if(targetSection.equals("lt")){
+                    intent = new Intent(admin_upload_excel.this, admin_live_test.class);
+                }else{
+                    intent = new Intent(admin_upload_excel.this, admin_mockChapQoes_list.class);
+                    intent.putExtra("subject", targetSubject);
+                    intent.putExtra("section", targetSection);
+                    intent.putExtra("chapter", targetChapter);
+                }
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.buttonUploadExcel:
-                getExcel();
-                break;
-        }
-    }
-
-    private void copyFile(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int read;
-        while((read = in.read(buffer)) != -1){
-            out.write(buffer, 0, read);
+        if (view.getId() == R.id.buttonUploadExcel) {
+            getExcel();
         }
     }
 }

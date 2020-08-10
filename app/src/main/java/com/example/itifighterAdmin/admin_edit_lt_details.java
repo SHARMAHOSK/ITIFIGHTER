@@ -210,10 +210,9 @@ public class admin_edit_lt_details extends AppCompatActivity {
                 //in case of today's date, check if stime is before current...
                 //check if rtime is earlier than stime...
 
-                docRef.set(new TLDetails(title.getText().toString().trim(), sTime, rTime,
-                        Integer.parseInt(tDuration.getText().toString().trim()),
-                        Integer.parseInt(tMarks.getText().toString().trim()),
-                        Integer.parseInt(tNOQs.getText().toString().trim()))).addOnSuccessListener(new OnSuccessListener<Void>() {
+                docRef.set(new TLDetails(Integer.parseInt(tNOQs.getText().toString().trim()), "false", Integer.parseInt(tDuration.getText().toString().trim()),
+                        Integer.parseInt(tMarks.getText().toString().trim()), rTime, sTime,
+                        title.getText().toString().trim())).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(admin_edit_lt_details.this, "live test details updated.", Toast.LENGTH_SHORT).show();
@@ -231,61 +230,21 @@ public class admin_edit_lt_details extends AppCompatActivity {
 }
 
 class TLDetails{
-    public String title;
-    public long sTime;
-    public long rTime;
-    public int duration;
-    public int marks;
     public int NOQs;
     public String TestInHistory;
+    public int duration;
+    public int marks;
+    public long rTime;
+    public long sTime;
+    public String title;
 
-    public TLDetails(String title, long sTime, long rTime, int duration, int marks, int NOQs) {
-        this.title = title;
-        this.sTime = sTime;
-        this.rTime = rTime;
-        this.duration = duration;
-        this.marks = marks;
+    public TLDetails(int NOQs, String testInHistory, int duration, int marks, long rTime, long sTime, String title) {
         this.NOQs = NOQs;
-        this.TestInHistory = "false";
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public long getsTime() {
-        return sTime;
-    }
-
-    public void setsTime(long sTime) {
-        this.sTime = sTime;
-    }
-
-    public long getrTime() {
-        return rTime;
-    }
-
-    public void setrTime(long rTime) {
-        this.rTime = rTime;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
+        TestInHistory = testInHistory;
         this.duration = duration;
-    }
-
-    public int getMarks() {
-        return marks;
-    }
-
-    public void setMarks(int marks) {
         this.marks = marks;
+        this.rTime = rTime;
+        this.sTime = sTime;
+        this.title = title;
     }
 }

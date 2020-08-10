@@ -4,15 +4,58 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-    <Button
-        android:id="@+id/addBtnLT"
-        android:text="Add New Test"
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/addBtnLT"
+            android:text="Add New Test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="addTest"/>
+        <Button
+            android:id="@+id/uploadBtnLT"
+            android:text="Update Test Questions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:onClick="EditQuesList"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/UTD"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="addTest"/>
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/uTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/uDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/uMPQ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/uSTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/uRTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="EditDetails"/>
+    </LinearLayout>
     <ListView
         android:id="@+id/listLiveTestsAdmin"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:drawSelectorOnTop="false"
         />

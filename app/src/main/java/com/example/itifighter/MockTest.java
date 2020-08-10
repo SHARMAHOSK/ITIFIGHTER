@@ -222,21 +222,13 @@ public class MockTest extends Fragment {
                     /*examList = new ArrayList<>();*/
                     questions = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        /*examList.add(document.getString("Name"));*/
-                                            /*Exams.add(new CustomListItem(document.getString("Name"),
-                                        document.getString("Description"),
-                                        document.getDouble("Price"),
-                                        document.getString("Image"),
-                                        *//*getExamCount(document.getId())*//*5));*/
-                        /*Exams.add(new CustomListItem(document.getString("Name"),
-                                "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
-                                0.00, "sample_fitter_background", 4));*/
                         questions.add(new Question(document.getString("question"), document.getString("option1"),
                                 document.getString("option2"), document.getString("option3"),
                                 document.getString("option4"), document.getString("answer")));
                     }
 
                     Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
+                    myIntent.putExtra("section", "mt");
                     myIntent.putExtra("questions", (Serializable) questions);
                     myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
                     myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));

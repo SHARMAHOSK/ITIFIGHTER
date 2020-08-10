@@ -32,7 +32,11 @@ public class TestInstructionsActivity extends AppCompatActivity {
 
         questions = (List<Question>) getIntent().getSerializableExtra("questions");  //= question list from prev activity
         _mpq = getIntent().getIntExtra("_mpq", 1);
-        timer = getIntent().getIntExtra("timer", 60);   //default a min.
+        if(getIntent().getStringExtra("section").equals("lt")){
+            timer = getIntent().getIntExtra("duration", 60);   //value comes in milliseconds for lt
+        }else{
+            timer = getIntent().getIntExtra("timer", 60);   //default a min.
+        }
 
         tQues = findViewById(R.id.TQues);
         tMarks = findViewById(R.id.TMarks);
@@ -79,8 +83,13 @@ public class TestInstructionsActivity extends AppCompatActivity {
         if(insCB.isChecked()){
             Intent myIntent = new Intent(TestInstructionsActivity.this, TestQuestionsActivity.class);
             myIntent.putExtra("questions", (Serializable) questions);
-            myIntent.putExtra("_mpq", 2);
-            myIntent.putExtra("timer", 45);
+            myIntent.putExtra("_mpq", _mpq);
+            if(getIntent().getStringExtra("section").equals("lt")){
+                myIntent.putExtra("section", "lt");
+                myIntent.putExtra("timer", getIntent().getLongExtra("timer", 0));
+            }else{
+                myIntent.putExtra("timer", timer);
+            }
             startActivity(myIntent);
         }else{
             Toast.makeText(this, "Please agree to the terms and conditions in order to proceed with test", Toast.LENGTH_SHORT).show();

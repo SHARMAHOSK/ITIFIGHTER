@@ -25,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 /*
 
 public class admin_live_test extends AppCompatActivity {
@@ -97,18 +98,18 @@ public class admin_live_test extends AppCompatActivity {
     }
 */
 
-
-
 public class admin_live_test extends AppCompatActivity {
 
     TextView title, sTime, tDuration, rTime, tMarks, nOQs;
     boolean newTestAdded = false;
     ArrayList<String> tests = new ArrayList<>();
     ArrayList<String> testIds = new ArrayList<>();
-    int count = -1;
 
+    int count = -1;
+    TLDetails upcomingTest = null;
     ArrayAdapter<String> adapter;
     ListView testListView;
+    String upcomingID;
 
     CollectionReference docRef;
 
@@ -126,8 +127,33 @@ public class admin_live_test extends AppCompatActivity {
                 if(task.isSuccessful()){
                     tests = new ArrayList<>();
                     for(QueryDocumentSnapshot document : task.getResult()){
-                        tests.add(""+document.getString("title"));
-                        testIds.add(""+document.getId());
+                        if(document.getString("TestInHistory").equals("true")){
+                            tests.add(""+document.getString("title"));
+                            testIds.add(""+document.getId());
+                        }else{
+                            upcomingTest = new TLDetails(Objects.requireNonNull(document.getLong("NOQs")).intValue(),
+                                    document.getString("TestInHistory"),
+                                    Objects.requireNonNull(document.getLong("duration")).intValue(),
+                                    Objects.requireNonNull(document.getLong("marks")).intValue(),
+                                    document.getLong("rTime"),
+                                    document.getLong("sTime"),
+                                    document.getString("title"));
+                            findViewById(R.id.UTD).setVisibility(View.VISIBLE);
+                            TextView title, duration, mpq, sTime, rTime;
+                            title = findViewById(R.id.uTitle);
+                            duration = findViewById(R.id.uDuration);
+                            mpq = findViewById(R.id.uMPQ);
+                            sTime = findViewById(R.id.uSTime);
+                            rTime = findViewById(R.id.uRTime);
+                            title.setText("TITLE: "+upcomingTest.title);
+                            duration.setText("DURATION: "+upcomingTest.duration);
+                            mpq.setText("MARKS PER QUESTION: "+upcomingTest.marks);
+                            sTime.setText("TEST START TIME: "+ upcomingTest.sTime);
+                            rTime.setText("RESULT DECLARATION TIME: "+upcomingTest.rTime);
+                            upcomingID = document.getId();
+                        }
+                        findViewById(R.id.addBtnLT).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.uploadBtnLT).setVisibility(View.VISIBLE);
                     }
                     count = tests.size();
                     adapter = new ArrayAdapter<String>(admin_live_test.this, android.R.layout.simple_list_item_1, tests);
@@ -138,33 +164,44 @@ public class admin_live_test extends AppCompatActivity {
             }
         });
 
-        testListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*testListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 EditDetails(testIds.get(position));
             }
-        });
+        });*/
     }
 
-    public void EditDetails(String id) {
+    public void EditDetails(View view) {
         if(count < 0){
             Toast.makeText(this, "loading data, wait...", Toast.LENGTH_SHORT).show();
             return;
         }else{
             Intent intent = new Intent(admin_live_test.this, admin_edit_lt_details.class);
-            intent.putExtra("test", id);
+            intent.putExtra("test", upcomingID);
             startActivity(intent);
         }
     }
 
     public void addTest(View v) {
-        if(count < 0)
+        if(count < 0 || upcomingTest != null){
+            Toast.makeText(this, "test already created. cannot add more than 1 at a time.", Toast.LENGTH_SHORT).show();
             return;
+        }
         Intent intent = new Intent(admin_live_test.this, admin_add_lt.class);
         intent.putExtra("count", count);
         startActivity(intent);
     }
 
     public void EditQuesList(View view) {
+        if(upcomingTest == null || count < 0){
+            Toast.makeText(this, "please create a test first...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //load upload excel panel and set destination to /section/lt/.
+        Intent intent = new Intent(admin_live_test.this, admin_upload_excel.class);
+        intent.putExtra("section", "lt");
+        intent.putExtra("count", count);
+        startActivity(intent);
     }
 }

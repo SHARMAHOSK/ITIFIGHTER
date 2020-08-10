@@ -163,11 +163,8 @@ public class admin_add_lt extends AppCompatActivity {
             //check if date is before today...
             //in case of today's date, check if stime is before current...
             //check if rtime is earlier than stime...
-
-            docRef.set(new TLDetails(title.getText().toString().trim(), sTime, rTime,
-                    Integer.parseInt(tDuration.getText().toString().trim()),
-                    Integer.parseInt(tMarks.getText().toString().trim()),
-                    Integer.parseInt(tNOQs.getText().toString().trim()))).addOnSuccessListener(new OnSuccessListener<Void>() {
+            docRef.set(new TLDetails(Integer.parseInt(tNOQs.getText().toString().trim()), "false", Integer.parseInt(tDuration.getText().toString().trim()),
+                    Integer.parseInt(tMarks.getText().toString().trim()), rTime, sTime, title.getText().toString().trim())).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Toast.makeText(admin_add_lt.this, "live test details updated.", Toast.LENGTH_SHORT).show();
