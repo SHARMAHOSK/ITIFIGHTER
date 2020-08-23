@@ -11,16 +11,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".TestInstructionsActivity" />
+        <activity android:name="com.example.itifighterAdmin.admin_add_lt"></activity>
+        <activity android:name="com.example.itifighterAdmin.admin_edit_lt_details" />
+        <activity android:name="com.example.itifighterAdmin.admin_live_test" />
+        <activity android:name=".TestInstructionsActivity"
+            android:noHistory="true"/>
         <activity android:name=".TestResultActivity" />
+        <activity android:name=".Payment" />
         <activity
             android:name=".TestQuestionsActivity"
-            android:theme="@style/CustomFullScreenStyle" />
+            android:theme="@style/CustomFullScreenStyle"
+            android:noHistory="true"/>
         <activity android:name="com.example.itifighterAdmin.admin_upload_excel" />
         <activity android:name="com.example.itifighterAdmin.admin_mockChapQoes_list" />
         <activity
-            android:name="com.example.itifighterAdmin.admin_add_chapter"
-            android:theme="@style/Theme.AppCompat.Dialog" />
+            android:name="com.example.itifighterAdmin.admin_add_chapter" />
         <activity android:name="com.example.itifighterAdmin.admin_chapter_list" />
         <activity
             android:name="com.example.itifighterAdmin.admin_item_options"
@@ -52,7 +57,6 @@
         </activity>
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET"
-        tools:ignore="ManifestOrder" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

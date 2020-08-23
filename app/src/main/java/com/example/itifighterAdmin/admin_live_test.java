@@ -1,30 +1,29 @@
 package com.example.itifighterAdmin;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.itifighter.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 /*
 
@@ -99,17 +98,13 @@ public class admin_live_test extends AppCompatActivity {
 */
 
 public class admin_live_test extends AppCompatActivity {
-
-    TextView title, sTime, tDuration, rTime, tMarks, nOQs;
-    boolean newTestAdded = false;
     ArrayList<String> tests = new ArrayList<>();
-    ArrayList<String> testIds = new ArrayList<>();
 
     int count = -1;
-    TLDetails upcomingTest = null;
-    ArrayAdapter<String> adapter;
-    ListView testListView;
-    String upcomingID;
+    ArrayList<TLDetails> upcomingTest = new ArrayList<>();
+    ArrayAdapter<String> adapter, adapter2;
+    ListView testListView, testListView2;
+    ArrayList<String> upcomingID = new ArrayList<>();
 
     CollectionReference docRef;
 
@@ -117,9 +112,13 @@ public class admin_live_test extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_live_test);
-        testListView = findViewById(R.id.listLiveTestsAdmin);
+        testListView = findViewById(R.id.listPastLiveTestsAdmin);
+        testListView2 = findViewById(R.id.listUCLiveTestsAdmin);
 
-        docRef = FirebaseFirestore.getInstance().collection("section").document("lt").collection("tests");
+        //docRef = FirebaseFirestore.getInstance().collection("section").document("lt").collection("tests");
+        docRef = FirebaseFirestore.getInstance().collection("section").document("lt")
+                .collection("branch").document(""+getIntent().getStringExtra("subject"))
+                .collection("tests");
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -129,35 +128,45 @@ public class admin_live_test extends AppCompatActivity {
                     for(QueryDocumentSnapshot document : task.getResult()){
                         if(document.getString("TestInHistory").equals("true")){
                             tests.add(""+document.getString("title"));
-                            testIds.add(""+document.getId());
                         }else{
-                            upcomingTest = new TLDetails(Objects.requireNonNull(document.getLong("NOQs")).intValue(),
-                                    document.getString("TestInHistory"),
-                                    Objects.requireNonNull(document.getLong("duration")).intValue(),
-                                    Objects.requireNonNull(document.getLong("marks")).intValue(),
-                                    document.getLong("rTime"),
-                                    document.getLong("sTime"),
-                                    document.getString("title"));
-                            findViewById(R.id.UTD).setVisibility(View.VISIBLE);
-                            TextView title, duration, mpq, sTime, rTime;
-                            title = findViewById(R.id.uTitle);
-                            duration = findViewById(R.id.uDuration);
-                            mpq = findViewById(R.id.uMPQ);
-                            sTime = findViewById(R.id.uSTime);
-                            rTime = findViewById(R.id.uRTime);
-                            title.setText("TITLE: "+upcomingTest.title);
-                            duration.setText("DURATION: "+upcomingTest.duration);
-                            mpq.setText("MARKS PER QUESTION: "+upcomingTest.marks);
-                            sTime.setText("TEST START TIME: "+ upcomingTest.sTime);
-                            rTime.setText("RESULT DECLARATION TIME: "+upcomingTest.rTime);
-                            upcomingID = document.getId();
+                            if(document.getLong("rTime") < Calendar.getInstance().getTimeInMillis()){
+                                //update test in history to "true"
+                                Map<String, Object> upd = new HashMap<>();
+                                final String tempTitle = document.getString("title");
+                                upd.put("TestInHistory", "true");
+                                docRef.document(document.getId()).update(upd).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            tests.add(""+tempTitle);
+                                        }
+                                    }
+                                });
+                            }else{
+                                upcomingTest.add(new TLDetails(Objects.requireNonNull(document.getLong("NOQs")).intValue(),
+                                        document.getString("TestInHistory"),
+                                        Objects.requireNonNull(document.getLong("duration")).intValue(),
+                                        Objects.requireNonNull(document.getLong("marks")).intValue(),
+                                        document.getLong("rTime"),
+                                        document.getLong("sTime"),
+                                        document.getString("title")));
+                                upcomingID.add(document.getId());
+                            }
                         }
-                        findViewById(R.id.addBtnLT).setVisibility(View.INVISIBLE);
-                        findViewById(R.id.uploadBtnLT).setVisibility(View.VISIBLE);
+                        //findViewById(R.id.addBtnLT).setVisibility(View.INVISIBLE);
+                        //findViewById(R.id.uploadBtnLT).setVisibility(View.VISIBLE);
                     }
-                    count = tests.size();
+                    count = tests.size() + upcomingTest.size();
                     adapter = new ArrayAdapter<String>(admin_live_test.this, android.R.layout.simple_list_item_1, tests);
                     testListView.setAdapter(adapter);
+                    adapter2 = new ArrayAdapter<String>(admin_live_test.this, android.R.layout.simple_list_item_1, upcomingID);
+                    testListView2.setAdapter(adapter2);
+                    testListView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            EditQuesList(i);
+                        }
+                    });
                 }else{
                     //Log.d(TAG,"error getting tests: ", task.getException());
                 }
@@ -179,29 +188,36 @@ public class admin_live_test extends AppCompatActivity {
         }else{
             Intent intent = new Intent(admin_live_test.this, admin_edit_lt_details.class);
             intent.putExtra("test", upcomingID);
+            intent.putExtra("subject", getIntent().getStringExtra("subject"));
             startActivity(intent);
         }
     }
 
     public void addTest(View v) {
-        if(count < 0 || upcomingTest != null){
-            Toast.makeText(this, "test already created. cannot add more than 1 at a time.", Toast.LENGTH_SHORT).show();
+        if(count < 0){
+            Toast.makeText(this, "data load in progress....", Toast.LENGTH_SHORT).show();
             return;
         }
         Intent intent = new Intent(admin_live_test.this, admin_add_lt.class);
         intent.putExtra("count", count);
+        Toast.makeText(this, "passing uts: "+upcomingTest.size(), Toast.LENGTH_SHORT).show();
+        intent.putExtra("upcoming", (Serializable) upcomingTest);
+        intent.putExtra("subject", getIntent().getStringExtra("subject"));
         startActivity(intent);
     }
 
-    public void EditQuesList(View view) {
-        if(upcomingTest == null || count < 0){
+    public void EditQuesList(int pos) {
+        if(upcomingTest.size() <= 0 || count < 0){
             Toast.makeText(this, "please create a test first...", Toast.LENGTH_SHORT).show();
             return;
         }
+        Toast.makeText(this, "selected test id: "+upcomingID.get(pos), Toast.LENGTH_SHORT).show();
         //load upload excel panel and set destination to /section/lt/.
         Intent intent = new Intent(admin_live_test.this, admin_upload_excel.class);
         intent.putExtra("section", "lt");
-        intent.putExtra("count", count);
+        intent.putExtra("count", pos);
+        intent.putExtra("tid", upcomingID.get(pos));
+        intent.putExtra("subject", getIntent().getStringExtra("subject"));
         startActivity(intent);
     }
 }

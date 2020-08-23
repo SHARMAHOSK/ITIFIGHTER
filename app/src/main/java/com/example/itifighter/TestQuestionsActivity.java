@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.itifighterAdmin.Question;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -32,12 +33,12 @@ public class TestQuestionsActivity extends AppCompatActivity {
     boolean testBegan = false;
     int _mpq;   //marks per question
     int timer;  //time in seconds
-    long ltt;
     int currentApiVersion;
     TextView questionText, timerText, quesNumText;
     Button submitBtn, nextBtn, skipBtn;
     int picked_ans = -1;
     LinearLayout quesNavPanel;
+    ArrayList<Button> quesBtns;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +88,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         quesNumText = findViewById(R.id.QuesNum);
         timerText = findViewById(R.id.TestTimer);
         quesNavPanel = findViewById(R.id.QuesNavPanel);
-
+        quesBtns = new ArrayList<>();
         ViewGroup.LayoutParams layoutParams = quesNavPanel.getLayoutParams();
         layoutParams.width = 0;
         quesNavPanel.setLayoutParams(layoutParams);
@@ -102,9 +103,8 @@ public class TestQuestionsActivity extends AppCompatActivity {
         _mpq = getIntent().getIntExtra("_mpq", 1);
 
         if(getIntent().getStringExtra("section").equals("lt")){
-            ltt = (getIntent().getLongExtra("timer", 0)-Calendar.getInstance().getTimeInMillis());
         }else{
-            timer = getIntent().getIntExtra("timer", 60)*60;   //default an hour.
+            timer = getIntent().getIntExtra("timer", 60)/**60*/;   //default an hour.
         }
 
         sub_ans = new int[questions.size()];
@@ -273,6 +273,11 @@ public class TestQuestionsActivity extends AppCompatActivity {
         });
 
         ll.addView(mTableRow);
+        quesBtns.add(b1);
+        quesBtns.add(b2);
+        quesBtns.add(b3);
+        quesBtns.add(b4);
+        quesBtns.add(b5);
     }
 
     @Override
@@ -307,7 +312,9 @@ public class TestQuestionsActivity extends AppCompatActivity {
         super.onResume();
         //build our first question
         buildQuestion(0);
-        new CountDownTimer(getIntent().getStringExtra("section").equals("lt") ? ltt : (timer * 60 * 1000), 1000) {
+        new CountDownTimer(getIntent().getStringExtra("section").equals("lt")
+                ? (getIntent().getLongExtra("timer", 0)+ (getIntent().getIntExtra("duration", 60)*60*1000))-Calendar.getInstance().getTimeInMillis() /*(55*60*1000)*/
+                : (timer * 60 * 1000), 1000) {
 
             public void onTick(long millisUntilFinished) {
                 long secs = millisUntilFinished / 1000;
@@ -320,6 +327,13 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 timerText.setText("done!");
                 Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
                 intent.putExtra("sub_ans", sub_ans);
+                intent.putExtra("section", getIntent().getStringExtra("section"));
+                if(getIntent().getStringExtra("section").equals("lt")){
+                    intent.putExtra("tid", getIntent().getStringExtra("tid"));
+                }else{
+                    intent.putExtra("subject", getIntent().getStringExtra("subject"));
+                    intent.putExtra("chapter", getIntent().getStringExtra("chapter"));
+                }
                 intent.putExtra("questions", (Serializable) questions);
                 startActivity(intent);
             }
@@ -435,6 +449,10 @@ public class TestQuestionsActivity extends AppCompatActivity {
         //collect student answers in an array and proceed to next ques if not last.
         Toast.makeText(this, "saving ans index: "+currentQues, Toast.LENGTH_LONG).show();
         sub_ans[currentQues] = i;
+        if(i == -1)
+            quesBtns.get(currentQues).setBackgroundColor(getResources().getColor(R.color.design_default_color_error));
+        else
+            quesBtns.get(currentQues).setBackgroundColor(getResources().getColor(R.color.green1));
         if(++currentQues >= questions.size()){
             //confirmation box before submission.
             //submit test.
@@ -447,6 +465,13 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
                     intent.putExtra("sub_ans", sub_ans);
+                    intent.putExtra("section", getIntent().getStringExtra("section"));
+                    if(getIntent().getStringExtra("section").equals("lt")){
+                        intent.putExtra("tid", getIntent().getStringExtra("tid"));
+                    }else{
+                        intent.putExtra("subject", getIntent().getStringExtra("subject"));
+                        intent.putExtra("chapter", getIntent().getStringExtra("chapter"));
+                    }
                     intent.putExtra("questions", (Serializable) questions);
                     startActivity(intent);
                 }

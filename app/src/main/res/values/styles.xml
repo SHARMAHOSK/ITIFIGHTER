@@ -22,5 +22,17 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name ="MaterialDatePickerCustomTheme" parent="@style/Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="materialCalendarStyle">@style/Widget.MaterialComponents.MaterialCalendar</item>
+        <item name="materialCalendarFullscreenTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen</item>
+        <item name="materialCalendarTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar</item>
+        <item name="colorSurface">#610404</item>
+        <item name="colorPrimary">#00FFFF</item>
+        <item name="colorPrimaryDark">#0000FF</item>
+        <item name="colorAccent">#008080</item>
+    </style>
+
+
+
 
 </resources>
