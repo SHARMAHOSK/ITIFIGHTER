@@ -46,6 +46,8 @@ public class MockTest extends Fragment {
     private ArrayList<String>/* Chapters,*/ MPQs, Timers;
     private ArrayList<Question> questions;
     private ListView listView;
+    ArrayList<String> SubjectID = new ArrayList<>();
+    ArrayList<String> ChapterID = new ArrayList<>();
 
     private View mtView;
     private FirebaseFirestore db;
@@ -122,6 +124,7 @@ public class MockTest extends Fragment {
                     Subjects = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         /*list.add(document.getString("Name"));*/
+                        SubjectID.add(document.getId());
                         Subjects.add(new CustomListItem(document.getString("Name"),
                                 document.getString("description"),
                                 0.00,
@@ -163,7 +166,7 @@ public class MockTest extends Fragment {
     }
 
     void LoadChapters(final View __mtView){
-        db.collection("section").document("mt").collection("branch").document("00"+(currentSubjectPos+1)).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("mt").collection("branch").document(SubjectID.get(currentSubjectPos)/*"00"+(currentSubjectPos+1)*/).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -178,6 +181,7 @@ public class MockTest extends Fragment {
                                         document.getDouble("Price"),
                                         document.getString("Image"),
                                         *//*getExamCount(document.getId())*//*5));*/
+                        ChapterID.add(document.getId());
                         Chapters.add(new CustomListItem(document.getString("Name"),
                                 document.getString("description"),
                                 0.00, document.getString("Image"), 4));
@@ -215,7 +219,7 @@ public class MockTest extends Fragment {
     }
 
     private void LoadTest(final View __mtView) {
-        db.collection("section").document("mt").collection("branch").document("00"+(currentSubjectPos+1)).collection("chapter").document("00"+(currentChapterPos+1)).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("mt").collection("branch").document(SubjectID.get(currentSubjectPos)/*"00"+(currentSubjectPos+1)*/).collection("chapter").document(ChapterID.get(currentChapterPos)/*"00"+(currentChapterPos+1)*/).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -229,6 +233,8 @@ public class MockTest extends Fragment {
 
                     Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
                     myIntent.putExtra("section", "mt");
+                    myIntent.putExtra("subject", SubjectID.get(currentSubjectPos));
+                    myIntent.putExtra("chapter", ChapterID.get(currentChapterPos));
                     myIntent.putExtra("questions", (Serializable) questions);
                     myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
                     myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));

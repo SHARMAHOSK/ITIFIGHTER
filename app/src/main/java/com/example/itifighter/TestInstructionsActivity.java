@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.itifighterAdmin.Question;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.List;
 
 public class TestInstructionsActivity extends AppCompatActivity {
@@ -84,10 +85,15 @@ public class TestInstructionsActivity extends AppCompatActivity {
             Intent myIntent = new Intent(TestInstructionsActivity.this, TestQuestionsActivity.class);
             myIntent.putExtra("questions", (Serializable) questions);
             myIntent.putExtra("_mpq", _mpq);
+            myIntent.putExtra("section", getIntent().getStringExtra("section"));
+
             if(getIntent().getStringExtra("section").equals("lt")){
-                myIntent.putExtra("section", "lt");
-                myIntent.putExtra("timer", getIntent().getLongExtra("timer", 0));
+                myIntent.putExtra("tid", getIntent().getStringExtra("tid"));
+                myIntent.putExtra("timer", getIntent().getLongExtra("timer", 0)/*Calendar.getInstance().getTimeInMillis()*/);
+                myIntent.putExtra("duration", getIntent().getIntExtra("duration", 60)/*55*/);
             }else{
+                myIntent.putExtra("subject", getIntent().getStringExtra("subject"));
+                myIntent.putExtra("chapter", getIntent().getStringExtra("chapter"));
                 myIntent.putExtra("timer", timer);
             }
             startActivity(myIntent);

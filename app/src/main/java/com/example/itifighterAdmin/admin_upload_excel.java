@@ -1,7 +1,5 @@
 package com.example.itifighterAdmin;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +7,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.itifighter.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,8 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -43,7 +44,6 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
     int count = 0;
 
     //the firebase objects for storage and database
-    StorageReference mStorageReference;
     CollectionReference mDatabaseReference;
 
     @Override
@@ -60,6 +60,8 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
             Intent intent;
             if(targetSection.equals("lt")){
                 intent = new Intent(admin_upload_excel.this, admin_live_test.class);
+                intent.putExtra("subject", targetSubject);
+                intent.putExtra("section", targetSection);
             }else{
                 intent = new Intent(admin_upload_excel.this, admin_mockChapQoes_list.class);
                 intent.putExtra("subject", targetSubject);
@@ -71,9 +73,11 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
         }
 
         //getting firebase objects
-        mStorageReference = FirebaseStorage.getInstance().getReference();
         if(targetSection.equals("lt")){
-            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("question");
+            Toast.makeText(this, "making ref for tid: "+getIntent().getStringExtra("tid"), Toast.LENGTH_SHORT).show();
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection)
+                    .collection("branch").document(targetSubject)
+                    .collection("tests").document(""+getIntent().getStringExtra("tid")).collection("question");
         }else{
             mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(targetChapter).collection("question");
 
@@ -183,11 +187,12 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
                     questions.add(new Question(row[0].getContents(), row[1].getContents(), row[2].getContents(), row[3].getContents(), row[4].getContents(), row[5].getContents()));
             }
 
-            if(targetSubject.equals("lt")){
+            if(targetSection.equals("lt")){
                 mDatabaseReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()){
+                            Toast.makeText(admin_upload_excel.this, "deleting old questions: "+task.getResult().size(), Toast.LENGTH_SHORT).show();
                             WriteBatch batch2 = FirebaseFirestore.getInstance().batch();
                             for(QueryDocumentSnapshot doc : Objects.requireNonNull(task.getResult())){
                                 batch2.delete(doc.getReference());
@@ -199,6 +204,8 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
                                     BatchUploadQuestions();
                                 }
                             });
+                        }else{
+                            Toast.makeText(admin_upload_excel.this, "failed to fetch old questions", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -214,6 +221,7 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
     }
 
     private void BatchUploadQuestions() {
+        Toast.makeText(this, "inside batch upload method", Toast.LENGTH_LONG).show();
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
 
         for (Question ques : questions) {
@@ -228,6 +236,8 @@ public class admin_upload_excel extends AppCompatActivity implements View.OnClic
                 Intent intent;
                 if(targetSection.equals("lt")){
                     intent = new Intent(admin_upload_excel.this, admin_live_test.class);
+                    intent.putExtra("subject", targetSubject);
+                    intent.putExtra("section", targetSection);
                 }else{
                     intent = new Intent(admin_upload_excel.this, admin_mockChapQoes_list.class);
                     intent.putExtra("subject", targetSubject);

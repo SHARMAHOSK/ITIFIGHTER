@@ -1,17 +1,25 @@
 package com.example.itifighter;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.itifighterAdmin.Question;
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.itifighterAdmin.Question;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TestResultActivity extends AppCompatActivity {
 
@@ -20,17 +28,31 @@ public class TestResultActivity extends AppCompatActivity {
     int total_marks = 0;
     int marks_obtained = 0;
     int _mpq = 1;
+    boolean marksUploaded = false;
 
     int tca = 0, tra = 0, tsq = 0;
     TextView MO, TM, TCA, TRA, TSQ;
+    String targetSection, targetSubject, targetChapter;
 
     private ListView listView;
     String[] result;
+    CollectionReference mDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_result);
+
+        targetSection = getIntent().getStringExtra("section");
+        targetSubject = getIntent().getStringExtra("subject");
+        targetChapter = getIntent().getStringExtra("chapter");
+
+        if(targetSection.equals("lt")){
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("tests").document(""+getIntent().getStringExtra("tid")).collection("scoreboard");
+        }else{
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(targetChapter).collection("scoreboard");
+
+        }
 
         questions = (List<Question>) getIntent().getSerializableExtra("questions");
         _mpq = getIntent().getIntExtra("_mpq", 1);
@@ -70,21 +92,39 @@ public class TestResultActivity extends AppCompatActivity {
         TRA.setText(""+tra);;
         TSQ.setText(""+tsq);
 
-        /*ArrayAdapter adapter = new ArrayAdapter<String>(TestResultActivity.this,
-                android.R.layout.simple_list_item_1,
-                result);
-
-        listView.setAdapter(adapter);*/
+        Map<String, String> scoreboard = new HashMap<>();
+        scoreboard.put("Score", ""+(tca * _mpq));
+        scoreboard.put("Name", "La Belle Dame Sans Merci");
+        DocumentReference reference = mDatabaseReference.document(""+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.set(scoreboard).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(TestResultActivity.this, "score uploaded in database for user: "+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+                marksUploaded = true;
+            }
+        });
     }
 
     @Override
     public void onBackPressed() {
         //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
-        finish();
+        if(marksUploaded) finish();
+        else
+            Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
     }
 
     public void FinishExam(View view) {
         //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
-        finish();
+        if(marksUploaded) finish();
+        else
+            Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+    }
+
+    public void CheckAnswerSheet(View view){
+        Intent intent = new Intent(this, TestAnswerSheetActivity.class);
+        intent.putExtra("questions", (Serializable) questions);
+        if(marksUploaded) startActivity(intent);
+        else
+            Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
     }
 }

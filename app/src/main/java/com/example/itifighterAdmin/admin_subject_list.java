@@ -163,6 +163,11 @@ public class admin_subject_list extends AppCompatActivity {
             intent.putExtra("section", getIntent().getStringExtra("section"));
             Toast.makeText(admin_subject_list.this, intent.getStringExtra("subject") + "=" + ItemId.get(targetSubject), Toast.LENGTH_SHORT).show();
             startActivity(intent);
+        }else if(getIntent().getStringExtra("section").contains("lt")){
+            intent = new Intent(admin_subject_list.this, admin_live_test.class);
+            intent.putExtra("subject", ItemId.get(targetSubject));
+            Toast.makeText(admin_subject_list.this, intent.getStringExtra("subject") + "=" + ItemId.get(targetSubject), Toast.LENGTH_SHORT).show();
+            startActivity(intent);
         }
 
     }

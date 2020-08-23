@@ -53,18 +53,27 @@
                 android:id="@+id/QuesNum"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
+                android:layout_weight="3"
                 android:gravity="center"
                 android:keepScreenOn="true"
                 android:text="Ques Num"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="LIVE"
+                android:textColor="@color/design_default_color_error"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/Marks"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
+                android:layout_weight="3"
                 android:gravity="center"
                 android:keepScreenOn="true"
                 android:text="+1"

@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
@@ -44,7 +46,11 @@ public class admin_edit_lt_details extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_edit_lt_details);
 
-        docRef = FirebaseFirestore.getInstance().collection("section").document("lt").collection("tests").document(""+ Objects.requireNonNull(getIntent().getStringExtra("test")).trim());
+        docRef = FirebaseFirestore.getInstance().collection("section").document("lt")
+                .collection("branch")
+                .document(""+getIntent().getStringExtra("subject"))
+                .collection("tests")
+                .document(""+ Objects.requireNonNull(getIntent().getStringExtra("test")).trim());
         title = findViewById(R.id.etLTTile);
         tDuration = findViewById(R.id.etLTDuration);
         tMarks = findViewById(R.id.etLTmpq);
@@ -62,14 +68,19 @@ public class admin_edit_lt_details extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document != null) {
                         testInHistory = Objects.equals(document.getString("TestInHistory"), "true");
-                        duration = Integer.parseInt(Objects.requireNonNull(document.getString("duration")));
-                        sTime = Long.parseLong(Objects.requireNonNull(document.getString("sTime")));
-                        rTime = Long.parseLong(Objects.requireNonNull(document.getString("rTime")));
-
+                        Toast.makeText(admin_edit_lt_details.this, "tih: "+testInHistory, Toast.LENGTH_SHORT).show();
+                        duration = Objects.requireNonNull(document.getLong("duration")).intValue();
+                        Toast.makeText(admin_edit_lt_details.this, "duration: "+duration, Toast.LENGTH_SHORT).show();
+                        sTime = document.getLong("sTime");
+                        Toast.makeText(admin_edit_lt_details.this, "stime: "+sTime, Toast.LENGTH_SHORT).show();
+                        rTime = document.getLong("rTime");
+                        Toast.makeText(admin_edit_lt_details.this, "rtime: "+rTime, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(admin_edit_lt_details.this, "title1: "+document.getString("title"), Toast.LENGTH_SHORT).show();
                         title.setText(document.getString("title"));
+                        Toast.makeText(admin_edit_lt_details.this, "title2: "+document.getString("title"), Toast.LENGTH_SHORT).show();
                         tDuration.setText(""+duration);
-                        tMarks.setText(document.getString("marks"));
-                        tNOQs.setText(document.getString("NOQs"));
+                        tMarks.setText(""+Objects.requireNonNull(document.getLong("marks")).intValue());
+                        tNOQs.setText(""+Objects.requireNonNull(document.getLong("NOQs")).intValue());
 
                         Calendar preSD = Calendar.getInstance();
                         preSD.setTimeInMillis(sTime);
@@ -83,7 +94,8 @@ public class admin_edit_lt_details extends AppCompatActivity {
                         rTimePicker.setCurrentHour(preRD.get(Calendar.HOUR));
                         rTimePicker.setCurrentMinute(preRD.get(Calendar.MINUTE));
 
-                        if(!testInHistory){
+                        if(!testInHistory && Calendar.getInstance().getTimeInMillis() < sTime){
+                            Toast.makeText(admin_edit_lt_details.this, "setting minimum date threshold", Toast.LENGTH_SHORT).show();
                             t_datePicker.setMinDate(Calendar.getInstance().getTimeInMillis());    //in case this doesn't set min threshold to today, try Calendar.getInstance().MILISECOND...
                             r_datePicker.setMinDate(Calendar.getInstance().getTimeInMillis());
                         }
@@ -216,7 +228,9 @@ public class admin_edit_lt_details extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(admin_edit_lt_details.this, "live test details updated.", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(admin_edit_lt_details.this, admin_live_test.class));
+                        Intent intent = new Intent(admin_edit_lt_details.this, admin_live_test.class);
+                        intent.putExtra("subject", getIntent().getStringExtra(("subject")));
+                        startActivity(intent);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -229,7 +243,7 @@ public class admin_edit_lt_details extends AppCompatActivity {
     }
 }
 
-class TLDetails{
+class TLDetails implements Serializable {
     public int NOQs;
     public String TestInHistory;
     public int duration;
