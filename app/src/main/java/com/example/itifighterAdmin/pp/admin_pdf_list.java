@@ -1,8 +1,5 @@
 package com.example.itifighterAdmin.pp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +7,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.itifighter.LoadPdf;
 import com.example.itifighter.R;
@@ -37,12 +37,9 @@ public class admin_pdf_list extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_pdf_list);
-
         targetSubject = getIntent().getStringExtra("subject");
         targetExam = getIntent().getStringExtra("exam");
-
         pdfListView = findViewById(R.id.listPdfAdmin);
-
         mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document("pp").collection("branch").document(targetSubject).collection("exam").document(targetExam).collection("pdf");
 
         mDatabaseReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -70,7 +67,6 @@ public class admin_pdf_list extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
 
                 Intent intent = new Intent(admin_pdf_list.this, LoadPdf.class);
                 intent.putExtra("pdf", pdfFile.get(position));

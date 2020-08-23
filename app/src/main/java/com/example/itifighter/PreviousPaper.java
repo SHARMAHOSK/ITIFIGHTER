@@ -3,10 +3,6 @@ package com.example.itifighter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +11,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
+import java.util.Objects;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -115,13 +117,13 @@ public class PreviousPaper extends Fragment {
 
                 if (task.isSuccessful()) {
                     Subjects = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*list.add(document.getString("Name"));*/
                         Subjects.add(new CustomListItem(document.getString("Name"),
                                         document.getString("description"),
                                         0.00,
-                                        document.getString("Image"),
-                                        /*getExamCount(document.getId())*/5));
+                                        document.getString("Name"),
+                                        /*getExamCount(document.getId())*/5,"pp"));
                         /*Subjects.add(new CustomListItem(document.getString("Name"),
                                 "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
                                 0.00, "cccc.png", 5));*/
@@ -163,7 +165,7 @@ public class PreviousPaper extends Fragment {
                 if (task.isSuccessful()) {
                     /*examList = new ArrayList<>();*/
                     Exams = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*examList.add(document.getString("Name"));*/
                                             /*Exams.add(new CustomListItem(document.getString("Name"),
                                         document.getString("Description"),
@@ -172,7 +174,7 @@ public class PreviousPaper extends Fragment {
                                         *//*getExamCount(document.getId())*//*5));*/
                         Exams.add(new CustomListItem(document.getString("Name"),
                                 "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
-                                0.00, "sample_fitter_background", 4));
+                                0.00, "sample_fitter_background", 4,"pp"));
                     }
                                         /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                                                 R.layout.activity__branch_list_view, examList);*/

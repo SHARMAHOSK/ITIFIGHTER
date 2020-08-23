@@ -42,8 +42,8 @@ public class MockTest extends Fragment {
     private int currentLayer = 0;   //0=subjects, 1=exams, 2=pdfS
     private int currentSubjectPos = 0, currentChapterPos = 0;   //records which item was clicked in previous list
 
-    private ArrayList<CustomListItem> Subjects, Chapters;
-    private ArrayList<String>/* Chapters,*/ MPQs, Timers;
+    private ArrayList<CustomListItem> Subjects;
+    private ArrayList<String> Chapters;
     private ArrayList<Question> questions;
     private ListView listView;
 
@@ -169,8 +169,6 @@ public class MockTest extends Fragment {
                 if (task.isSuccessful()) {
                     /*examList = new ArrayList<>();*/
                     Chapters = new ArrayList<>();
-                    MPQs = new ArrayList<>();
-                    Timers = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         /*examList.add(document.getString("Name"));*/
                                             /*Exams.add(new CustomListItem(document.getString("Name"),
@@ -178,19 +176,17 @@ public class MockTest extends Fragment {
                                         document.getDouble("Price"),
                                         document.getString("Image"),
                                         *//*getExamCount(document.getId())*//*5));*/
-                        Chapters.add(new CustomListItem(document.getString("Name"),
-                                document.getString("description"),
-                                0.00, document.getString("Image"), 4));
-                        /*Chapters.add(document.getString("Name"));*/
-                        MPQs.add(document.getString("MPQ"));
-                        Timers.add(document.getString("Timer"));
+                        /*Exams.add(new CustomListItem(document.getString("Name"),
+                                "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
+                                0.00, "sample_fitter_background", 4));*/
+                        Chapters.add(document.getString("Name"));
                     }
-                    /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
+                    ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                             android.R.layout.simple_list_item_1,
-                            Chapters);*/
+                            Chapters);
 
                     //create our new array adapter
-                    ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Chapters);
+                    /*ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);*/
 
                                         /*examListView = (ListView) _ppView.findViewById(R.id.branch_list);
                                         examListView.setAdapter(adapter);*/
@@ -222,16 +218,24 @@ public class MockTest extends Fragment {
                     /*examList = new ArrayList<>();*/
                     questions = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        /*examList.add(document.getString("Name"));*/
+                                            /*Exams.add(new CustomListItem(document.getString("Name"),
+                                        document.getString("Description"),
+                                        document.getDouble("Price"),
+                                        document.getString("Image"),
+                                        *//*getExamCount(document.getId())*//*5));*/
+                        /*Exams.add(new CustomListItem(document.getString("Name"),
+                                "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
+                                0.00, "sample_fitter_background", 4));*/
                         questions.add(new Question(document.getString("question"), document.getString("option1"),
                                 document.getString("option2"), document.getString("option3"),
                                 document.getString("option4"), document.getString("answer")));
                     }
 
                     Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
-                    myIntent.putExtra("section", "mt");
                     myIntent.putExtra("questions", (Serializable) questions);
-                    myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
-                    myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
+                    myIntent.putExtra("_mpq", 2);
+                    myIntent.putExtra("timer", 45);
                     startActivity(myIntent);
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());

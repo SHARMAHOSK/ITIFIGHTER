@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".TestSeries">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:name="com.example.itifighter.TestSeries"
+    tools:context=".TestSeries"
+    android:orientation="horizontal">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ListView
+        android:id="@+id/testxtRecycle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textAlignment="center"
-        android:text="Test Series"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-</FrameLayout>
+        android:layout_marginTop="5dp"
+        tools:listitem="@layout/test_series_tests" />
+</RelativeLayout>

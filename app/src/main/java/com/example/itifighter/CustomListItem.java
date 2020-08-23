@@ -6,12 +6,15 @@ class CustomListItem {
     private String imageUrl;
     private Double price;
     private int subjectCount;
-    public CustomListItem(String topicHeader, String description, Double price, String imageUrl, int subjectCount){
+    private String imagex;
+    public CustomListItem(String topicHeader, String description, Double price, String imageUrl, int subjectCount,String imagex){
         this.topicHeader = topicHeader;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.imagex = imagex;
     }
     public String getTopicHeader() {return topicHeader; }
     public String getDescription() {return description; }
     public String getImageUrl() { return imageUrl; }
+    public String getImagex(){return  imagex;}
 }

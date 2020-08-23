@@ -1,8 +1,5 @@
 package com.example.itifighterAdmin;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +8,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.itifighter.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,7 +24,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -40,23 +37,18 @@ public class admin_edit_subject extends AppCompatActivity {
     CollectionReference mDatabaseReference;
     final static int PICK_IMAGE_REQUEST = 72;
     StorageReference mStorageReference;
-
     boolean ready = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_edit_subject);
-
         mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(Objects.requireNonNull(getIntent().getStringExtra("section"))).collection("branch");
         mStorageReference = FirebaseStorage.getInstance().getReference();
-
         name = findViewById(R.id.EdtSubjectName);
         desc = findViewById(R.id.EdtSubjectDesc);
         subImg = findViewById(R.id.EdtSubImage);
-
         DocumentReference reference = mDatabaseReference.document(""+(getIntent().getStringExtra("target")));
-
         reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -65,15 +57,12 @@ public class admin_edit_subject extends AppCompatActivity {
                     if (document != null) {
                         subName = document.getString("Name");
                         subDesc = document.getString("description");
-                        imgName = document.getString(("Image"));
-
                         ready = true;
-
                         name.setText(subName);
                         desc.setText(subDesc);
                         if(imgName.trim().length() > 0){
                             Glide.with(getApplicationContext())
-                                    .load(mStorageReference.child(Constants.STORAGE_PATH_LOGOS + imgName))
+                                    .load(mStorageReference.child(Constants.STORAGE_PATH_LOGOS+getIntent().getStringExtra("target")+subName))
                                     .into(subImg);
                         }
                     } else {
@@ -124,7 +113,6 @@ public class admin_edit_subject extends AppCompatActivity {
                         //progressBar.setVisibility(View.GONE);
                         //textViewStatus.setText("File Uploaded Successfully");
                         imgName = subImgName;
-
                         DocumentReference reference = mDatabaseReference.document(""+(getIntent().getStringExtra("target")));
                         Map<String,String> branch = new HashMap<>();
                         branch.put("Image", imgName);
@@ -156,7 +144,7 @@ public class admin_edit_subject extends AppCompatActivity {
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
                     @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
                         //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         //textViewStatus.setText((int) progress + "% Uploading...");
                     }
