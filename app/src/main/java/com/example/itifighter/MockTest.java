@@ -3,10 +3,6 @@ package com.example.itifighter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.example.itifighterAdmin.Question;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,6 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
@@ -120,13 +120,13 @@ public class MockTest extends Fragment {
 
                 if (task.isSuccessful()) {
                     Subjects = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*list.add(document.getString("Name"));*/
                         Subjects.add(new CustomListItem(document.getString("Name"),
                                 document.getString("description"),
                                 0.00,
                                 document.getString("Image"),
-                                /*getExamCount(document.getId())*/5));
+                                /*getExamCount(document.getId())*/5,"mt"));
                         /*Subjects.add(new CustomListItem(document.getString("Name"),
                                 "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
                                 0.00, "cccc.png", 5));*/
@@ -171,7 +171,7 @@ public class MockTest extends Fragment {
                     Chapters = new ArrayList<>();
                     MPQs = new ArrayList<>();
                     Timers = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*examList.add(document.getString("Name"));*/
                                             /*Exams.add(new CustomListItem(document.getString("Name"),
                                         document.getString("Description"),
@@ -180,7 +180,7 @@ public class MockTest extends Fragment {
                                         *//*getExamCount(document.getId())*//*5));*/
                         Chapters.add(new CustomListItem(document.getString("Name"),
                                 document.getString("description"),
-                                0.00, document.getString("Image"), 4));
+                                0.00, document.getString("Image"), 4,"mt"));
                         /*Chapters.add(document.getString("Name"));*/
                         MPQs.add(document.getString("MPQ"));
                         Timers.add(document.getString("Timer"));

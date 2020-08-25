@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name="com.example.itifighterAdmin.admin_add_lt"></activity>
+        <activity android:name="com.example.itifighterAdmin.admin_add_lt" />
         <activity android:name="com.example.itifighterAdmin.admin_edit_lt_details" />
         <activity android:name="com.example.itifighterAdmin.admin_live_test" />
         <activity android:name=".TestInstructionsActivity"
@@ -46,6 +46,8 @@
         <activity android:name=".LoadPdf" />
         <activity android:name="com.example.itifighterAdmin.pp.AdminUpdatePpPdfs" />
         <activity android:name=".MainDashboard" />
+        <activity android:name="com.example.itifighter.LiveTestHomeActivity"/>
+        <activity android:name=".PaytmPayment"/>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".Login" />
         <activity android:name=".MainActivity">

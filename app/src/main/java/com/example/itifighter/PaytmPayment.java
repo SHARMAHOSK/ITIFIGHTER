@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -137,7 +138,7 @@ public class PaytmPayment extends AppCompatActivity {
                    @Override
                    public void onClick(View view) {
                        if (txnAmount.equals("")) {
-                           android.widget.Toast.makeText(PaytmPayment.this, "", Toast.LENGTH_SHORT).show();
+                           Toast.makeText(PaytmPayment.this,"Amount is mandatory",Toast.LENGTH_SHORT).show();
                        } else getToken();
                    }
                });

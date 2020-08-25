@@ -16,7 +16,7 @@
         android:layout_gravity="bottom"
         android:background="@color/startblue"
         android:onClick="BeginTest"
-        android:text="@string/next"
+        android:text="start"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="4"
-        android:text="@string/i_have_read_all_instructions"
+        android:text="I have read all instructions"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/startExam" />
 
@@ -69,7 +69,7 @@
                 android:layout_weight="4"
                 android:gravity="center"
                 android:textColor="@color/dark_blue"
-                android:text="@string/questions"
+                android:text="Quetions"
                 android:textSize="15sp" />
         </LinearLayout>
 
@@ -86,7 +86,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="6"
                 android:gravity="center"
-                android:text="@string/_30"
+                android:text="30"
                 android:textColor="@color/dark_blue"
                 android:textSize="25sp"
                 tools:ignore="NestedWeights" />
@@ -96,7 +96,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="center"
-                android:text="@string/marks"
+                android:text="Marks"
                 android:textColor="@color/dark_blue"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -114,7 +114,7 @@
                 android:layout_height="19dp"
                 android:layout_weight="6"
                 android:gravity="center"
-                android:text="@string/_30"
+                android:text="30"
                 android:textColor="@color/dark_blue"
                 android:textSize="25sp"
                 tools:ignore="NestedWeights" />
@@ -124,7 +124,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="center"
-                android:text="@string/mins"
+                android:text="Minutes"
                 android:textColor="@color/dark_blue"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -159,7 +159,7 @@
         android:layout_weight="20"
         android:gravity="center"
         android:textColor="@color/dark_blue"
-        android:text="@string/instructions"
+        android:text="Instruction"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -174,7 +174,7 @@
         android:textColor="@color/dark_blue"
         android:textStyle="bold"
         android:gravity="center"
-        android:text="@string/title_here"
+        android:text="IBPS TestSeries"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -74,7 +74,7 @@ public class LiveTest extends Fragment {
                                 document.getString("description"),
                                 0.00,
                                 document.getString("Image"),
-                                /*getExamCount(document.getId())*/5));
+                                /*getExamCount(document.getId())*/5,"lt"));
                     }
 
                     //create our new array adapter

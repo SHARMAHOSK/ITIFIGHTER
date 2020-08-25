@@ -13,6 +13,8 @@ class CustomListItem {
         this.imageUrl = imageUrl;
         this.imagex = imagex;
     }
+
+
     public String getTopicHeader() {return topicHeader; }
     public String getDescription() {return description; }
     public String getImageUrl() { return imageUrl; }
