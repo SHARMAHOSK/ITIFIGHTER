@@ -70,10 +70,10 @@ public class LiveTest extends Fragment {
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*list.add(document.getString("Name"));*/
                         SubjectID.add(document.getId());
-                        Subjects.add(new CustomListItem(document.getString("Name"),
-                                document.getString("description"),
+                        Subjects.add(new CustomListItem(document.getString("name"),
+                                document.getString("desc"),
                                 0.00,
-                                document.getString("Image"),
+                                /*document.getString("Image")*/document.getString("name"),
                                 /*getExamCount(document.getId())*/5,"lt"));
                     }
 

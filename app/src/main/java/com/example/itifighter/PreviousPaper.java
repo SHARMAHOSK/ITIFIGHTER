@@ -3,6 +3,10 @@ package com.example.itifighter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,18 +15,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
-import java.util.Objects;
-
 import static android.content.ContentValues.TAG;
 
 /**
@@ -50,6 +48,7 @@ public class PreviousPaper extends Fragment {
 
     private View ppView;
     private FirebaseFirestore db;
+
     private Context mContext;
 
     //boolean loadingFinished = true;
@@ -68,7 +67,6 @@ public class PreviousPaper extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment PreviousPaper.
      */
-
     // TODO: Rename and change types and number of parameters
     public static PreviousPaper newInstance(String param1, String param2) {
         PreviousPaper fragment = new PreviousPaper();
@@ -78,8 +76,6 @@ public class PreviousPaper extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,13 +115,13 @@ public class PreviousPaper extends Fragment {
 
                 if (task.isSuccessful()) {
                     Subjects = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
                         /*list.add(document.getString("Name"));*/
-                        Subjects.add(new CustomListItem(document.getString("Name"),
-                                        document.getString("description"),
+                        Subjects.add(new CustomListItem(document.getString(/*"Name"*/"name"),
+                                        document.getString(/*"description"*/"desc"),
                                         0.00,
-                                        document.getString("Image"),
-                                        /*getExamCount(document.getId())*/5,"pp"));
+                                        document.getString(/*"Image"*/"name"),
+                                        /*getExamCount(document.getId())*/5, "pp"));
                         /*Subjects.add(new CustomListItem(document.getString("Name"),
                                 "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
                                 0.00, "cccc.png", 5));*/
@@ -167,16 +163,16 @@ public class PreviousPaper extends Fragment {
                 if (task.isSuccessful()) {
                     /*examList = new ArrayList<>();*/
                     Exams = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
                         /*examList.add(document.getString("Name"));*/
-                                            /*Exams.add(new CustomListItem(document.getString("Name"),
-                                        document.getString("Description"),
-                                        document.getDouble("Price"),
+                                            Exams.add(new CustomListItem(document.getString("Name"),
+                                        document.getString("description"),
+                                        /*document.getDouble("Price")*/0.00,
                                         document.getString("Image"),
-                                        *//*getExamCount(document.getId())*//*5));*/
-                        Exams.add(new CustomListItem(document.getString("Name"),
+                                        /*getExamCount(document.getId())*/5, "pp"));
+                        /*Exams.add(new CustomListItem(document.getString("Name"),
                                 "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
-                                0.00, "sample_fitter_background", 4,"pp"));
+                                0.00, "sample_fitter_background", 4));*/
                     }
                                         /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                                                 R.layout.activity__branch_list_view, examList);*/
@@ -214,20 +210,23 @@ public class PreviousPaper extends Fragment {
                 if (task.isSuccessful()) {
                     PdfS = new ArrayList<>();
                     pdfFile = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
                         PdfS.add(document.getId());
                         pdfFile.add(""+document.getString("Name"));
                     }
-                    ArrayAdapter adapter = new ArrayAdapter<>(mContext,
+                    ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                             R.layout.activity__branch_list_view, PdfS);
                     listView.setAdapter(adapter);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
+
+
                             Intent intent = new Intent(mContext, LoadPdf.class);
                             intent.putExtra("pdf", pdfFile.get(position));
                             startActivity(intent);
+
                         }
 
                     });

@@ -7,14 +7,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.itifighterAdmin.Question;
+import com.example.itifighterAdmin.admin_section_list;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -24,10 +34,12 @@ import java.util.Map;
 public class TestResultActivity extends AppCompatActivity {
 
     List<Question> questions;
-    int[] sub_ans;
+    int[] sub_ans, selectedFeedbackOption;
     int total_marks = 0;
     int marks_obtained = 0;
     int _mpq = 1;
+    String[] feedbackOptions = { "Wrong Question", "Wrong Options", "Incomplete Question", "Incorrect Grammar", "Question out of syllabus",
+            "Question on old pattern", "Repeated Question"};
     boolean marksUploaded = false;
 
     int tca = 0, tra = 0, tsq = 0;
@@ -43,12 +55,16 @@ public class TestResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_result);
 
+        findViewById(R.id.ResultLL).setVisibility(View.INVISIBLE);
+        findViewById(R.id.UploadingTXT).setVisibility(View.VISIBLE);
+        findViewById(R.id.ContinueBTNRT).setVisibility(View.INVISIBLE);
+
         targetSection = getIntent().getStringExtra("section");
         targetSubject = getIntent().getStringExtra("subject");
         targetChapter = getIntent().getStringExtra("chapter");
 
         if(targetSection.equals("lt")){
-            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("tests").document(""+getIntent().getStringExtra("tid")).collection("scoreboard");
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("tests").document(""+getIntent().getStringExtra("tid")).collection("scoreboard");
         }else{
             mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(targetChapter).collection("scoreboard");
 
@@ -57,6 +73,7 @@ public class TestResultActivity extends AppCompatActivity {
         questions = (List<Question>) getIntent().getSerializableExtra("questions");
         _mpq = getIntent().getIntExtra("_mpq", 1);
         sub_ans = getIntent().getIntArrayExtra("sub_ans");
+        selectedFeedbackOption = getIntent().getIntArrayExtra("selectedFeedbackOption");
         Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
         result = new String[sub_ans.length];
 
@@ -92,15 +109,78 @@ public class TestResultActivity extends AppCompatActivity {
         TRA.setText(""+tra);;
         TSQ.setText(""+tsq);
 
-        Map<String, String> scoreboard = new HashMap<>();
-        scoreboard.put("Score", ""+(tca * _mpq));
-        scoreboard.put("Name", "La Belle Dame Sans Merci");
-        DocumentReference reference = mDatabaseReference.document(""+ FirebaseAuth.getInstance().getCurrentUser().getUid());
-        reference.set(scoreboard).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        final String uuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore.getInstance().collection("users").document(""+uuid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(TestResultActivity.this, "score uploaded in database for user: "+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
-                marksUploaded = true;
+            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    //Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    //Log.d(TAG, "Current data: " + snapshot.getData());
+                    Map<String, String> scoreboard = new HashMap<>();
+                    scoreboard.put("Score", ""+(tca * _mpq));
+                    scoreboard.put("name", ""+snapshot.getString("Name"));
+                    DocumentReference reference = mDatabaseReference.document(""+ uuid);
+                    reference.set(scoreboard).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(TestResultActivity.this, "score uploaded in database for user: "+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+                            marksUploaded = true;
+                            //((TextView)findViewById(R.id.UploadingTXT)).setText("uploading feedback, please wait..");
+                            CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("feedback");
+                            feedbackBasePath.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        int count = task.getResult().size();
+                                        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                                        for(int i=0; i<selectedFeedbackOption.length; i++){
+                                            if(selectedFeedbackOption[i] > -1){
+                                                Map<String, String> _fb= new HashMap<>();
+                                                _fb.put("question", questions.get(i).getQuestion());
+                                                _fb.put("issue", feedbackOptions[selectedFeedbackOption[i]]);
+                                                _fb.put("section", targetSection);
+                                                _fb.put("subject", targetSubject);
+                                                if(targetSection == "lt"){
+                                                    _fb.put("testID", getIntent().getStringExtra("tid"));
+                                                }else{
+                                                    _fb.put("chapter", targetChapter);
+                                                }
+                                                DocumentReference nycRef = mDatabaseReference.document("Feedback_ " + (++count));
+                                                batch.set(nycRef, _fb);
+                                            }
+                                        }
+                                        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);
+                                                findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);
+
+                                                if(targetSection == "lt"){
+
+                                                }else{
+                                                    findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);
+                                                }
+                                            }
+                                        });
+                                    }else{
+                                        findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);
+                                        findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);
+
+                                        if(targetSection == "lt"){
+
+                                        }else{
+                                            findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
     }

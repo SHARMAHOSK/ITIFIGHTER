@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,11 +12,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.example.itifighterAdmin.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +33,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
     String tid = "";
     LinearLayout LeaderBoard;
     ArrayList<LeaderBoardQualifier> leaderBoard;
+    StorageReference mStorageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +41,16 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test_leader_board);
         tid = getIntent().getStringExtra("tid");
         LeaderBoard = findViewById(R.id.LBList);
+        mStorageReference = FirebaseStorage.getInstance().getReference();
         FirebaseFirestore.getInstance().collection("section").document("lt").collection("tests").document(""+tid).collection("scoreboard").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     leaderBoard = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        leaderBoard.add(new LeaderBoardQualifier(document.getString("Name"), Integer.parseInt(document.getString("Score").trim()), -1));
+                        leaderBoard.add(new LeaderBoardQualifier(document.getId(),
+                                document.getString("name"),
+                                Integer.parseInt(document.getString("Score").trim()), -1));
                     }
                     Collections.sort(leaderBoard, new Comparator<LeaderBoardQualifier>() {
                         @Override
@@ -54,7 +63,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
                     int _rank = 1;
                     for(LeaderBoardQualifier lbq : leaderBoard){
                         lbq.setRank(_rank++);
-                        fillLeaderBoard(lbq.getRank(), lbq.getName(), lbq.getScore());
+                        fillLeaderBoard(lbq.uuid, lbq.getRank(), lbq.getName(), lbq.getScore());
                     }
                 } else {
                     Toast.makeText(TestLeaderBoardActivity.this, "error getting leader board", Toast.LENGTH_LONG).show();
@@ -64,9 +73,17 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
         });
     }
 
-    private void fillLeaderBoard(int rank, String name, int score) {
+    private void fillLeaderBoard(String uuid, int rank, String name, int score) {
         View lbRow = null;
         lbRow = View.inflate(this, R.layout.fragment_leader_board_row, null);
+        try {
+            Glide.with(getApplicationContext())
+                    .load(mStorageReference.child("UserImage/"+uuid))
+                    .into(((ImageView)lbRow.findViewById(R.id.LeaderBoardUserImage)));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Toast.makeText(getApplicationContext(),"something wrong to upload",Toast.LENGTH_SHORT).show();
+        }
         ((TextView)lbRow.findViewById(R.id.LeaderBoardRank)).setText(""+rank);
         ((TextView)lbRow.findViewById(R.id.LeaderBoardName)).setText(""+name);
         ((TextView)lbRow.findViewById(R.id.LeaderBoardScore)).setText(""+score);
@@ -82,11 +99,13 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
 }
 
 class LeaderBoardQualifier{
+    public String uuid = "";
     public String name = "";
     public int score = 0;
     public int rank = 0;
 
-    public LeaderBoardQualifier(String name, int score, int rank) {
+    public LeaderBoardQualifier(String uuid, String name, int score, int rank) {
+        this.uuid = uuid;
         this.name = name;
         this.score = score;
         this.rank = rank;

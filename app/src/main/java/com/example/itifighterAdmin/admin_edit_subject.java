@@ -1,5 +1,8 @@
 package com.example.itifighterAdmin;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,8 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 import com.example.itifighter.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,6 +26,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -33,36 +36,48 @@ public class admin_edit_subject extends AppCompatActivity {
 
     ImageButton subImg;
     EditText name, desc;
-    String imgName = "", subName = "", subDesc = "";
+    String imgName = "", subName = "", subDesc = "", docID = "";
     CollectionReference mDatabaseReference;
     final static int PICK_IMAGE_REQUEST = 72;
     StorageReference mStorageReference;
+
     boolean ready = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_edit_subject);
+
         mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(Objects.requireNonNull(getIntent().getStringExtra("section"))).collection("branch");
         mStorageReference = FirebaseStorage.getInstance().getReference();
+
         name = findViewById(R.id.EdtSubjectName);
         desc = findViewById(R.id.EdtSubjectDesc);
         subImg = findViewById(R.id.EdtSubImage);
+
         DocumentReference reference = mDatabaseReference.document(""+(getIntent().getStringExtra("target")));
+
         reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document != null) {
-                        subName = document.getString("Name");
+                        /*subName = document.getString("Name");
                         subDesc = document.getString("description");
+                        imgName = document.getString(("Image"));*/
+                        subName = document.getString("name");
+                        subDesc = document.getString("desc");
+                        docID = document.getId();
+
                         ready = true;
+
                         name.setText(subName);
                         desc.setText(subDesc);
+                        imgName = subName;
                         if(imgName.trim().length() > 0){
                             Glide.with(getApplicationContext())
-                                    .load(mStorageReference.child(Constants.STORAGE_PATH_LOGOS+getIntent().getStringExtra("target")+subName))
+                                    .load(mStorageReference.child(Constants.STORAGE_PATH_LOGOS+""+getIntent().getStringExtra("section")+"/" + imgName))
                                     .into(subImg);
                         }
                     } else {
@@ -89,7 +104,7 @@ public class admin_edit_subject extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //when the user choses the file
+        //when the user chooses the file
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             //if a file is selected
             if (data.getData() != null) {
@@ -103,8 +118,11 @@ public class admin_edit_subject extends AppCompatActivity {
 
     private void uploadFile(Uri data) {
         //progressBar.setVisibility(View.VISIBLE);
-        final String subImgName = "Subject_"+getIntent().getStringExtra("target");
-        StorageReference sRef = mStorageReference.child(Constants.STORAGE_PATH_LOGOS + subImgName);
+        if(subName == null || subName.trim().length() <= 0 || subName.isEmpty()){
+            return;
+        }
+        final String subImgName = /*"Subject_"+getIntent().getStringExtra("target")*/subName;
+        StorageReference sRef = mStorageReference.child(Constants.STORAGE_PATH_LOGOS+""+getIntent().getStringExtra("section")+"/"+subImgName);
         sRef.putFile(data)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
@@ -113,12 +131,37 @@ public class admin_edit_subject extends AppCompatActivity {
                         //progressBar.setVisibility(View.GONE);
                         //textViewStatus.setText("File Uploaded Successfully");
                         imgName = subImgName;
-                        DocumentReference reference = mDatabaseReference.document(""+(getIntent().getStringExtra("target")));
-                        Map<String,String> branch = new HashMap<>();
-                        branch.put("Image", imgName);
+                        try {
+                            Glide.with(getApplicationContext())
+                                    .load(mStorageReference.child(Constants.STORAGE_PATH_LOGOS + subImgName))
+                                    .into(subImg);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            Toast.makeText(getApplicationContext(),"something wrong to upload",Toast.LENGTH_SHORT).show();
+                        }
+                        //DocumentReference reference = mDatabaseReference.document(""+(getIntent().getStringExtra("target")));
+                        /*Map<String,String> branch = new HashMap<>();
+                        *//*branch.put("Image", imgName);
                         branch.put("Name", subName);
-                        branch.put("description", subDesc);
-                        reference.set(branch).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        branch.put("description", subDesc);*//*
+                        branch.put("name", subName);
+                        branch.put("desc", subDesc);
+                        mDatabaseReference.add(branch).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d("Success", "subject updated with name: " + name.getText().toString());
+                                Toast.makeText(admin_edit_subject.this, "subject img updated with name: " + name.getText().toString(), Toast.LENGTH_LONG).show();
+                                try {
+                                    Glide.with(getApplicationContext())
+                                            .load(mStorageReference.child(Constants.STORAGE_PATH_LOGOS + subImgName))
+                                            .into(subImg);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                    Toast.makeText(getApplicationContext(),"something wrong to upload",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });*/
+                        /*reference.set(branch).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Log.d("Success", "subject updated with name: " + name.getText().toString());
@@ -132,7 +175,7 @@ public class admin_edit_subject extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(),"something wrong to upload",Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        });
+                        });*/
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -144,7 +187,7 @@ public class admin_edit_subject extends AppCompatActivity {
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
                     @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                         //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         //textViewStatus.setText((int) progress + "% Uploading...");
                     }
@@ -158,8 +201,12 @@ public class admin_edit_subject extends AppCompatActivity {
             Toast.makeText(this, "Subject name required", Toast.LENGTH_LONG).show();
             return;
         }
+        if(docID.trim().length() <= 0){
+            Toast.makeText(this, "Subject id not fetched", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-        DocumentReference reference = mDatabaseReference.document(""+(getIntent().getStringExtra("target")));
+        /*DocumentReference reference = mDatabaseReference.document(""+(getIntent().getStringExtra("target")));
         Map<String,String> branch = new HashMap<>();
         branch.put("Name", name.getText().toString().trim());
         branch.put("description", desc.getText().toString().trim().length() > 0 ? desc.getText().toString().trim() : "--");
@@ -176,9 +223,26 @@ public class admin_edit_subject extends AppCompatActivity {
                 setResult(RESULT_OK, intent);
                 finish();
             }
+        });*/
+        DocumentReference reference = mDatabaseReference.document(""+docID);
+        Map<String,String> branch = new HashMap<>();
+                        /*branch.put("Image", imgName);
+                        branch.put("Name", subName);
+                        branch.put("description", subDesc);*/
+        branch.put("name", subName);
+        branch.put("desc", subDesc);
+        reference.set(branch).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("Success", "subject updated with name: " + name.getText().toString());
+                Toast.makeText(admin_edit_subject.this, "subject updated with name: " + name.getText().toString(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent();
+                intent.putExtra("section", getIntent().getStringExtra("section"));
+                //startActivity(intent);
+                intent.putExtra("newSubject", name.getText().toString());
+                setResult(RESULT_OK, intent);
+                finish();
+            }
         });
-
-
-
     }
 }

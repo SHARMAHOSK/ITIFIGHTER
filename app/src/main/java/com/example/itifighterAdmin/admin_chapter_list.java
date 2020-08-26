@@ -54,7 +54,7 @@ public class admin_chapter_list extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Chapters = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Chapters.add(""+document.getString("Name"));
+                        Chapters.add(""+document.getString("name"));
                         ChapterIds.add((""+document.getId()));
                     }
                     count = Chapters.size();
@@ -72,16 +72,20 @@ public class admin_chapter_list extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
-
-                Intent intent = new Intent(admin_chapter_list.this, admin_mockChapQoes_list.class);
-                intent.putExtra("subject", targetSubject);
-                intent.putExtra("section", targetSection);
-                intent.putExtra("chapter", ChapterIds.get(position));
-                startActivity(intent);
-
+                if (getIntent().getStringExtra("section").contains("mt")){
+                    Intent intent = new Intent(admin_chapter_list.this, admin_mockChapQoes_list.class);
+                    intent.putExtra("subject", targetSubject);
+                    intent.putExtra("section", targetSection);
+                    intent.putExtra("chapter", ChapterIds.get(position));
+                    startActivity(intent);
+                }else if (getIntent().getStringExtra("section").contains("ts")){
+                    Intent intent = new Intent(admin_chapter_list.this, admin_mockChapQoes_list.class);
+                    intent.putExtra("subject", targetSubject);
+                    intent.putExtra("section", targetSection);
+                    intent.putExtra("chapter", ChapterIds.get(position));
+                    startActivity(intent);
+                }
             }
-
         });
     }
 

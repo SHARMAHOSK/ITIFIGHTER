@@ -122,10 +122,10 @@ public class MockTest extends Fragment {
                     Subjects = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*list.add(document.getString("Name"));*/
-                        Subjects.add(new CustomListItem(document.getString("Name"),
-                                document.getString("description"),
+                        Subjects.add(new CustomListItem(document.getString("name"),
+                                document.getString("desc"),
                                 0.00,
-                                document.getString("Image"),
+                                /*document.getString("Image")*/document.getString("name"),
                                 /*getExamCount(document.getId())*/5,"mt"));
                         /*Subjects.add(new CustomListItem(document.getString("Name"),
                                 "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
@@ -178,7 +178,7 @@ public class MockTest extends Fragment {
                                         document.getDouble("Price"),
                                         document.getString("Image"),
                                         *//*getExamCount(document.getId())*//*5));*/
-                        Chapters.add(new CustomListItem(document.getString("Name"),
+                        Chapters.add(new CustomListItem(document.getString("name"),
                                 document.getString("description"),
                                 0.00, document.getString("Image"), 4,"mt"));
                         /*Chapters.add(document.getString("Name"));*/

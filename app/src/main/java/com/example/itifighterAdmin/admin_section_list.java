@@ -54,6 +54,9 @@ public class admin_section_list extends AppCompatActivity {
                     case 2:
                         target = "lt";
                         break;
+                    case 3:
+                        target = "ts";
+                        break;
                 }
                 Intent intent;
                 if(target == "lt"){

@@ -62,7 +62,9 @@ public class admin_subject_list extends AppCompatActivity {
                     listItems = new ArrayList<>();
                     ItemId = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        listItems.add("" + document.getString("Name"));
+                        /*listItems.add("" + document.getString("Name"));*/
+                        listItems.add("" + document.getString("name"));
+
                         ItemId.add("" + document.getId());
                     }
                     count = listItems.size();
@@ -158,6 +160,12 @@ public class admin_subject_list extends AppCompatActivity {
             Toast.makeText(admin_subject_list.this, intent.getStringExtra("subject") + "=" + ItemId.get(targetSubject), Toast.LENGTH_SHORT).show();
             startActivity(intent);
         }else if(getIntent().getStringExtra("section").contains("mt")){
+            intent = new Intent(admin_subject_list.this, admin_chapter_list.class);
+            intent.putExtra("subject", ItemId.get(targetSubject));
+            intent.putExtra("section", getIntent().getStringExtra("section"));
+            Toast.makeText(admin_subject_list.this, intent.getStringExtra("subject") + "=" + ItemId.get(targetSubject), Toast.LENGTH_SHORT).show();
+            startActivity(intent);
+        }else if(getIntent().getStringExtra("section").contains("ts")){
             intent = new Intent(admin_subject_list.this, admin_chapter_list.class);
             intent.putExtra("subject", ItemId.get(targetSubject));
             intent.putExtra("section", getIntent().getStringExtra("section"));

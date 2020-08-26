@@ -10,10 +10,13 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +42,10 @@ public class TestQuestionsActivity extends AppCompatActivity {
     int picked_ans = -1;
     LinearLayout quesNavPanel;
     ArrayList<Button> quesBtns;
+
+    String[] feedbackOptions = { "Wrong Question", "Wrong Options", "Incomplete Question", "Incorrect Grammar", "Question out of syllabus",
+    "Question on old pattern", "Repeated Question"};
+    int[] selectedFeedbackOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +100,23 @@ public class TestQuestionsActivity extends AppCompatActivity {
         layoutParams.width = 0;
         quesNavPanel.setLayoutParams(layoutParams);
 
+        Spinner spin = findViewById(R.id.TestQuestionFeedbackSpinner);
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedFeedbackOption[currentQues] = i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,feedbackOptions);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin.setAdapter(aa);
+
         submitBtn = findViewById(R.id.submitBtn);
         nextBtn = findViewById(R.id.nextBtn);
         skipBtn = findViewById(R.id.skipBtn);
@@ -108,8 +132,10 @@ public class TestQuestionsActivity extends AppCompatActivity {
         }
 
         sub_ans = new int[questions.size()];
+        selectedFeedbackOption = new int[questions.size()];
         Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
         Arrays.fill(sub_ans, -1);
+        Arrays.fill(selectedFeedbackOption, -1);
 
         int ii=1;
         while(ii*5<=questions.size()){
@@ -327,11 +353,12 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 timerText.setText("done!");
                 Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
                 intent.putExtra("sub_ans", sub_ans);
+                intent.putExtra("selectedFeedbackOption", selectedFeedbackOption);
                 intent.putExtra("section", getIntent().getStringExtra("section"));
+                intent.putExtra("subject", getIntent().getStringExtra("subject"));
                 if(getIntent().getStringExtra("section").equals("lt")){
                     intent.putExtra("tid", getIntent().getStringExtra("tid"));
                 }else{
-                    intent.putExtra("subject", getIntent().getStringExtra("subject"));
                     intent.putExtra("chapter", getIntent().getStringExtra("chapter"));
                 }
                 intent.putExtra("questions", (Serializable) questions);
@@ -465,11 +492,12 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
                     intent.putExtra("sub_ans", sub_ans);
+                    intent.putExtra("selectedFeedbackOption", selectedFeedbackOption);
                     intent.putExtra("section", getIntent().getStringExtra("section"));
+                    intent.putExtra("subject", getIntent().getStringExtra("subject"));
                     if(getIntent().getStringExtra("section").equals("lt")){
                         intent.putExtra("tid", getIntent().getStringExtra("tid"));
                     }else{
-                        intent.putExtra("subject", getIntent().getStringExtra("subject"));
                         intent.putExtra("chapter", getIntent().getStringExtra("chapter"));
                     }
                     intent.putExtra("questions", (Serializable) questions);
@@ -504,6 +532,24 @@ public class TestQuestionsActivity extends AppCompatActivity {
         ViewGroup.LayoutParams layoutParams = quesNavPanel.getLayoutParams();
         layoutParams.width = 0;
         quesNavPanel.setLayoutParams(layoutParams);
+    }
+
+    public void SubmitQuestionFeedback(View view) {
+        findViewById(R.id.TQFeedbackLayout).setVisibility(View.VISIBLE);
+    }
+
+    public void ConfirmSubmitFeedback(View view) {
+        //...
+        if(selectedFeedbackOption[currentQues] < 0)
+            Toast.makeText(this, "select a reason...", Toast.LENGTH_SHORT).show();
+        else{
+            Toast.makeText(this, "your feedback has been recorded..", Toast.LENGTH_SHORT).show();
+            findViewById(R.id.TQFeedbackLayout).setVisibility(View.INVISIBLE);
+        }
+    }
+    public void CancelSubmitFeedback(View view) {
+        selectedFeedbackOption[currentQues] = -1;
+        findViewById(R.id.TQFeedbackLayout).setVisibility(View.INVISIBLE);
     }
     /*my territory ends here.... idk what the hell is beyond here.*/
 }
