@@ -67,6 +67,10 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
 
     //this function will get the pdf from the storage
     private void getPDF() {
+        if(editTextFilename.getText().toString().trim().length() <= 0){
+            Toast.makeText(this, "create a name for pdf first...", Toast.LENGTH_SHORT).show();
+            return;
+        }
         //for greater than lolipop versions we need the permissions asked on runtime
         //so if the permission is not available user will go to the screen to allow storage permission
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(this,
@@ -105,6 +109,7 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
     //so we are not explaining it
     private void uploadFile(Uri data) {
         progressBar.setVisibility(View.VISIBLE);
+        Toast.makeText(this, "pdf picked, upload started", Toast.LENGTH_SHORT).show();
         final String pdfName = ""+System.currentTimeMillis()+".pdf";
         StorageReference sRef = mStorageReference.child(Constants.STORAGE_PATH_UPLOADS + pdfName);
         sRef.putFile(data)
@@ -112,6 +117,7 @@ public class AdminUpdatePpPdfs extends AppCompatActivity implements View.OnClick
                     @SuppressWarnings("VisibleForTests")
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(AdminUpdatePpPdfs.this, "pdf uploaded successfully", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
                         textViewStatus.setText("File Uploaded Successfully");
                         final String fileName = editTextFilename.getText().toString();

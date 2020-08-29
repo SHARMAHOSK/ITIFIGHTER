@@ -44,7 +44,7 @@ public class PreviousPaper extends Fragment {
 
     private ArrayList<CustomListItem> Subjects, Exams;
     private ListView listView;
-    private ArrayList<String> PdfS, pdfFile;
+    private ArrayList<String> PdfS, pdfFile, SubjectIds;
 
     private View ppView;
     private FirebaseFirestore db;
@@ -115,13 +115,12 @@ public class PreviousPaper extends Fragment {
 
                 if (task.isSuccessful()) {
                     Subjects = new ArrayList<>();
+                    SubjectIds = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         /*list.add(document.getString("Name"));*/
+                        SubjectIds.add(document.getId());
                         Subjects.add(new CustomListItem(document.getString(/*"Name"*/"name"),
-                                        document.getString(/*"description"*/"desc"),
-                                        0.00,
-                                        document.getString(/*"Image"*/"name"),
-                                        /*getExamCount(document.getId())*/5, "pp"));
+                                        document.getString(/*"description"*/"desc"), "pp"));
                         /*Subjects.add(new CustomListItem(document.getString("Name"),
                                 "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
                                 0.00, "cccc.png", 5));*/
@@ -157,7 +156,7 @@ public class PreviousPaper extends Fragment {
     }
 
     void LoadExams(final View __ppView){
-        db.collection("section").document("pp").collection("branch").document("00"+(currentSubjectPos+1)).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("pp").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -204,7 +203,7 @@ public class PreviousPaper extends Fragment {
 
     void LoadPdfS(final View _ppView){
         /*db.collection("branch/00"+(currentSubjectPos+1)+"/exam/00"+(currentExamPos+1)+"/pdf")*/
-        db.collection("section").document("pp").collection("branch/00"+(currentSubjectPos+1)+"/exam").document("00"+(currentExamPos+1)).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("pp").collection("branch/"+SubjectIds.get(currentSubjectPos)+"/exam").document("00"+(currentExamPos+1)).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {

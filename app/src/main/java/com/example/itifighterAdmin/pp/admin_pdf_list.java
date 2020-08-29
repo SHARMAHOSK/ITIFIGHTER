@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +47,7 @@ public class admin_pdf_list extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    Toast.makeText(admin_pdf_list.this, "fetched pdfs for document id: "+targetExam, Toast.LENGTH_SHORT).show();
                     pdfName = new ArrayList<>();
                     pdfFile = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
@@ -58,7 +60,8 @@ public class admin_pdf_list extends AppCompatActivity {
                             pdfName);
                     pdfListView.setAdapter(adapter);
                 } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    Log.d(TAG, "Error getting pdf list for document id: "+targetExam, task.getException());
+                    Toast.makeText(admin_pdf_list.this, "Error getting pdf list for document id: "+targetExam, Toast.LENGTH_SHORT).show();
                 }
             }
         });

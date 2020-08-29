@@ -14,6 +14,12 @@ class CustomListItem {
         this.imagex = imagex;
     }
 
+    public CustomListItem(String topicHeader, String description, String imagex){
+        this.topicHeader = topicHeader;
+        this.description = description;
+        this.imagex = imagex;
+    }
+
 
     public String getTopicHeader() {return topicHeader; }
     public String getDescription() {return description; }
