@@ -178,4 +178,10 @@ public class MainDashboard extends AppCompatActivity {
         super.onStart();
         setHeaderDetails();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

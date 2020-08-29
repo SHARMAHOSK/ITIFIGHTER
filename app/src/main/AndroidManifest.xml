@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.itifighter">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,21 +13,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
+        <activity android:name=".TestListSeries" />
         <activity android:name="com.example.itifighterAdmin.admin_add_lt" />
         <activity android:name="com.example.itifighterAdmin.admin_edit_lt_details" />
         <activity android:name="com.example.itifighterAdmin.admin_live_test" />
-        <activity android:name=".TestInstructionsActivity"
-            android:noHistory="true"/>
+        <activity
+            android:name=".TestInstructionsActivity"
+            android:noHistory="true" />
+        <activity
+            android:name=".TestInstructionsActivityX"
+            android:noHistory="true" />
         <activity android:name=".TestResultActivity" />
         <activity android:name=".Payment" />
         <activity
             android:name=".TestQuestionsActivity"
-            android:theme="@style/CustomFullScreenStyle"
-            android:noHistory="true"/>
+            android:noHistory="true"
+            android:theme="@style/CustomFullScreenStyle" />
         <activity android:name="com.example.itifighterAdmin.admin_upload_excel" />
         <activity android:name="com.example.itifighterAdmin.admin_mockChapQoes_list" />
-        <activity
-            android:name="com.example.itifighterAdmin.admin_add_chapter" />
+        <activity android:name="com.example.itifighterAdmin.admin_add_chapter" />
         <activity android:name="com.example.itifighterAdmin.admin_chapter_list" />
         <activity
             android:name="com.example.itifighterAdmin.admin_item_options"
@@ -46,10 +52,12 @@
         <activity android:name=".LoadPdf" />
         <activity android:name="com.example.itifighterAdmin.pp.AdminUpdatePpPdfs" />
         <activity android:name=".MainDashboard" />
-        <activity android:name="com.example.itifighter.LiveTestHomeActivity"/>
-        <activity android:name=".PaytmPayment"/>
+        <activity android:name=".LiveTestHomeActivity" />
+        <activity android:name=".PaytmPayment" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".Login" />
+
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,7 +66,5 @@
             </intent-filter>
         </activity>
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

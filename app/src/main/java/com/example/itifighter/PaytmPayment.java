@@ -357,33 +357,28 @@ public class PaytmPayment extends AppCompatActivity {
     private void setTransactionDetails(final Bundle bundle) {
         try {
             DocumentReference reference = FirebaseFirestore.getInstance().collection("users").document(Uid)
-                    .collection("transaction").document(currentSection).collection(currentSubject)
-                    .document(currentChapter).collection("transaction")
+                    .collection("transaction").document(currentSection).collection("TXNID")
                     .document(Objects.requireNonNull(bundle.getString("TXNID")));
             final String TXNDATE = bundle.getString("TXNDATE");
             Map<String,String> map = new HashMap<>();
             Set<String> d = bundle.keySet();
             for (String key : d) map.put(key, bundle.getString(key));
+            map.put("currentSubject",currentSubject);
+            map.put("currentChapter",currentChapter);
             reference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     if(Objects.equals(bundle.getString("STATUS"), "TXN_SUCCESS")) setSuccessProductDetails(TXNDATE);
-                    else {
-
-                        Toast.makeText(PaytmPayment.this,"Transaction failed",Toast.LENGTH_SHORT).show();
-                    }
-
+                    else{ Toast.makeText(PaytmPayment.this,"Transaction failed",Toast.LENGTH_SHORT).show(); }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-
                     Toast.makeText(PaytmPayment.this,"Transaction insertion failure",Toast.LENGTH_SHORT).show();
                 }
             });
         }
         catch (Exception e){
-
             e.printStackTrace();
             Toast.makeText(PaytmPayment.this,"Exception in data saving",Toast.LENGTH_SHORT).show();
         }
@@ -391,26 +386,24 @@ public class PaytmPayment extends AppCompatActivity {
 	private void setSuccessProductDetails(final String TXNDATE) {
 		try {
 			final DocumentReference reference = FirebaseFirestore.getInstance().collection("users").document(Uid)
-                    .collection("Products").document(currentSection)
-                    .collection(currentSubject).document(currentChapter);
+                    .collection("Products").document(currentSection).collection("ProductId").document(currentChapter);
             final Map<String, String> map = new HashMap<>();
             reference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     String oldDate = documentSnapshot.getString("ExpiryDate");
                     if(oldDate!=null && getDateAfter(oldDate,TXNDATE)) map.put("ExpiryDate",getExpiryDate(oldDate));
-                    else map.put("ExpiryDate",getExpiryDate(TXNDATE));
+                    else { map.put("ExpiryDate",getExpiryDate(TXNDATE)); }
+                    map.put("currentSubject",currentSubject);
                     reference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(PaytmPayment.this,"Transaction successfully done",Toast.LENGTH_SHORT).show();
-
                             finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-
                             Toast.makeText(PaytmPayment.this,"contact customer support",Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -418,13 +411,11 @@ public class PaytmPayment extends AppCompatActivity {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-
                     Toast.makeText(PaytmPayment.this,"Failure product transaction",Toast.LENGTH_SHORT).show();
                 }
             });
 		}
 		catch(Exception e){
-
 			e.printStackTrace();
 			Toast.makeText(PaytmPayment.this,"Exception in setSuccessProductDetails",Toast.LENGTH_SHORT).show();
 		}

@@ -7,18 +7,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.itifighter.TestSeriesX.CustomListItemX;
+import com.example.itifighter.TestSeriesX.CustomListItemY;
+import com.example.itifighter.TestSeriesX.CustomListViewArrayAdapterY;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MyTestSeries extends Fragment {
     private ArrayList<CustomListItemX> Chapters;
     private ListView listView;
     private FirebaseFirestore db;
     private Context mContext;
+    private String Uid = FirebaseAuth.getInstance().getUid();
+    private ArrayList<CustomListItemY> ProductData;
 
 
     public MyTestSeries() {}
@@ -33,38 +44,37 @@ public class MyTestSeries extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View mtView = inflater.inflate(R.layout.fragment_my_test_series, container, false);
-        //listView = mtView.findViewById(R.id.testxtRecycle);
-        //LoadChapters();
+        listView = mtView.findViewById(R.id.testmtRecycle);
+        LoadChapters();
         return mtView;
     }
-  /*  void LoadChapters(){
-        db.collection("section").document("ts").collection("branch").document(currentSubject).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
+
+    void LoadChapters(){
+        db.collection("users").document(Uid)
+                .collection("Products").document("ts")
+                .collection("ProductId")
+        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    Chapters = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        Chapters.add(new CustomListItemX(document.getString("name"), document.getString("test"), "ts",document.getId(),document.getString("month1"),document.getString("month2"),document.getString("month3"),document.getString("price1"),document.getString("price2"),document.getString("price3"),document.getString("discount1"),document.getString("discount2"),document.getString("discount3")));
+                if(task.isSuccessful()){
+                    ProductData = new ArrayList<>();
+                    for(QueryDocumentSnapshot queryDocumentSnapshot : Objects.requireNonNull(task.getResult())){
+                        ProductData.add(new CustomListItemY(queryDocumentSnapshot.getString("currentSubject"),
+                                queryDocumentSnapshot.getId(),queryDocumentSnapshot.getString("ExpiryDate")));
                     }
-                    ArrayAdapter<CustomListItemX> adapter = new CustomListViewArrayAdapterX(mContext,
-                            0,
-                            Chapters,);
-                    listView.setAdapter(adapter);
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            Toast.makeText(getContext(), "Go to MyTest Series Section", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    listView.setAdapter( new CustomListViewArrayAdapterY(mContext,0,ProductData));
                 }
             }
         });
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        getProductDetails();
+    }
 
+    private void getProductDetails() {
 
-
-
-
-    }*/
+    }
 }

@@ -99,4 +99,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 }

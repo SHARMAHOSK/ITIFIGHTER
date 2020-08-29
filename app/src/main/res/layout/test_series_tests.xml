@@ -15,26 +15,46 @@
         tools:layout_editor_absoluteY="0dp">
 
         <Button
-            android:id="@+id/buttonxyz"
+        android:id="@+id/buttonTestStart"
+        android:layout_width="60dp"
+        android:layout_height="20dp"
+        android:background="@drawable/button_gradient"
+        android:shadowColor="@color/silver"
+        android:text="@string/start"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:layout_marginEnd="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/testxyzscore"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/testxyzscore"
+        tools:ignore="SmallSp" />
+
+        <Button
+            android:id="@+id/buttonTestResult"
             android:layout_width="60dp"
             android:layout_height="20dp"
-            android:background="@color/dark_blue"
+            android:background="@drawable/button_gradient"
             android:shadowColor="@color/silver"
-            android:text="Start"
+            android:text="@string/result"
             android:textColor="@color/white"
             android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="@+id/testxyzscore"
+            android:layout_marginEnd="10sp"
+            app:layout_constraintStart_toStartOf="@+id/buttonTestStart"
+            app:layout_constraintBottom_toTopOf="@+id/buttonTestStart"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/testxyzscore"
-            app:layout_constraintTop_toTopOf="@+id/testxyzscore"
+            android:layout_marginBottom="5sp"
             tools:ignore="SmallSp" />
+
 
         <TextView
             android:id="@+id/testxyzquetion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="50quetion"
             android:textSize="12sp"
+            android:textColor="#005da2"
+            android:textStyle="bold"
+            android:layout_marginBottom="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/testxyztitle"
             app:layout_constraintTop_toBottomOf="@+id/testxyztitle"
             tools:ignore="SmallSp" />
@@ -44,8 +64,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:text="30 minute"
             android:textSize="12sp"
+            android:textColor="#005da2"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/testxyzquetion"
             app:layout_constraintStart_toEndOf="@+id/testxyzquetion"
             app:layout_constraintTop_toTopOf="@+id/testxyzquetion"
             tools:ignore="SmallSp" />
@@ -55,8 +77,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:text="100 marks"
             android:textSize="12sp"
+            android:textColor="#005da2"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/testxyztime"
             app:layout_constraintStart_toEndOf="@+id/testxyztime"
             app:layout_constraintTop_toTopOf="@+id/testxyztime"
             tools:ignore="SmallSp" />
@@ -67,8 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="1sp"
-            android:text="@string/title"
+            android:layout_marginTop="5sp"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"

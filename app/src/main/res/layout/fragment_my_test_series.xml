@@ -6,12 +6,10 @@
     tools:context=".MyTestSeries">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ListView
+        android:id="@+id/testmtRecycle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textAlignment="center"
-        android:text="My Test Series"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
+        android:layout_marginTop="5dp"
+        tools:listitem="@layout/test_series_tests" />
 </FrameLayout>

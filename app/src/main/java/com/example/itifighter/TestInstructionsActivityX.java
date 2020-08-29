@@ -40,22 +40,25 @@ public class TestInstructionsActivityX extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         String currentSubject = getIntent().getStringExtra("currentSubject");
         String currentChapter = getIntent().getStringExtra("currentChapter");
-        String position = getIntent().getStringExtra("position");
+        String currentTest = getIntent().getStringExtra("currentTest");
         assert currentChapter != null;
         assert currentSubject != null;
-        assert position != null;
-        db.collection("section").document("ts").collection("branch").document(currentSubject).collection("exam").document(currentChapter).collection("tests").document(position).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        assert currentTest != null;
+        db.collection("section").document("ts").collection("branch").document(currentSubject).collection("exam").document(currentChapter).collection("tests").document(currentTest).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    quetion = Objects.requireNonNull(Objects.requireNonNull(task.getResult()).get("qutions")).toString();
-                    marks = Objects.requireNonNull(task.getResult().get("score")).toString();
-                    time = Objects.requireNonNull(task.getResult().get("duration")).toString();
-                    testName = Objects.requireNonNull(task.getResult().get("name")).toString();
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    quetion = documentSnapshot.getString("qutions");
+                    marks = documentSnapshot.getString("score");
+                    time = documentSnapshot.getString("duration");
+                    testName = documentSnapshot.getString("name");
+                    if(documentSnapshot==null)Toast.makeText(TestInstructionsActivityX.this,"null value",Toast.LENGTH_SHORT).show();
+                    else Toast.makeText(TestInstructionsActivityX.this,quetion+marks+time+testName,Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        db.collection("section").document("ts").collection("branch").document(currentSubject).collection("chapter").document(currentChapter).collection("tests").document(position).collection("quetions").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("ts").collection("branch").document(currentSubject).collection("chapter").document(currentChapter).collection("tests").document(currentTest).collection("quetions").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
@@ -70,17 +73,16 @@ public class TestInstructionsActivityX extends AppCompatActivity {
                 }
             }
         });
-
         tQues = findViewById(R.id.TQuesX);
         tMarks = findViewById(R.id.TMarksY);
         tMin = findViewById(R.id.TMinZ);
         examTitle = findViewById(R.id.examTitle);
-        tQues.setText(quetion);
-        tMarks.setText(Integer.parseInt(quetion)*Integer.parseInt(marks));
-        tMin.setText(time);
+        tQues.setText("50");
+        tMarks.setText("10");
+        tMin.setText("20");
         instructionTV = findViewById(R.id.InstructionText);
         insCB = findViewById(R.id.InsCBX);
-        examTitle.setText(testName);
+        examTitle.setText("ibps");
         instructionTV.setText("Read each question carefully.\n" +
                 "You cannot skip a question. You must provide an answer to each question to proceed with the test.\n" +
                 "Once answered, you cannot go back to a question. You will be given an opportunity to review questions at the end of the test.\n" +

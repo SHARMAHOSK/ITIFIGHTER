@@ -17,9 +17,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.itifighter.TestSeriesX.CustomListItemX;
-import com.example.itifighter.TestSeriesX.CustomListItemY;
 import com.example.itifighter.TestSeriesX.CustomListViewArrayAdapterX;
-import com.example.itifighter.TestSeriesX.CustomListViewArrayAdapterY;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,16 +31,14 @@ import static android.content.ContentValues.TAG;
 
 public class TestSeries extends Fragment {
 
-    private String currentSubject,currentChapter;
+    private String currentSubject;
     private ArrayList<CustomListItem> Subjects;
     private ArrayList<CustomListItemX> Chapters;
-    private ArrayList<CustomListItemY> Tests;
     private ListView listView;
     private FirebaseFirestore db;
     private Context mContext;
-    private ArrayList<String> SubjectId,ChapterId,TestId;
-    private String nn;
-    public TestSeries() {}
+    private ArrayList<String> SubjectId,ChapterId;
+    public TestSeries() { }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +55,8 @@ public class TestSeries extends Fragment {
     }
 
     void LoadSubjects(){
-        nn="Subjects";
-        db.collection("section").document("ts").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("ts")
+                .collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -92,8 +88,9 @@ public class TestSeries extends Fragment {
         });
     }
     void LoadChapters(){
-        nn="Subjects";
-        db.collection("section").document("ts").collection("branch").document(currentSubject).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("ts")
+                .collection("branch").document(currentSubject)
+                .collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -118,7 +115,7 @@ public class TestSeries extends Fragment {
             }
         });
     }
-    private void LoadExams() {
+    /*private void LoadExams() {
         Toast.makeText(mContext,"kzs,ls0",Toast.LENGTH_SHORT).show();
         db.collection("section").document("ts").collection("branch").document(currentSubject).collection("exam").document(currentChapter).collection("tests").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -136,6 +133,5 @@ public class TestSeries extends Fragment {
                 }
                 else LoadExams();
             }
-        });
+        });*/
     }
-}

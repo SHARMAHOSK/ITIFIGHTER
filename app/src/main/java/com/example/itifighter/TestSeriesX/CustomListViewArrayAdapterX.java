@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -82,20 +83,26 @@ public class CustomListViewArrayAdapterX extends ArrayAdapter<CustomListItemX> {
         TextView price = view.findViewById(R.id.testxytprice);
         final Button b = view.findViewById(R.id.buttonxy);
         final TextView counterTime = view.findViewById(R.id.counterTime);
-        b.setVisibility(View.INVISIBLE);
-        DocumentReference reference = FirebaseFirestore.getInstance().collection("users").document(Uid).collection(property.getImagex()).document(property.getTopicHeader());
-
+        DocumentReference reference = FirebaseFirestore.getInstance().collection("users").document(Uid).collection("Products")
+                .document(property.getImagex()).collection("ProductId").document(ChapterId.get(position));
         reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     DocumentSnapshot documentSnapshot = task.getResult();
                     if(documentSnapshot!=null && documentSnapshot.exists()){
-                        b.setVisibility(View.INVISIBLE);
-                        startCounter(documentSnapshot.getString("ExpiryDate"),counterTime);
+                       b.setText("Go");
+                       b.animate().scaleX(1);
+                       b.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               Toast.makeText(getContext(),"button clicked",Toast.LENGTH_SHORT).show();
+                           }
+                       });
+                       startCounter(documentSnapshot.getString("ExpiryDate"),counterTime);
                     }
                     else{
-                        b.setVisibility(View.VISIBLE);
+                        b.setText("Buy");
                         b.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -131,11 +138,12 @@ public class CustomListViewArrayAdapterX extends ArrayAdapter<CustomListItemX> {
                         .into(thumbNail);
             }
         }
-        if(property.getTest() != null)test.setText(property.getTest());
-        else test.setText("0");
-        duration.setText(property.getMonth1()+"months");
-        price.setText(String.valueOf(property.getPrice1()));
+        if(property.getTest() != null) test.setText(property.getTest()+ " Test");
+        else test.setText("0 Test");
+        duration.setText(property.getMonth1()+" months");
+        price.setText(property.getPrice1()+" \u20B9");
         return view;
+
     }
 
 
@@ -154,13 +162,13 @@ public class CustomListViewArrayAdapterX extends ArrayAdapter<CustomListItemX> {
                         assert futureDate != null;
                         long diff = futureDate.getTime() - currentDate.getTime();
                         long days = diff / (24 * 60 * 60 * 1000);
-                        diff -= days * (24 * 60 * 60 * 1000);
+                        /*diff -= days * (24 * 60 * 60 * 1000);
                         long hours = diff / (60 * 60 * 1000);
                         diff -= hours * (60 * 60 * 1000);
                         long minutes = diff / (60 * 1000);
                         diff -= minutes * (60 * 1000);
-                        long seconds = diff / 1000;
-                        String counter = "Expire in " + String.format("%02d", days) + " Days " + String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+                        long seconds = diff / 1000;*/
+                        String counter = "Expire in " + String.format("%02d", days) + " Days " /*+ String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds)*/;
                         counterTime.setText(counter);
                     } else {
                         textViewGone();
