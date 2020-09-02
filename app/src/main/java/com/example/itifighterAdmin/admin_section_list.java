@@ -9,7 +9,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.itifighter.MainActivity;
 import com.example.itifighter.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,7 @@ public class admin_section_list extends AppCompatActivity {
         listItems.add("Daily Live Test");
         listItems.add("Test Series");
         listItems.add("Other Details");
+        listItems.add("Logout");
 
         adapter=new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
@@ -44,6 +47,10 @@ public class admin_section_list extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+                if(position == 5){
+                    logout();
+                    return;
+                }
                 String target = "pp";
                 switch(position){
                     case 0:
@@ -72,5 +79,12 @@ public class admin_section_list extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void logout() {
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseAuth.signOut();
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 }
