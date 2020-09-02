@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.itifighterAdmin.admin_feedbackDetails">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Submitted on:"
+            android:layout_weight="0.75"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/feedbackDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.25"
+            android:textSize="25sp"
+            android:text="date here..."/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Submitted by:"
+            android:layout_weight="0.75"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/feedbackStudent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.25"
+            android:textSize="25sp"
+            android:text="name here..."/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Issue:"
+            android:layout_weight="0.75"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/feedbackIssue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.25"
+            android:textSize="25sp"
+            android:text="issue here..."/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Issue:"
+            android:layout_weight="0.75"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/feedbackQues"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.25"
+            android:textSize="25sp"
+            android:text="question here..."/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Section:"
+            android:layout_weight="0.75"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/feedbackSection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.25"
+            android:textSize="25sp"
+            android:text="section here..."/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Subject:"
+            android:layout_weight="0.75"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/feedbackSubject"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.25"
+            android:textSize="25sp"
+            android:text="subject here..."/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/feedbackTestChapHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Issue:"
+            android:layout_weight="0.75"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/feedbackTestChap"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.25"
+            android:textSize="25sp"
+            android:text="test/chapter here..."/>
+    </LinearLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

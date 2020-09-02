@@ -7,13 +7,26 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+
+import com.example.itifighter.IOnBackPressed;
 import com.example.itifighter.MyAdapter;
 import com.example.itifighter.R;
 import com.google.android.material.tabs.TabLayout;
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements IOnBackPressed {
 
     private ViewPager viewPager;
+    MyAdapter adapter;
     TabLayout tabLayout;
+
+    @Override
+    public boolean onBackPressed() {
+        Fragment fragment =  adapter.getItem(viewPager.getCurrentItem());
+        if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
+            return false;
+        }
+        return true;
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_menu_home, container, false);
@@ -26,7 +39,7 @@ public class HomeFragment extends Fragment {
         tabLayout.addTab(tabLayout.newTab().setText("My Test Series"));
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        final MyAdapter adapter = new MyAdapter(getFragmentManager(),
+        adapter = new MyAdapter(getFragmentManager(),
                 tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

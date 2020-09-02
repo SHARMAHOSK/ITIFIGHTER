@@ -33,6 +33,7 @@ public class admin_section_list extends AppCompatActivity {
         listItems.add("Mock Tests");
         listItems.add("Daily Live Test");
         listItems.add("Test Series");
+        listItems.add("Other Details");
 
         adapter=new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
@@ -57,12 +58,15 @@ public class admin_section_list extends AppCompatActivity {
                     case 3:
                         target = "ts";
                         break;
+                    case 4:
+                        target = "od";
+                        break;
                 }
                 Intent intent;
-                /*if(target == "lt"){
-                    intent = new Intent(admin_section_list.this, admin_live_test.class);*//*
-                }else*/{
-                     intent = new Intent(admin_section_list.this, admin_subject_list.class);
+                if(target == "od"){
+                    intent = new Intent(admin_section_list.this, admin_other_details.class);
+                }else{
+                    intent = new Intent(admin_section_list.this, admin_subject_list.class);
                     intent.putExtra("section", target);
                 }
                 startActivity(intent);

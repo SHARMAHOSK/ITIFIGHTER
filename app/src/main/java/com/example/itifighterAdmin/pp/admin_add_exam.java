@@ -45,26 +45,24 @@ public class admin_add_exam extends AppCompatActivity {
             return;
         }
 
-        DocumentReference reference = mDatabaseReference.document("00"+(count+1));
+        /*DocumentReference reference = mDatabaseReference.document("00"+(count+1));*/
         Map<String,String> branch = new HashMap<>();
         branch.put("Name", name.getText().toString().trim());
         branch.put("description", desc.getText().toString().trim().length() > 0 ? desc.getText().toString().trim() : "--");
         branch.put("Image", "");
-        reference.set(branch).addOnSuccessListener(new OnSuccessListener<Void>() {
+        /*reference.set(branch)*/
+        mDatabaseReference.add(branch).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
-            public void onSuccess(Void aVoid) {
+            public void onSuccess(DocumentReference documentReference) {
                 Log.d("Success", "exam added with name: " + name.getText().toString());
                 Toast.makeText(admin_add_exam.this, "exam added with name: " + name.getText().toString(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();
-                intent.putExtra("subject", getIntent().getStringExtra("subject"));
+                /*intent.putExtra("subject", getIntent().getStringExtra("subject"));*/
                 //startActivity(intent);
-                intent.putExtra("newExam", name.getText().toString());
+                /*intent.putExtra("newExam", name.getText().toString());*/
                 setResult(RESULT_OK, intent);
                 finish();
             }
         });
-
-
-
     }
 }

@@ -1,10 +1,12 @@
 package com.example.itifighter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -28,7 +30,7 @@ import static android.content.ContentValues.TAG;
  * Use the {@link PreviousPaper#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PreviousPaper extends Fragment {
+public class PreviousPaper extends Fragment implements IOnBackPressed {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,7 +46,7 @@ public class PreviousPaper extends Fragment {
 
     private ArrayList<CustomListItem> Subjects, Exams;
     private ListView listView;
-    private ArrayList<String> PdfS, pdfFile, SubjectIds;
+    private ArrayList<String> PdfS, pdfFile, SubjectIds, ExamIds;
 
     private View ppView;
     private FirebaseFirestore db;
@@ -105,6 +107,7 @@ public class PreviousPaper extends Fragment {
     }
 
     void LoadSubjects(final View _ppView){
+        currentLayer = 0;
         db.collection("section").document("pp").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -156,14 +159,17 @@ public class PreviousPaper extends Fragment {
     }
 
     void LoadExams(final View __ppView){
+        currentLayer = 1;
         db.collection("section").document("pp").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     /*examList = new ArrayList<>();*/
                     Exams = new ArrayList<>();
+                    ExamIds = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         /*examList.add(document.getString("Name"));*/
+                        ExamIds.add(document.getId());
                                             Exams.add(new CustomListItem(document.getString("Name"),
                                         document.getString("description"),
                                         /*document.getDouble("Price")*/0.00,
@@ -202,8 +208,9 @@ public class PreviousPaper extends Fragment {
     }
 
     void LoadPdfS(final View _ppView){
+        currentLayer = 2;
         /*db.collection("branch/00"+(currentSubjectPos+1)+"/exam/00"+(currentExamPos+1)+"/pdf")*/
-        db.collection("section").document("pp").collection("branch/"+SubjectIds.get(currentSubjectPos)+"/exam").document("00"+(currentExamPos+1)).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("pp").collection("branch/"+SubjectIds.get(currentSubjectPos)+"/exam").document(/*"00"+(currentExamPos+1)*/ExamIds.get(currentExamPos)).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -240,6 +247,20 @@ public class PreviousPaper extends Fragment {
     private void CustomizeView(final View _ppView) {
         //TextView tv = _ppView.findViewById(R.id.ppTextView);
         LoadSubjects(_ppView);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        switch (currentLayer){
+            case 1:
+                LoadSubjects(ppView);
+                return true;
+            case 2:
+                LoadExams(ppView);
+                return true;
+            default:
+                return false;
+        }
     }
 
     /*private int getExamCount(String id) {

@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.itifighterAdmin.Question;
-import com.example.itifighterAdmin.admin_section_list;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -27,6 +26,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,10 +119,11 @@ public class TestResultActivity extends AppCompatActivity {
                     return;
                 }
                 if (snapshot != null && snapshot.exists()) {
+                    final String studentName = snapshot.getString("Name");
                     //Log.d(TAG, "Current data: " + snapshot.getData());
                     Map<String, String> scoreboard = new HashMap<>();
                     scoreboard.put("Score", ""+(tca * _mpq));
-                    scoreboard.put("name", ""+snapshot.getString("Name"));
+                    scoreboard.put("name", ""+studentName);
                     DocumentReference reference = mDatabaseReference.document(""+ uuid);
                     reference.set(scoreboard).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -130,7 +131,7 @@ public class TestResultActivity extends AppCompatActivity {
                             Toast.makeText(TestResultActivity.this, "score uploaded in database for user: "+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
                             marksUploaded = true;
                             //((TextView)findViewById(R.id.UploadingTXT)).setText("uploading feedback, please wait..");
-                            CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("feedback");
+                            CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("common").document("post test").collection("feedback");
                             feedbackBasePath.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -144,6 +145,8 @@ public class TestResultActivity extends AppCompatActivity {
                                                 _fb.put("issue", feedbackOptions[selectedFeedbackOption[i]]);
                                                 _fb.put("section", targetSection);
                                                 _fb.put("subject", targetSubject);
+                                                _fb.put("student", studentName);
+                                                _fb.put("date", ""+Calendar.getInstance().getTimeInMillis());
                                                 if(targetSection == "lt"){
                                                     _fb.put("testID", getIntent().getStringExtra("tid"));
                                                 }else{
