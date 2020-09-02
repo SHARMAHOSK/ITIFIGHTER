@@ -170,11 +170,8 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         /*examList.add(document.getString("Name"));*/
                         ExamIds.add(document.getId());
-                                            Exams.add(new CustomListItem(document.getString("Name"),
-                                        document.getString("description"),
-                                        /*document.getDouble("Price")*/0.00,
-                                        document.getString("Image"),
-                                        /*getExamCount(document.getId())*/5, "pp"));
+                                            Exams.add(new CustomListItem(document.getString("name"),
+                                        document.getString("desc"), "pp/chapter"));
                         /*Exams.add(new CustomListItem(document.getString("Name"),
                                 "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
                                 0.00, "sample_fitter_background", 4));*/

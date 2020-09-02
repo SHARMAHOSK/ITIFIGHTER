@@ -59,13 +59,16 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
         topicHeader.setText(property.getTopicHeader());
         mmFirebaseStorageRef=mFirebaseStorage.getReference().child("menu/section/"+property.getImagex()+"/");
         // thumbnail image
-        if(property.getImageUrl() != null){
+        /*if(property.getImageUrl() != null){
             if(property.getImageUrl().trim().length() > 0){
                 Glide.with(context)
-                        .load(mmFirebaseStorageRef.child( /*"cccc.png"*/ property.getImageUrl()+".png"))
+                        .load(mmFirebaseStorageRef.child( *//*"cccc.png"*//* property.getImageUrl()+".png"))
                         .into(thumbNail);
             }
-        }
+        }*/
+        Glide.with(context)
+                .load(mmFirebaseStorageRef.child( /*"cccc.png"*/ ""+property.getTopicHeader()/*+".png"*/))
+                .into(thumbNail);
         //display trimmed excerpt for description
 
         if(property.getDescription() != null){

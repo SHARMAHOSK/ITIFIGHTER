@@ -1,39 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:weightSum="100"
+    android:orientation="vertical"
     tools:context="com.example.itifighterAdmin.pp.admin_add_exam">
 
     <EditText
         android:id="@+id/NewExamName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_height="0dp"
         android:background="#00000000"
         android:hint="exam name"
         android:textColor="#FFFFFF"
         android:textColorHint="#C0C0C0"
+        android:layout_weight="35"
         android:textSize="20sp" />
 
     <EditText
         android:id="@+id/NewExamDesc"
         android:layout_width="match_parent"
-        android:layout_height="194dp"
-        android:layout_below="@+id/NewExamName"
-        android:layout_marginTop="28dp"
+        android:layout_height="0dp"
         android:background="#00000000"
         android:hint="exam desc"
         android:textColor="#FFFFFF"
         android:textColorHint="#C0C0C0"
+        android:layout_weight="35"
         android:textSize="20sp" />
+
+    <ImageButton
+        android:id="@+id/AddExamPPImage"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="15"
+        android:layout_gravity="center"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:onClick="PickNewExamPPImage"/>
 
     <Button
         android:id="@+id/SaveNewExam"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_below="@+id/NewExamDesc"
-        android:text="Button"
+        android:text="Save"
+        android:layout_weight="15"
         android:onClick="SaveNewExam"/>
-</RelativeLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

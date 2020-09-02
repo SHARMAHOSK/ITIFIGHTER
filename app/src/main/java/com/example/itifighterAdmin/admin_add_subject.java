@@ -56,7 +56,8 @@ public class admin_add_subject extends AppCompatActivity {
         if(count < 0)
             return;
         Intent intent = new Intent();
-        intent.setType("image/*");
+        /*intent.setType("image/*");*/
+        intent.setType("image/png");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
@@ -95,7 +96,7 @@ public class admin_add_subject extends AppCompatActivity {
 
                         try {
                             Glide.with(getApplicationContext())
-                                    .load(mStorageReference.child(Constants.STORAGE_PATH_LOGOS + subImgName))
+                                    .load(mStorageReference.child(Constants.STORAGE_PATH_LOGOS+""+getIntent().getStringExtra("section")+"/" + subImgName))
                                     .into(subImg);
                         } catch (Exception ex) {
                             ex.printStackTrace();

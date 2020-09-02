@@ -121,7 +121,7 @@ public class admin_pp_list extends AppCompatActivity {
                     Exams = new ArrayList<>();
                     ExamIds = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Exams.add(""+document.getString("Name"));
+                        Exams.add(""+document.getString("name"));
                         ExamIds.add((""+document.getId()));
                     }
                     count = Exams.size();
@@ -147,7 +147,9 @@ public class admin_pp_list extends AppCompatActivity {
             return;
         Intent intent = new Intent(admin_pp_list.this, admin_add_exam.class);
         intent.putExtra("count", count);
+        intent.putExtra("section", "pp");
         intent.putExtra("subject", getIntent().getStringExtra("subject"));
+
         startActivityForResult(intent, 1);
     }
 
