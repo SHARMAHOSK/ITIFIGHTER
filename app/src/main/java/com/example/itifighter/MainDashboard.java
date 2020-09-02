@@ -142,7 +142,7 @@ public class MainDashboard extends AppCompatActivity {
     private void logout() {
         FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseAuth.signOut();
-        startActivity(new Intent(this,MainActivity.class));
+        startActivity(new Intent(this,Login.class));
         finish();
     }
 
