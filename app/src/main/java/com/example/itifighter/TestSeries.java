@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -38,6 +39,9 @@ public class TestSeries extends Fragment {
     private FirebaseFirestore db;
     private Context mContext;
     private ArrayList<String> SubjectId,ChapterId;
+
+    private int currentLayer = 0;   //0=subjects, 1=chapters
+    private View progressOverlay;
     public TestSeries() { }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,13 +52,31 @@ public class TestSeries extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View mtView = inflater.inflate(R.layout.fragment_test_series, container, false);
+        final View mtView = inflater.inflate(R.layout.fragment_test_series, container, false);
         listView = mtView.findViewById(R.id.testxtRecycle);
+        progressOverlay = mtView.findViewById(R.id.progress_overlay);
+        ((Button)mtView.findViewById(R.id.CustomBackButtonTS)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CustomBackButton();
+            }
+        });
         LoadSubjects();
         return mtView;
     }
 
+    public void CustomBackButton(){
+        switch (currentLayer){
+            case 1:
+                LoadSubjects();
+/*            case 2:
+                LoadChapters();*/
+        }
+    }
+
     void LoadSubjects(){
+        currentLayer = 0;
+        progressOverlay.setVisibility(View.VISIBLE);
         db.collection("section").document("ts")
                 .collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -72,6 +94,7 @@ public class TestSeries extends Fragment {
                     }
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
                     listView.setAdapter(adapter);
+                    progressOverlay.setVisibility(View.GONE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
@@ -88,6 +111,8 @@ public class TestSeries extends Fragment {
         });
     }
     void LoadChapters(){
+        progressOverlay.setVisibility(View.VISIBLE);
+        currentLayer = 1;
         db.collection("section").document("ts")
                 .collection("branch").document(currentSubject)
                 .collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -105,6 +130,7 @@ public class TestSeries extends Fragment {
                             0,
                             Chapters,currentSubject,ChapterId);
                     listView.setAdapter(adapter);
+                    progressOverlay.setVisibility(View.GONE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

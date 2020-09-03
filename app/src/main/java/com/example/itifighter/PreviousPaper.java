@@ -1,28 +1,28 @@
 package com.example.itifighter;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -48,7 +48,7 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
     private ListView listView;
     private ArrayList<String> PdfS, pdfFile, SubjectIds, ExamIds;
 
-    private View ppView;
+    private View ppView, progressOverlay;
     private FirebaseFirestore db;
 
     private Context mContext;
@@ -90,6 +90,15 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
        mContext = getContext();
     }
 
+    public void CustomBackButton(){
+        switch (currentLayer){
+            case 1:
+                LoadSubjects(ppView);
+            case 2:
+                LoadExams(ppView);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -102,12 +111,20 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
         //SHOW LOADING IF IT ISNT ALREADY VISIBLE
         //this.spinner.setVisibility(View.VISIBLE);
         listView = (ListView) ppView.findViewById(R.id.branch_list);
+        progressOverlay = ppView.findViewById(R.id.progress_overlay);
+        ((Button)ppView.findViewById(R.id.CustomBackButtonPP)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CustomBackButton();
+            }
+        });
         CustomizeView(ppView);
         return ppView;
     }
 
     void LoadSubjects(final View _ppView){
         currentLayer = 0;
+        progressOverlay.setVisibility(View.VISIBLE);
         db.collection("section").document("pp").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -138,6 +155,7 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
 
                     /*listView = (ListView) _ppView.findViewById(R.id.branch_list);*/
                     listView.setAdapter(adapter);
+                    progressOverlay.setVisibility(View.GONE);
 
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -159,6 +177,7 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
     }
 
     void LoadExams(final View __ppView){
+        progressOverlay.setVisibility(View.VISIBLE);
         currentLayer = 1;
         db.collection("section").document("pp").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -185,6 +204,7 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
                                         /*examListView = (ListView) _ppView.findViewById(R.id.branch_list);
                                         examListView.setAdapter(adapter);*/
                     listView.setAdapter(adapter);
+                    progressOverlay.setVisibility(View.GONE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
@@ -205,6 +225,7 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
     }
 
     void LoadPdfS(final View _ppView){
+        progressOverlay.setVisibility(View.VISIBLE);
         currentLayer = 2;
         /*db.collection("branch/00"+(currentSubjectPos+1)+"/exam/00"+(currentExamPos+1)+"/pdf")*/
         db.collection("section").document("pp").collection("branch/"+SubjectIds.get(currentSubjectPos)+"/exam").document(/*"00"+(currentExamPos+1)*/ExamIds.get(currentExamPos)).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -220,6 +241,7 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
                     ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                             R.layout.activity__branch_list_view, PdfS);
                     listView.setAdapter(adapter);
+                    progressOverlay.setVisibility(View.GONE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,

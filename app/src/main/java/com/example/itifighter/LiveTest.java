@@ -34,6 +34,9 @@ public class LiveTest extends Fragment {
     ArrayList<String> SubjectID = new ArrayList<>();
     private ListView listView;
 
+    /*private int currentLayer = 0;   //0=subjects, 1=chapters*/
+    private View progressOverlay;
+
     public LiveTest() {
         // Required empty public constructor
     }
@@ -50,13 +53,29 @@ public class LiveTest extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View ltView = inflater.inflate(R.layout.fragment_live_test, container, false);
+        final View ltView = inflater.inflate(R.layout.fragment_live_test, container, false);
         listView = ltView.findViewById(R.id.lt_branch_list);
+        progressOverlay = ltView.findViewById(R.id.progress_overlay);
+        /*((Button)ltView.findViewById(R.id.CustomBackButtonLT)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CustomBackButton(ltView);
+            }
+        });*/
         CustomizeView(ltView);
         return ltView;
     }
 
+    /*public void CustomBackButton(View _ltView){
+        switch (currentLayer){
+            case 1:
+                LoadSubjects(_ltView);
+        }
+    }*/
+
     void LoadSubjects(final View _ltView){
+        /*currentLayer = 0;*/
+        progressOverlay.setVisibility(View.VISIBLE);
         db.collection("section").document("lt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -81,7 +100,7 @@ public class LiveTest extends Fragment {
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
 
                     listView.setAdapter(adapter);
-
+                    progressOverlay.setVisibility(View.GONE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,

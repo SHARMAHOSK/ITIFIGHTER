@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -39,7 +40,7 @@ public class MockTest extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private int currentLayer = 0;   //0=subjects, 1=exams, 2=pdfS
+    private int currentLayer = 0;   //0=subjects, 1=chapters
     private int currentSubjectPos = 0, currentChapterPos = 0;   //records which item was clicked in previous list
 
     private ArrayList<CustomListItem> Subjects, Chapters;
@@ -47,7 +48,7 @@ public class MockTest extends Fragment {
     private ArrayList<Question> questions;
     private ListView listView;
 
-    private View mtView;
+    private View mtView, progressOverlay;
     private FirebaseFirestore db;
 
     int _mpq, timer;
@@ -105,11 +106,29 @@ public class MockTest extends Fragment {
         //SHOW LOADING IF IT ISNT ALREADY VISIBLE
         //this.spinner.setVisibility(View.VISIBLE);
         listView = (ListView) mtView.findViewById(R.id.mt_branch_list);
+        progressOverlay = mtView.findViewById(R.id.progress_overlay);
+        ((Button)mtView.findViewById(R.id.CustomBackButtonMT)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CustomBackButton();
+            }
+        });
         CustomizeView(mtView);
         return mtView;
     }
 
+    public void CustomBackButton(){
+        switch (currentLayer){
+            case 1:
+                LoadSubjects(mtView);
+/*            case 2:
+                LoadChapters(mtView);*/
+        }
+    }
+
     void LoadSubjects(final View _mtView){
+        currentLayer = 0;
+        progressOverlay.setVisibility(View.VISIBLE);
         db.collection("section").document("mt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -141,7 +160,7 @@ public class MockTest extends Fragment {
 
                     /*listView = (ListView) _ppView.findViewById(R.id.branch_list);*/
                     listView.setAdapter(adapter);
-
+                    progressOverlay.setVisibility(View.GONE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
@@ -163,6 +182,8 @@ public class MockTest extends Fragment {
     }
 
     void LoadChapters(final View __mtView){
+        progressOverlay.setVisibility(View.VISIBLE);
+        currentLayer = 1;
         db.collection("section").document("mt").collection("branch").document("00"+(currentSubjectPos+1)).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -195,6 +216,7 @@ public class MockTest extends Fragment {
                                         /*examListView = (ListView) _ppView.findViewById(R.id.branch_list);
                                         examListView.setAdapter(adapter);*/
                     listView.setAdapter(adapter);
+                    progressOverlay.setVisibility(View.GONE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,

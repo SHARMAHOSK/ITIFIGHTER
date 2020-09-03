@@ -187,10 +187,10 @@ public class MainDashboard extends AppCompatActivity {
     }*/
 
     @Override public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.nav_home);
+        /*Fragment fragment = getSupportFragmentManager().findFragmentByTag(R.layout.fragment_menu_home);
         if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
             super.onBackPressed();
             finish();
-        }
+        }*/
     }
 }

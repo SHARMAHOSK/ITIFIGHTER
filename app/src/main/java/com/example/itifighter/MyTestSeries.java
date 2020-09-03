@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,9 @@ public class MyTestSeries extends Fragment {
     private String Uid = FirebaseAuth.getInstance().getUid();
     private ArrayList<CustomListItemY> ProductData;
 
+    private int currentLayer = 0;   //0=subjects, 1=chapters
+    private View progressOverlay;
+
 
     public MyTestSeries() {}
 
@@ -45,11 +49,29 @@ public class MyTestSeries extends Fragment {
                              Bundle savedInstanceState) {
         View mtView = inflater.inflate(R.layout.fragment_my_test_series, container, false);
         listView = mtView.findViewById(R.id.testmtRecycle);
+        progressOverlay = mtView.findViewById(R.id.progress_overlay);
+        /*((Button)mtView.findViewById(R.id.CustomBackButtonMTS)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CustomBackButton();
+            }
+        });*/
         LoadChapters();
         return mtView;
     }
 
+    /*public void CustomBackButton(){
+        switch (currentLayer){
+            case 1:
+                LoadSubjects();
+*//*            case 2:
+                LoadChapters();*//*
+        }
+    }*/
+
     void LoadChapters(){
+        currentLayer = 0;
+        progressOverlay.setVisibility(View.VISIBLE);
         db.collection("users").document(Uid)
                 .collection("Products").document("ts")
                 .collection("ProductId")
@@ -63,6 +85,7 @@ public class MyTestSeries extends Fragment {
                                 queryDocumentSnapshot.getId(),queryDocumentSnapshot.getString("ExpiryDate")));
                     }
                     listView.setAdapter( new CustomListViewArrayAdapterY(mContext,0,ProductData));
+                    progressOverlay.setVisibility(View.GONE);
                 }
             }
         });

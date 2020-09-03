@@ -7,10 +7,28 @@
     tools:context=".TestSeries"
     android:orientation="horizontal">
 
-    <ListView
+    <!--<ListView
         android:id="@+id/testxtRecycle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5dp"
-        tools:listitem="@layout/test_series_tests" />
+        tools:listitem="@layout/test_series_tests" />-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/CustomBackButtonTS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Back"/>
+        <ListView
+            android:id="@+id/testxtRecycle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            tools:listitem="@layout/test_series_tests" />
+    </LinearLayout>
+    <include layout="@layout/include_progress_overlay"/>
 </RelativeLayout>
