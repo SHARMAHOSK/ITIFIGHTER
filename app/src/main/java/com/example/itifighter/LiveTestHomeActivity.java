@@ -36,7 +36,7 @@ public class LiveTestHomeActivity extends AppCompatActivity {
     TextView countdown;
     CollectionReference colRef;
     private Context mContext;
-
+    private View progressOverlay;
     private ArrayList<Question> questions, these_questions;
     Button btnPrev, btnFuture;
 
@@ -52,7 +52,8 @@ public class LiveTestHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_test_home);
-
+        progressOverlay = findViewById(R.id.progress_overlay);
+        progressOverlay.setVisibility(View.VISIBLE);
         colRef = FirebaseFirestore.getInstance().collection("section").document("lt").collection("tests");
 
         listView = (ListView) findViewById(R.id.lt_prev_list);
@@ -188,12 +189,14 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                     ArrayAdapter adapter2 = new ArrayAdapter<String>(mContext,
                             R.layout.activity__branch_list_view, futureTests);
                     listView2.setAdapter(adapter2);
+                    progressOverlay.setVisibility(View.GONE);
                 }
             }
         });
     }
 
     public void StartLiveTest(){
+        progressOverlay.setVisibility(View.VISIBLE);
         questions = new ArrayList<>();
         FirebaseFirestore.getInstance().collection("section").document("lt").collection("tests").document(""+utID).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -212,9 +215,12 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                     myIntent.putExtra("_mpq", upcomingTest.marks);
                     myIntent.putExtra("timer", (upcomingTest.sTime/*+(upcomingTest.duration*60*1000)*/));
                     myIntent.putExtra("duration", upcomingTest.duration);
+                    myIntent.putExtra("title", upcomingTest.title);
                     myIntent.putExtra("tid", utID);
+                    progressOverlay.setVisibility(View.GONE);
                     startActivity(myIntent);
                 } else {
+                    progressOverlay.setVisibility(View.GONE);
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }

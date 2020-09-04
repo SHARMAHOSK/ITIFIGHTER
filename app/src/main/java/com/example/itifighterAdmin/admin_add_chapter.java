@@ -43,12 +43,14 @@ public class admin_add_chapter extends AppCompatActivity {
     ImageButton subImg;
     String imgName = "", subName = "";
     StorageReference mStorageReference;
+    private View progressOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_add_chapter);
-
+        progressOverlay = findViewById(R.id.progress_overlay);
+        progressOverlay.setVisibility(View.VISIBLE);
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(Objects.requireNonNull(getIntent().getStringExtra("section"))).collection("branch").document(Objects.requireNonNull(getIntent().getStringExtra("subject"))).collection("chapter");
         name = findViewById(R.id.NewChapterName);
@@ -86,6 +88,7 @@ public class admin_add_chapter extends AppCompatActivity {
         discount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 
         count = getIntent().getIntExtra("count", -1);
+        progressOverlay.setVisibility(View.GONE);
     }
 
     public void PickNewChapImage(View view) {
@@ -117,7 +120,7 @@ public class admin_add_chapter extends AppCompatActivity {
             Toast.makeText(this, "Chapter name required", Toast.LENGTH_LONG).show();
             return;
         }
-        //progressBar.setVisibility(View.VISIBLE);
+        progressOverlay.setVisibility(View.VISIBLE);
         final String subImgName = /*"Chapter_00"+(count+1)*/name.getText().toString().trim();
         StorageReference sRef = mStorageReference.child(Constants.STORAGE_PATH_LOGOS+getIntent().getStringExtra("section")+"/chapter/"+subImgName);
         sRef.putFile(data)
@@ -125,7 +128,7 @@ public class admin_add_chapter extends AppCompatActivity {
                     @SuppressWarnings("VisibleForTests")
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        //progressBar.setVisibility(View.GONE);
+                        progressOverlay.setVisibility(View.GONE);
                         //textViewStatus.setText("File Uploaded Successfully");
                         imgName = subImgName;
                         try {
@@ -165,9 +168,10 @@ public class admin_add_chapter extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
+                        progressOverlay.setVisibility(View.GONE);
                         Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                     }
-                })
+                })/*
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
                     @Override
@@ -175,7 +179,7 @@ public class admin_add_chapter extends AppCompatActivity {
                         //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         //textViewStatus.setText((int) progress + "% Uploading...");
                     }
-                });
+                })*/;
 
     }
 
@@ -187,7 +191,7 @@ public class admin_add_chapter extends AppCompatActivity {
             Toast.makeText(this, "Chapter name required", Toast.LENGTH_LONG).show();
             return;
         }
-
+        progressOverlay.setVisibility(View.VISIBLE);
         /*DocumentReference reference = mDatabaseReference.document("00"+(count+1));
         Map<String,String> branch = new HashMap<>();
         branch.put("name", name.getText().toString().trim());
@@ -227,7 +231,7 @@ public class admin_add_chapter extends AppCompatActivity {
             branch.put("month3", TSCM[2].getText().toString().trim());
             branch.put("price3", TSCP[2].getText().toString().trim());
         }else{
-            branch.put("description", desc.getText().toString().trim().length() > 0 ? desc.getText().toString().trim() : "--");
+            branch.put("desc", desc.getText().toString().trim().length() > 0 ? desc.getText().toString().trim() : "--");
             branch.put("price", price.getText().toString().trim().length() > 0 ? price.getText().toString().trim() : "0.0");
             branch.put("discount", discount.getText().toString().trim().length() > 0 ? discount.getText().toString().trim() : "0.0");
             branch.put("MPQ", mpq.getText().toString().trim().length() > 0 ? mpq.getText().toString().trim() : "1");
@@ -236,6 +240,7 @@ public class admin_add_chapter extends AppCompatActivity {
         mDatabaseReference.add(branch).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
+                progressOverlay.setVisibility(View.GONE);
                 Log.d("Success", "chapter added with name: " + name.getText().toString());
                 Toast.makeText(admin_add_chapter.this, "chapter added with name: " + name.getText().toString(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();

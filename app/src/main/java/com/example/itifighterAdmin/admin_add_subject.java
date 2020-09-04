@@ -37,6 +37,7 @@ public class admin_add_subject extends AppCompatActivity {
     String imgName;
     final static int PICK_IMAGE_REQUEST = 72;
     StorageReference mStorageReference;
+    private View progressOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,8 @@ public class admin_add_subject extends AppCompatActivity {
         mStorageReference = FirebaseStorage.getInstance().getReference();
         name = findViewById(R.id.NewSubjectName);
         desc = findViewById(R.id.NewSubjectDesc);
+        progressOverlay = findViewById(R.id.progress_overlay);
+
         count = getIntent().getIntExtra("count", -1);
 
         subImg = findViewById(R.id.AddSubImageAS);
@@ -78,7 +81,7 @@ public class admin_add_subject extends AppCompatActivity {
     }
 
     private void uploadFile(Uri data) {
-        //progressBar.setVisibility(View.VISIBLE);
+        progressOverlay.setVisibility(View.VISIBLE);
         if(name.getText().toString().trim().length() <= 0){
             Toast.makeText(this, "Subject name required", Toast.LENGTH_LONG).show();
             return;
@@ -90,7 +93,7 @@ public class admin_add_subject extends AppCompatActivity {
                     @SuppressWarnings("VisibleForTests")
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        //progressBar.setVisibility(View.GONE);
+                        progressOverlay.setVisibility(View.GONE);
                         //textViewStatus.setText("File Uploaded Successfully");
                         imgName = subImgName;
 
@@ -107,9 +110,10 @@ public class admin_add_subject extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
+                        progressOverlay.setVisibility(View.GONE);
                         Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                     }
-                })
+                })/*
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
                     @Override
@@ -117,7 +121,7 @@ public class admin_add_subject extends AppCompatActivity {
                         //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         //textViewStatus.setText((int) progress + "% Uploading...");
                     }
-                });
+                })*/;
 
     }
 
@@ -132,6 +136,7 @@ public class admin_add_subject extends AppCompatActivity {
             Toast.makeText(this, "Subject image required", Toast.LENGTH_LONG).show();
             return;
         }
+        progressOverlay.setVisibility(View.VISIBLE);
         Map<String,String> branch = new HashMap<>();
         /*if(getIntent().getStringExtra("section") == "ts")*/{
             branch.put("name", name.getText().toString().trim());
@@ -140,6 +145,7 @@ public class admin_add_subject extends AppCompatActivity {
             mDatabaseReference.add(branch).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
+                    progressOverlay.setVisibility(View.GONE);
                     Log.d("Success", "subject added with name: " + name.getText().toString());
                     Toast.makeText(admin_add_subject.this, "ts subject added with name: " + name.getText().toString(), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent();

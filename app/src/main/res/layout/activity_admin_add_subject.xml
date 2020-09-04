@@ -48,4 +48,5 @@
         android:layout_below="@+id/AddSubImage"
         android:text="Button"
         android:onClick="SaveNewSubject"/>
+    <include layout="@layout/include_progress_overlay"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

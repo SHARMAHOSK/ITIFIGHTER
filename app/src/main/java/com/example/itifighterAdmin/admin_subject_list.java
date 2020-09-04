@@ -35,6 +35,7 @@ public class admin_subject_list extends AppCompatActivity {
     int count = -1;
     int targetSubject = -1;
     CollectionReference mDatabaseReference;
+    private View progressOverlay;
 
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LIST_VIEW
     ArrayAdapter<String> adapter;
@@ -48,7 +49,8 @@ public class admin_subject_list extends AppCompatActivity {
         mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(Objects.requireNonNull(getIntent().getStringExtra("section"))).collection("branch");
 
         sectionListView = findViewById(R.id.adminListSubject);
-
+        progressOverlay = findViewById(R.id.progress_overlay);
+        progressOverlay.setVisibility(View.VISIBLE);
         /*listItems.add("Fitter");
         listItems.add("Turner");
         listItems.add("Machinist");
@@ -72,6 +74,7 @@ public class admin_subject_list extends AppCompatActivity {
                             android.R.layout.simple_list_item_1,
                             listItems);
                     sectionListView.setAdapter(adapter);
+                    progressOverlay.setVisibility(View.GONE);
                     sectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,

@@ -28,6 +28,8 @@
             android:name=".TestInstructionsActivityX"
             android:noHistory="true" />
         <activity android:name=".TestResultActivity" />
+        <activity android:name=".TestAnswerSheetActivity" />
+        <activity android:name=".TestLeaderBoardActivity" />
         <activity android:name=".Payment" />
         <activity
             android:name=".TestQuestionsActivity"

@@ -93,5 +93,5 @@
             </ListView>
         </RelativeLayout>
     </LinearLayout>
-
+    <include layout="@layout/include_progress_overlay"/>
 </LinearLayout>

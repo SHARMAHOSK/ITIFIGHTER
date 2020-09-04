@@ -40,7 +40,7 @@ public class admin_edit_subject extends AppCompatActivity {
     CollectionReference mDatabaseReference;
     final static int PICK_IMAGE_REQUEST = 72;
     StorageReference mStorageReference;
-
+    private View progressOverlay;
     boolean ready = false;
 
     @Override
@@ -54,7 +54,8 @@ public class admin_edit_subject extends AppCompatActivity {
         name = findViewById(R.id.EdtSubjectName);
         desc = findViewById(R.id.EdtSubjectDesc);
         subImg = findViewById(R.id.EdtSubImage);
-
+        progressOverlay = findViewById(R.id.progress_overlay);
+        progressOverlay.setVisibility(View.VISIBLE);
         DocumentReference reference = mDatabaseReference.document(""+(getIntent().getStringExtra("target")));
 
         reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -71,7 +72,6 @@ public class admin_edit_subject extends AppCompatActivity {
                         docID = document.getId();
 
                         ready = true;
-
                         name.setText(subName);
                         desc.setText(subDesc);
                         imgName = subName;
@@ -80,6 +80,7 @@ public class admin_edit_subject extends AppCompatActivity {
                                     .load(mStorageReference.child(Constants.STORAGE_PATH_LOGOS+""+getIntent().getStringExtra("section")+"/" + imgName))
                                     .into(subImg);
                         }
+                        progressOverlay.setVisibility(View.GONE);
                     } else {
                         Log.d("LOGGER", "No such document");
                     }
@@ -117,7 +118,7 @@ public class admin_edit_subject extends AppCompatActivity {
     }
 
     private void uploadFile(Uri data) {
-        //progressBar.setVisibility(View.VISIBLE);
+        progressOverlay.setVisibility(View.VISIBLE);
         if(subName == null || subName.trim().length() <= 0 || subName.isEmpty()){
             return;
         }
@@ -128,7 +129,7 @@ public class admin_edit_subject extends AppCompatActivity {
                     @SuppressWarnings("VisibleForTests")
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        //progressBar.setVisibility(View.GONE);
+                        progressOverlay.setVisibility(View.GONE);
                         //textViewStatus.setText("File Uploaded Successfully");
                         imgName = subImgName;
                         try {
@@ -181,9 +182,10 @@ public class admin_edit_subject extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
+                        progressOverlay.setVisibility(View.GONE);
                         Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                     }
-                })
+                })/*
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
                     @Override
@@ -191,7 +193,7 @@ public class admin_edit_subject extends AppCompatActivity {
                         //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         //textViewStatus.setText((int) progress + "% Uploading...");
                     }
-                });
+                })*/;
 
     }
 
@@ -205,7 +207,7 @@ public class admin_edit_subject extends AppCompatActivity {
             Toast.makeText(this, "Subject id not fetched", Toast.LENGTH_LONG).show();
             return;
         }
-
+        progressOverlay.setVisibility(View.GONE);
         /*DocumentReference reference = mDatabaseReference.document(""+(getIntent().getStringExtra("target")));
         Map<String,String> branch = new HashMap<>();
         branch.put("Name", name.getText().toString().trim());
@@ -234,6 +236,7 @@ public class admin_edit_subject extends AppCompatActivity {
         reference.set(branch).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                progressOverlay.setVisibility(View.GONE);
                 Log.d("Success", "subject updated with name: " + name.getText().toString());
                 Toast.makeText(admin_edit_subject.this, "subject updated with name: " + name.getText().toString(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();

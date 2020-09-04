@@ -20,6 +20,7 @@ public class admin_section_list extends AppCompatActivity {
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
     ArrayList<String> listItems=new ArrayList<>();
     ListView sectionListView;
+    private View progressOverlay;
 
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LIST_VIEW
     ArrayAdapter<String> adapter;
@@ -30,6 +31,8 @@ public class admin_section_list extends AppCompatActivity {
         setContentView(R.layout.activity_admin_section_list);
 
         sectionListView = findViewById(R.id.list);
+        progressOverlay = findViewById(R.id.progress_overlay);
+        progressOverlay.setVisibility(View.VISIBLE);
 
         listItems.add("Previous Papers");
         listItems.add("Mock Tests");
@@ -42,7 +45,7 @@ public class admin_section_list extends AppCompatActivity {
                 android.R.layout.simple_list_item_1,
                 listItems);
         sectionListView.setAdapter(adapter);
-
+        progressOverlay.setVisibility(View.GONE);
         sectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,

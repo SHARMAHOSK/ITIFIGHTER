@@ -305,7 +305,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Cancel"/>
+                    android:text="Cancel"
+                    android:onClick="CancelSubmitFeedback"/>
             </LinearLayout>
             <ImageView
                 android:layout_width="0dp"

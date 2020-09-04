@@ -32,6 +32,7 @@ public class admin_chapter_list extends AppCompatActivity {
     ListView chapterListView;
     String targetSubject, targetSection;
     CollectionReference mDatabaseReference;
+    private View progressOverlay;
 
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
     ArrayAdapter<String> adapter;
@@ -47,7 +48,8 @@ public class admin_chapter_list extends AppCompatActivity {
         mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter");
 
         chapterListView = findViewById(R.id.listChapterAdmin);
-
+        progressOverlay = findViewById(R.id.progress_overlay);
+        progressOverlay.setVisibility(View.VISIBLE);
         mDatabaseReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -62,6 +64,7 @@ public class admin_chapter_list extends AppCompatActivity {
                             android.R.layout.simple_list_item_1,
                             Chapters);
                     chapterListView.setAdapter(adapter);
+                    progressOverlay.setVisibility(View.GONE);
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }

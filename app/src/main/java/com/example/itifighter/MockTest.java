@@ -44,7 +44,7 @@ public class MockTest extends Fragment {
     private int currentSubjectPos = 0, currentChapterPos = 0;   //records which item was clicked in previous list
 
     private ArrayList<CustomListItem> Subjects, Chapters;
-    private ArrayList<String>/* Chapters,*/ MPQs, Timers;
+    private ArrayList<String>/* Chapters,*/ MPQs, Timers, Titles, SubjectIds, CHapterIds;
     private ArrayList<Question> questions;
     private ListView listView;
 
@@ -139,8 +139,10 @@ public class MockTest extends Fragment {
 
                 if (task.isSuccessful()) {
                     Subjects = new ArrayList<>();
+                    SubjectIds = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*list.add(document.getString("Name"));*/
+                        SubjectIds.add(document.getId());
                         Subjects.add(new CustomListItem(document.getString("name"),
                                 document.getString("desc"),
                                 0.00,
@@ -190,8 +192,10 @@ public class MockTest extends Fragment {
                 if (task.isSuccessful()) {
                     /*examList = new ArrayList<>();*/
                     Chapters = new ArrayList<>();
+                    CHapterIds = new ArrayList<>();
                     MPQs = new ArrayList<>();
                     Timers = new ArrayList<>();
+                    Titles = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*examList.add(document.getString("Name"));*/
                                             /*Exams.add(new CustomListItem(document.getString("Name"),
@@ -199,12 +203,14 @@ public class MockTest extends Fragment {
                                         document.getDouble("Price"),
                                         document.getString("Image"),
                                         *//*getExamCount(document.getId())*//*5));*/
+                        CHapterIds.add(document.getId());
                         Chapters.add(new CustomListItem(document.getString("name"),
-                                document.getString("description"),
+                                document.getString("desc"),
                                 0.00, document.getString("Image"), 4,"mt"));
                         /*Chapters.add(document.getString("Name"));*/
                         MPQs.add(document.getString("MPQ"));
                         Timers.add(document.getString("Timer"));
+                        Titles.add(document.getString("name"));
                     }
                     /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                             android.R.layout.simple_list_item_1,
@@ -251,9 +257,12 @@ public class MockTest extends Fragment {
 
                     Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
                     myIntent.putExtra("section", "mt");
+                    myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
+                    myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
                     myIntent.putExtra("questions", (Serializable) questions);
                     myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
                     myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
+                    myIntent.putExtra("title", Titles.get(currentChapterPos));
                     startActivity(myIntent);
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());

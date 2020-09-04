@@ -27,14 +27,18 @@ public class TestInstructionsActivity extends AppCompatActivity {
     List<Question> questions;
     int _mpq;   //marks per question
     int timer;  //time in seconds
-
+    String title;
+    private View progressOverlay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_instructions);
-
+        progressOverlay = findViewById(R.id.progress_overlay);
+        progressOverlay.setVisibility(View.VISIBLE);
         questions = (List<Question>) getIntent().getSerializableExtra("questions");  //= question list from prev activity
         _mpq = getIntent().getIntExtra("_mpq", 1);
+        title = getIntent().getStringExtra("title");
+
         if(getIntent().getStringExtra("section").equals("lt")){
             timer = getIntent().getIntExtra("duration", 60);   //value comes in milliseconds for lt
         }else{
@@ -50,6 +54,7 @@ public class TestInstructionsActivity extends AppCompatActivity {
         tMin.setText(""+timer);
 
         instructionTV = findViewById(R.id.InstructionText);
+        ((TextView)findViewById(R.id.TestTitleIP)).setText(title != null ? title : "-");
         insCB = findViewById(R.id.InsCB);
         FirebaseFirestore.getInstance().collection("common").document("pre test").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -62,6 +67,7 @@ public class TestInstructionsActivity extends AppCompatActivity {
                 "\nblah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
                 "\nblah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
                 "");*/
+        progressOverlay.setVisibility(View.GONE);
     }
 
     @Override
@@ -90,9 +96,11 @@ public class TestInstructionsActivity extends AppCompatActivity {
 
     public void BeginTest(View view) {
         if(insCB.isChecked()){
+            progressOverlay.setVisibility(View.GONE);
             Intent myIntent = new Intent(TestInstructionsActivity.this, TestQuestionsActivity.class);
             myIntent.putExtra("questions", (Serializable) questions);
             myIntent.putExtra("_mpq", _mpq);
+            myIntent.putExtra("title", title);
             myIntent.putExtra("section", getIntent().getStringExtra("section"));
 
             if(getIntent().getStringExtra("section").equals("lt")){
@@ -104,6 +112,7 @@ public class TestInstructionsActivity extends AppCompatActivity {
                 myIntent.putExtra("chapter", getIntent().getStringExtra("chapter"));
                 myIntent.putExtra("timer", timer);
             }
+            progressOverlay.setVisibility(View.GONE);
             startActivity(myIntent);
         }else{
             Toast.makeText(this, "Please agree to the terms and conditions in order to proceed with test", Toast.LENGTH_SHORT).show();

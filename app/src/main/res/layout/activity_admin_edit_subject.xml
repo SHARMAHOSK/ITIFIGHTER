@@ -46,4 +46,5 @@
         android:layout_weight="15"
         android:text="Update"
         android:onClick="SaveEdtSubject"/>
+    <include layout="@layout/include_progress_overlay"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -40,6 +40,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
     TextView questionText, timerText, quesNumText;
     Button submitBtn, nextBtn, skipBtn;
     int picked_ans = -1;
+    String title;
     LinearLayout quesNavPanel;
     ArrayList<Button> quesBtns;
 
@@ -99,7 +100,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         ViewGroup.LayoutParams layoutParams = quesNavPanel.getLayoutParams();
         layoutParams.width = 0;
         quesNavPanel.setLayoutParams(layoutParams);
-
+        title = getIntent().getStringExtra("title");
         Spinner spin = findViewById(R.id.TestQuestionFeedbackSpinner);
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -132,6 +133,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         }
 
         sub_ans = new int[questions.size()];
+        Toast.makeText(this, "total ans blocks: "+sub_ans.length, Toast.LENGTH_SHORT).show();
         selectedFeedbackOption = new int[questions.size()];
         Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
         Arrays.fill(sub_ans, -1);
@@ -159,6 +161,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                     JumpTopQuestion(ii1-1);
                 }
             });
+            quesBtns.add(b1);
             ii++;
             if(ii <= questions.size()){
                 final int ii2 = ii;
@@ -171,6 +174,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                         JumpTopQuestion(ii2-1);
                     }
                 });
+                quesBtns.add(b2);
                 ii++;
                 if(ii <= questions.size()){
                     final int ii3 = ii;
@@ -183,6 +187,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                             JumpTopQuestion(ii3-1);
                         }
                     });
+                    quesBtns.add(b3);
                     ii++;
                     if(ii <= questions.size()){
                         final int ii4 = ii;
@@ -195,6 +200,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                                 JumpTopQuestion(ii4-1);
                             }
                         });
+                        quesBtns.add(b4);
                         ii++;
                         if(ii <= questions.size()){
                             final int ii5 = ii;
@@ -207,13 +213,15 @@ public class TestQuestionsActivity extends AppCompatActivity {
                                     JumpTopQuestion(ii5-1);
                                 }
                             });
+                            quesBtns.add(b5);
                         }
                     }
                 }
             }
             ll.addView(mTableRow);
         }
-
+        ((TextView)findViewById(R.id.TestTitle)).setText(title != null ? title : "-");
+        FirstLoad();
         /*my territory ends here.... idk what the hell is beyond here.*/
     }
 
@@ -330,8 +338,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         alert.show();
     }
 
-    @Override
-    protected void onResume() {
+    void FirstLoad(){
         if(testBegan)
             return;
         testBegan = true;
@@ -367,6 +374,43 @@ public class TestQuestionsActivity extends AppCompatActivity {
         }.start();
     }
 
+    /*@Override
+    protected void onResume() {
+        if(testBegan)
+            return;
+        testBegan = true;
+        super.onResume();
+        //build our first question
+        buildQuestion(0);
+        new CountDownTimer(getIntent().getStringExtra("section").equals("lt")
+                ? (getIntent().getLongExtra("timer", 0)+ (getIntent().getIntExtra("duration", 60)*60*1000))-Calendar.getInstance().getTimeInMillis() *//*(55*60*1000)*//*
+                : (timer * 60 * 1000), 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                long secs = millisUntilFinished / 1000;
+                long min = secs / 60;
+                secs %= 60;
+                timerText.setText("TIME LEFT: " + (min > 9 ? min : "0"+min) + ":" + (secs > 9 ? secs : "0"+secs));
+            }
+
+            public void onFinish() {
+                timerText.setText("done!");
+                Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
+                intent.putExtra("sub_ans", sub_ans);
+                intent.putExtra("selectedFeedbackOption", selectedFeedbackOption);
+                intent.putExtra("section", getIntent().getStringExtra("section"));
+                intent.putExtra("subject", getIntent().getStringExtra("subject"));
+                if(getIntent().getStringExtra("section").equals("lt")){
+                    intent.putExtra("tid", getIntent().getStringExtra("tid"));
+                }else{
+                    intent.putExtra("chapter", getIntent().getStringExtra("chapter"));
+                }
+                intent.putExtra("questions", (Serializable) questions);
+                startActivity(intent);
+            }
+        }.start();
+    }*/
+
     /**
      * This is how we will capture our User's response.  Once they click on a radio button,
      * the response can immediately be checked if it is correct.
@@ -379,25 +423,25 @@ public class TestQuestionsActivity extends AppCompatActivity {
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             switch (checkedId) {
                 default:
-                    Toast.makeText(TestQuestionsActivity.this, "No Support for questions with more than 4 possible answers. checkId: " + checkedId, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(TestQuestionsActivity.this, "No Support for questions with more than 4 possible answers. checkId: " + checkedId, Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.radioButton4:
-                    Toast.makeText(TestQuestionsActivity.this, "option 4", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(TestQuestionsActivity.this, "option 4", Toast.LENGTH_SHORT).show();
                     //submitAnswer(4);
                     picked_ans = 4;
                     break;
                 case R.id.radioButton3:
-                    Toast.makeText(TestQuestionsActivity.this, "option 3", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(TestQuestionsActivity.this, "option 3", Toast.LENGTH_SHORT).show();
                     picked_ans = 3;
                     //submitAnswer(3);
                     break;
                 case R.id.radioButton2:
-                    Toast.makeText(TestQuestionsActivity.this, "option 2", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(TestQuestionsActivity.this, "option 2", Toast.LENGTH_SHORT).show();
                     picked_ans = 2;
                     //submitAnswer(2);
                     break;
                 case R.id.radioButton:
-                    Toast.makeText(TestQuestionsActivity.this, "option 1", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(TestQuestionsActivity.this, "option 1", Toast.LENGTH_SHORT).show();
                     picked_ans = 1;
                     //submitAnswer(1);
                     break;
@@ -440,6 +484,10 @@ public class TestQuestionsActivity extends AppCompatActivity {
     private void JumpTopQuestion(int question){
         buildQuestion(question);
         currentQues = question;
+        if (currentQues == questions.size() - 1){
+            submitBtn.setVisibility(View.VISIBLE);
+            nextBtn.setVisibility(View.INVISIBLE);
+        }
         ViewGroup.LayoutParams layoutParams = quesNavPanel.getLayoutParams();
         layoutParams.width = 0;
         quesNavPanel.setLayoutParams(layoutParams);
@@ -518,6 +566,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 submitBtn.setVisibility(View.VISIBLE);
                 nextBtn.setVisibility(View.INVISIBLE);
             }
+            radioGroup.clearCheck();
             buildQuestion(currentQues);
         }
     }
