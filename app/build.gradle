@@ -3,16 +3,14 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
-    //noinspection GradleDependency
-    buildToolsVersion "30.0.1"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.example.itifighter"
-        minSdkVersion 21
+        minSdkVersion 28
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

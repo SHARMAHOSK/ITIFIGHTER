@@ -1,16 +1,28 @@
 package com.example.itifighter;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.itifighterAdmin.admin_section_list;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,82 +34,139 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import java.util.Objects;
+
+
 public class Login extends AppCompatActivity {
 
     private EditText email, password;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private ProgressBar progressBar;
+    private Button login;
+    private TextView register,showMessage;
+    private boolean doubleBackToExitPressedOnce = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         email = findViewById(R.id.etEmail);
         password  = findViewById(R.id.etPassword);
-        Button login = findViewById(R.id.btLogin);
-        TextView register = findViewById(R.id.btRegister);
+        login = findViewById(R.id.btLogin);
+        register = findViewById(R.id.btRegister);
+        progressBar = findViewById(R.id.loginProgress);
+        progressBar.setVisibility(View.INVISIBLE);
+        showMessage = findViewById(R.id.ShowMessage);
+        showMessage.setVisibility(View.INVISIBLE);
+        progressBar.setProgressTintList(ColorStateList.valueOf(Color.BLUE));
+        final String Did = getDeviceId();
+        if(getIntent()!=null && getIntent().getStringExtra("MsgRegVer")!=null){
+            showMessage.setText(getIntent().getStringExtra("MsgRegVer"));
+            showMessage.setVisibility(View.VISIBLE);
+        }
         register.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                startActivity(new Intent(Login.this, RegisterActivity.class));
-                finish();
-            }
+            public void onClick(View view) {startActivity(new Intent(Login.this, RegisterActivity.class));}
         });
-
-       login.setOnClickListener(new View.OnClickListener() {
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showMessage.setVisibility(View.INVISIBLE);
                 String emailId = email.getText().toString();
                 String pass = password.getText().toString();
                 if(emailId.isEmpty()){
-                    email.setError("Please enter email id ");
+                    email.setError("Please enter email id");
                     email.requestFocus();
                 }
                 else if(pass.isEmpty()){
                     password.setError("Please enter password");
                     password.requestFocus();
                 }
-                else{ mFirebaseAuth.signInWithEmailAndPassword(emailId, pass).addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
+                else{
+                    progressBar.setVisibility(View.VISIBLE);
+                    setAct(false);
+                    mFirebaseAuth.signInWithEmailAndPassword(emailId, pass).addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
+                        @SuppressLint("SetTextI18n")
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
-                                Toast.makeText(Login.this, "invalid email or password !", Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(Login.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                                db.collection("users").document(""+mFirebaseAuth.getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                showMessage.setText("invalid email or password");
+                                showMessage.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.INVISIBLE);
+                                setAct(true);
+                            }
+                            else{
+                                db.collection("users").document(Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                     @Override
                                     public void onEvent(@Nullable DocumentSnapshot snapshot,
                                                         @Nullable FirebaseFirestoreException e) {
-                                        if (e != null) {
-                                            //Log.w(TAG, "Listen failed.", e);
-                                            return;
+                                        if(snapshot != null && snapshot.exists() && snapshot.getString("Did")!=null && Objects.equals(snapshot.getString("Did"), Did)){
+                                            startActivity(new Intent(Login.this, Objects.requireNonNull(snapshot.get("Role")).toString().contains("admin") ? admin_section_list.class : MainDashboard.class));
                                         }
-                                        if (snapshot != null && snapshot.exists()) {
-                                            //Log.d(TAG, "Current data: " + snapshot.getData());
-                                            Toast.makeText(Login.this, "welcome "+ snapshot.get("Role"), Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(Login.this, snapshot.get("Role").toString().contains("admin") ? admin_section_list.class : MainDashboard.class));
-                                            finish();
-                                        } else {
-                                            //zLog.d(TAG, "Current data: null");
+                                        else{
+                                            FirebaseAuth.getInstance().signOut();
+                                            showMessage.setText("User not authenticated on ths device");
+                                            showMessage.setVisibility(View.VISIBLE);
+                                            progressBar.setVisibility(View.INVISIBLE);
+                                            setAct(true);
                                         }
                                     }
-                                });
-                                //startActivity(new Intent(Login.this, MainDashboard.class));
-                                //finish();
+                                }); //startActivity(new Intent(Login.this, MainDashboard.class));
                             }
                         }
                     });
                 }
             }
         });
-       register.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               startActivity(new Intent(Login.this,RegisterActivity.class));
-           }
-       });
     }
+
+    @SuppressLint("HardwareIds")
+    private String getDeviceId() {
+        int permission = ContextCompat.checkSelfPermission(Login.this, Manifest.permission.READ_PHONE_STATE);
+        if(permission  == PackageManager.PERMISSION_GRANTED)
+            return ((TelephonyManager) getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+        else{
+            showGrant();
+            return getDeviceId();
+        }
+    }
+
+    private void showGrant() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Permission Required");
+        alert.setMessage("Grant permission or exit ?\n")
+                .setPositiveButton("Grant", new DialogInterface.OnClickListener()                 {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(Login.this, new String[]{Manifest.permission.READ_PHONE_STATE},123);
+                    }
+                }).setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finishAffinity();
+                finish();
+            }
+        });
+        AlertDialog alert1 = alert.create();
+        alert1.show();
+    }
+
+    private void setAct(boolean b){
+        email.setEnabled(b);password.setEnabled(b);
+        login.setEnabled(b);register.setEnabled(b);
+    }
+
+
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onStart() {super.onStart();}
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) { finishAffinity();finish(); }
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() { doubleBackToExitPressedOnce=false; }
+        }, 2000);
     }
 }

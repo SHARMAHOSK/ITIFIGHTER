@@ -40,5 +40,6 @@
     <color name="textPrimary">#333333</color>
     <color name="textPrimaryLight">#BEBEBE</color>
     <color name="inputHint">#5C707070</color>
+    <color name="ITIColor">#005da2</color>
 
 </resources>

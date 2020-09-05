@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,6 +42,7 @@
 
 
             <LinearLayout
+                android:id="@+id/LoginLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="73dp"
@@ -75,8 +77,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#696969"
-                    android:layout_marginTop="18dp"
-                    />
+                    android:layout_marginTop="18dp"/>
 
                 <EditText
                     android:id="@+id/etPassword"
@@ -101,13 +102,23 @@
                     android:layout_marginTop="18dp"
                     />
 
-
+                <TextView
+                    android:id="@+id/ShowMessage"
+                    android:layout_width="match_parent"
+                    android:textColor="#FE0000"
+                    android:paddingStart="10dp"
+                    android:background="#1AFE0000"
+                    android:textSize="11sp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    tools:ignore="RtlSymmetry,SmallSp" />
                 <Button
                     android:id="@+id/btLogin"
                     android:layout_width="match_parent"
                     android:layout_height="53dp"
                     android:layout_marginLeft="33dp"
-                    android:layout_marginTop="38dp"
+                    android:layout_marginTop="15dp"
                     android:layout_marginRight="33dp"
                     android:background="@drawable/button_gradient"
                     android:gravity="center"
@@ -116,6 +127,10 @@
                     android:paddingBottom="10.5dp"
                     android:text="@string/login"
                     android:textColor="#ffffff"
+                    android:shadowRadius="6"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowColor="@color/black"
                     android:textSize="22sp" />
 
                 <LinearLayout
@@ -128,7 +143,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:layout_marginBottom="30.5dp"
+                        android:layout_marginBottom="20.5dp"
                         android:layout_marginTop="20.8dp"
                         android:textSize="18sp"
                         android:fontFamily="sans-serif-light"
@@ -143,7 +158,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="20.8dp"
-                        android:layout_marginBottom="30.5dp"
+                        android:layout_marginBottom="20.5dp"
                         android:fontFamily="sans-serif-light"
                         android:gravity="center"
                         android:lineSpacingExtra="26sp"
@@ -154,14 +169,17 @@
 
                 </LinearLayout>
 
+                <ProgressBar
+                    android:id="@+id/loginProgress"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:indeterminateTint="@color/ITIColor"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
+                    android:indeterminate="true"
+                    android:layout_gravity="center" />
 
             </LinearLayout>
-
-
-
         </LinearLayout>
-
-
     </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>
