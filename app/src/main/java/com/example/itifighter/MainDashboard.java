@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +43,7 @@ import java.util.Objects;
 public class MainDashboard extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private boolean doubleBackToExitPressedOnce = false;
 
     @SuppressLint({"SetTextI18n", "InflateParams"})
     @Override
@@ -78,45 +80,10 @@ public class MainDashboard extends AppCompatActivity {
             public void onClick(View view) {
                 Toast.makeText(MainDashboard.this,"success",Toast.LENGTH_LONG)
                         .show();
-                //openWhatsApp(view);
-                startPayment();
+                openWhatsApp(view);
             }
         });
-        navigationView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View view) {
-
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View view) {
-                setHeaderDetails(navigationView);
-            }
-        });
-
-
-    }
-
-    private void startPayment() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage("Are you sure to start payment ?")
-                .setPositiveButton("RazorPay", new DialogInterface.OnClickListener()                 {
-
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(MainDashboard.this,Payment.class));
-                        finish();
-                    }
-                }).setPositiveButton("Paytm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //startActivity(new Intent(MainDashboard.this,PaytmPayment.class));
-                startActivity(new Intent(MainDashboard.this,Counter.class));
-                finish();
-            }
-        })
-                .setNegativeButton("No", null);
-        AlertDialog alert1 = alert.create();
-        alert1.show();
+        setHeaderDetails(navigationView);
     }
 
     @Override
@@ -141,7 +108,6 @@ public class MainDashboard extends AppCompatActivity {
             shareApp();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -186,6 +152,7 @@ public class MainDashboard extends AppCompatActivity {
         }
     }
     public void setHeaderDetails(NavigationView navigationView){
+
         final String uid = FirebaseAuth.getInstance().getUid();
         final View view = navigationView.inflateHeaderView(R.layout.nav_header_main);
         assert uid != null;
@@ -204,7 +171,7 @@ public class MainDashboard extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(MainDashboard.this,"failure",Toast.LENGTH_SHORT).show();
                 Glide.with(MainDashboard.this)
-                        .load(getImage("user.png"))
+                        .load(getImage("user"))
                         .into((ImageView)view.findViewById(R.id.HeaderImage));
             }
         });
@@ -227,19 +194,22 @@ public class MainDashboard extends AppCompatActivity {
         super.onStart();
     }
 
-    /*@Override
+    @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }*/
-
-    @Override public void onBackPressed() {
-        /*Fragment fragment = getSupportFragmentManager().findFragmentByTag(R.layout.fragment_menu_home);
-        if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
-            super.onBackPressed();
+        if (doubleBackToExitPressedOnce) {
+            finishAffinity();
             finish();
-        }*/
+        }
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
+
     public int getImage(String imageName) {
         return this.getResources().getIdentifier(imageName, "drawable", this.getPackageName());
     }

@@ -2,8 +2,7 @@ package com.example.itifighter.ui.profile;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,39 +12,49 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.ObjectKey;
 import com.example.itifighter.R;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import java.io.File;
-import java.io.IOException;
+
 import java.util.Objects;
+
 import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends  Fragment {
+
+
     private final int PICK_IMAGE_REQUEST = 71;
     private ImageView UserImage;
-    private FirebaseStorage storage;
+    //private FirebaseStorage storage;
     private StorageReference ref;
+    private String Uid;
+
 
     @SuppressLint("SetTextI18n")
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View root = inflater.inflate(R.layout.fragment_menu_profile, container, false);
-        UserImage = root.findViewById(R.id.UserImageX);
-        final ImageButton imageButton = root.findViewById(R.id.UserImageY);
+
+        UserImage = root.findViewById(R.id.UserImageX);                         // User Profile image
+        final ImageButton imageButton = root.findViewById(R.id.UserImageY);     // User image Button
         final TextView UserName = root.findViewById(R.id.UserNameX);
         final TextView UserScore = root.findViewById(R.id.ScoreX);
         final TextView UserRank = root.findViewById(R.id.RankX);
@@ -53,11 +62,9 @@ public class ProfileFragment extends  Fragment {
         final TextView UserMobile = root.findViewById(R.id.UserMobileX);
         final TextView UserState = root.findViewById(R.id.UserStateX);
         final TextView UserTrade = root.findViewById(R.id.UserTradeX);
-        final FirebaseAuth auth = FirebaseAuth.getInstance();
-        final String Uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
-        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-        DocumentReference reference = fStore.collection("users").document(Uid);
-        reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        Uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        FirebaseFirestore.getInstance().collection("users").document(Uid)
+        .addSnapshotListener(new EventListener<DocumentSnapshot>() {
            @Override
            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                assert documentSnapshot != null;
@@ -68,15 +75,16 @@ public class ProfileFragment extends  Fragment {
                UserTrade.setText(documentSnapshot.getString("Trade"));
                UserScore.setText("100");
                UserRank.setText("540");
+
                imageButton.setOnClickListener(new View.OnClickListener() {
                    @Override
                    public void onClick(View view) {
                         chooseImage();
                    }
                });
-               storage = FirebaseStorage.getInstance();
-               ref = storage.getReferenceFromUrl("gs://itifighter.appspot.com").child(String.format("UserImage/%s",Uid));
-               try {
+
+               ref = FirebaseStorage.getInstance().getReference().child(String.format("UserImage/%s",Uid));
+               /* try {
                    final File file = File.createTempFile("image","jpg");
                    ref.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                        @Override
@@ -93,7 +101,7 @@ public class ProfileFragment extends  Fragment {
                } catch (IOException ex) {
                    ex.printStackTrace();
                    Toast.makeText(getContext(),"something wrong in loading..",Toast.LENGTH_SHORT).show();
-               }
+               }*/
            }
        });
         return root;
@@ -109,21 +117,20 @@ public class ProfileFragment extends  Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST
-                && resultCode == RESULT_OK
-                && data != null
-                && data.getData() != null) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null  && data.getData() != null) {
+
             Uri filePath = data.getData();
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
-            String FileName = "UserImage/"+uid;
-            StorageReference folder = storage.getReference().child(FileName);
-            folder.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+            ref.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(getContext(),"uploded",Toast.LENGTH_SHORT).show();
-                    try {
-                        final File file = File.createTempFile("image","jpg");
+                    Toast.makeText(getContext(),ref.toString(),Toast.LENGTH_LONG).show();
+                        uploadImage(ref);
+                    /* Glide.with(ProfileFragment.this)
+                            .load(storage.getReference().child("UserImage/%s"+Uid))
+                            .into(UserImage);*/
+                        /*final File file = File.createTempFile("image","jpg");
                         ref.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -135,13 +142,40 @@ public class ProfileFragment extends  Fragment {
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(getContext(),"failed to upload",Toast.LENGTH_SHORT).show();
                             }
-                        });
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                        Toast.makeText(getContext(),"something wrong to upload",Toast.LENGTH_SHORT).show();
-                    }
+                        });*/
                 }
             });
         }
+    }
+
+    void uploadImage(StorageReference refx){
+        Glide.with(ProfileFragment.this)
+                .load(refx)
+                .placeholder(R.drawable.user)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Toast.makeText(getContext(),"not set",Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Toast.makeText(getContext(),"set",Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                })
+                .signature(new ObjectKey(System.currentTimeMillis()))
+                .into(UserImage);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 }
