@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
 import com.example.itifighter.R;
@@ -43,7 +44,6 @@ public class ProfileFragment extends  Fragment {
 
     private final int PICK_IMAGE_REQUEST = 71;
     private ImageView UserImage;
-    private StorageReference ref;
     private String Uid;
     private View progressOver;
 
@@ -63,9 +63,7 @@ public class ProfileFragment extends  Fragment {
         final TextView UserState = root.findViewById(R.id.UserStateX);
         final TextView UserTrade = root.findViewById(R.id.UserTradeX);
 
-
         progressOver = root.findViewById(R.id.progress_overlay);
-        progressOver.setVisibility(View.VISIBLE);
 
         Uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         FirebaseFirestore.getInstance().collection("users").document(Uid)
@@ -86,7 +84,7 @@ public class ProfileFragment extends  Fragment {
                         chooseImage();
                    }
                });
-               ref = FirebaseStorage.getInstance().getReference().child(String.format("UserImage/%s",Uid));
+               StorageReference storageReference = FirebaseStorage.getInstance().getReference();
                uploadImage();
                /* try {
                    final File file = File.createTempFile("image","jpg");
@@ -124,12 +122,14 @@ public class ProfileFragment extends  Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null  && data.getData() != null) {
-
+            progressOver.setVisibility(View.VISIBLE);
             Uri filePath = data.getData();
+            final StorageReference ref = FirebaseStorage.getInstance().getReference().child(String.format("UserImage/%s",Uid));
             ref.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Toast.makeText(getContext(),ref.toString(),Toast.LENGTH_LONG).show();
+                    progressOver.setVisibility(View.GONE);
                         uploadImage();
                     /* Glide.with(ProfileFragment.this)
                             .load(storage.getReference().child("UserImage/%s"+Uid))
@@ -153,6 +153,7 @@ public class ProfileFragment extends  Fragment {
     }
 
     void uploadImage(){
+        final StorageReference ref = FirebaseStorage.getInstance().getReference().child(String.format("UserImage/%s",Uid));
         Glide.with(ProfileFragment.this)
                 .load(ref)
                 .placeholder(R.drawable.user)
@@ -162,17 +163,18 @@ public class ProfileFragment extends  Fragment {
                         Toast.makeText(getContext(),"not set",Toast.LENGTH_SHORT).show();
                         return false;
                     }
-
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         Toast.makeText(getContext(),"set",Toast.LENGTH_SHORT).show();
-                        progressOver.setVisibility(View.INVISIBLE);
                         return false;
                     }
                 })
-                .signature(new ObjectKey(System.currentTimeMillis()))
+                .apply(new RequestOptions().signature(new ObjectKey(String.valueOf(System.currentTimeMillis()))))
                 .into(UserImage);
     }
+
+
+
 
     @Override
     public void onResume() {
