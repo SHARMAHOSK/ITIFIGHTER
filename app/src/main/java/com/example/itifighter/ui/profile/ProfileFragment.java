@@ -153,6 +153,7 @@ public class ProfileFragment extends  Fragment {
     }
 
     void uploadImage(){
+        progressOver.setVisibility(View.VISIBLE);
         final StorageReference ref = FirebaseStorage.getInstance().getReference().child(String.format("UserImage/%s",Uid));
         Glide.with(ProfileFragment.this)
                 .load(ref)
@@ -161,11 +162,13 @@ public class ProfileFragment extends  Fragment {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         Toast.makeText(getContext(),"not set",Toast.LENGTH_SHORT).show();
+                        progressOver.setVisibility(View.INVISIBLE);
                         return false;
                     }
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         Toast.makeText(getContext(),"set",Toast.LENGTH_SHORT).show();
+                        progressOver.setVisibility(View.INVISIBLE);
                         return false;
                     }
                 })
