@@ -43,9 +43,9 @@ public class ProfileFragment extends  Fragment {
 
     private final int PICK_IMAGE_REQUEST = 71;
     private ImageView UserImage;
-    //private FirebaseStorage storage;
     private StorageReference ref;
     private String Uid;
+    private View progressOver;
 
 
     @SuppressLint("SetTextI18n")
@@ -62,6 +62,11 @@ public class ProfileFragment extends  Fragment {
         final TextView UserMobile = root.findViewById(R.id.UserMobileX);
         final TextView UserState = root.findViewById(R.id.UserStateX);
         final TextView UserTrade = root.findViewById(R.id.UserTradeX);
+
+
+        progressOver = root.findViewById(R.id.progress_overlay);
+        progressOver.setVisibility(View.VISIBLE);
+
         Uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         FirebaseFirestore.getInstance().collection("users").document(Uid)
         .addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -75,15 +80,14 @@ public class ProfileFragment extends  Fragment {
                UserTrade.setText(documentSnapshot.getString("Trade"));
                UserScore.setText("100");
                UserRank.setText("540");
-
                imageButton.setOnClickListener(new View.OnClickListener() {
                    @Override
                    public void onClick(View view) {
                         chooseImage();
                    }
                });
-
                ref = FirebaseStorage.getInstance().getReference().child(String.format("UserImage/%s",Uid));
+               uploadImage();
                /* try {
                    final File file = File.createTempFile("image","jpg");
                    ref.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -106,6 +110,7 @@ public class ProfileFragment extends  Fragment {
        });
         return root;
     }
+
     private void chooseImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -121,12 +126,11 @@ public class ProfileFragment extends  Fragment {
                 && data != null  && data.getData() != null) {
 
             Uri filePath = data.getData();
-
             ref.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Toast.makeText(getContext(),ref.toString(),Toast.LENGTH_LONG).show();
-                        uploadImage(ref);
+                        uploadImage();
                     /* Glide.with(ProfileFragment.this)
                             .load(storage.getReference().child("UserImage/%s"+Uid))
                             .into(UserImage);*/
@@ -148,9 +152,9 @@ public class ProfileFragment extends  Fragment {
         }
     }
 
-    void uploadImage(StorageReference refx){
+    void uploadImage(){
         Glide.with(ProfileFragment.this)
-                .load(refx)
+                .load(ref)
                 .placeholder(R.drawable.user)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -162,6 +166,7 @@ public class ProfileFragment extends  Fragment {
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         Toast.makeText(getContext(),"set",Toast.LENGTH_SHORT).show();
+                        progressOver.setVisibility(View.INVISIBLE);
                         return false;
                     }
                 })

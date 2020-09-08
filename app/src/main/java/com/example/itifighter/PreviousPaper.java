@@ -22,6 +22,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
@@ -136,7 +137,7 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
                 if (task.isSuccessful()) {
                     Subjects = new ArrayList<>();
                     SubjectIds = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*list.add(document.getString("Name"));*/
                         SubjectIds.add(document.getId());
                         Subjects.add(new CustomListItem(document.getString(/*"Name"*/"name"),
@@ -186,7 +187,7 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
                     /*examList = new ArrayList<>();*/
                     Exams = new ArrayList<>();
                     ExamIds = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*examList.add(document.getString("Name"));*/
                         ExamIds.add(document.getId());
                                             Exams.add(new CustomListItem(document.getString("name"),
@@ -234,11 +235,11 @@ public class PreviousPaper extends Fragment implements IOnBackPressed {
                 if (task.isSuccessful()) {
                     PdfS = new ArrayList<>();
                     pdfFile = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         PdfS.add(document.getId());
                         pdfFile.add(""+document.getString("Name"));
                     }
-                    ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
+                    ArrayAdapter adapter = new ArrayAdapter<>(mContext,
                             R.layout.activity__branch_list_view, PdfS);
                     listView.setAdapter(adapter);
                     progressOverlay.setVisibility(View.GONE);
