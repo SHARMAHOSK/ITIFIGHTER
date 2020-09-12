@@ -28,6 +28,9 @@ import java.util.Objects;
 
 public class TestQuestionsActivity extends AppCompatActivity {
     RadioGroup radioGroup;
+    int skippedCount, attemptedCount;
+    int[] pendingQuestions;
+    TextView SkippedCount, AttemptedCount, PendingCount;
     int currentQues = 0; //may also be used to go back to a particular question.
     List<Question> questions;
     int[] sub_ans;
@@ -123,6 +126,21 @@ public class TestQuestionsActivity extends AppCompatActivity {
         Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
         Arrays.fill(sub_ans, -1);
         Arrays.fill(selectedFeedbackOption, -1);
+
+        pendingQuestions = new int[questions.size()];
+        Arrays.fill(pendingQuestions, 0);
+
+        ((TextView)findViewById(R.id.AvailableCount)).setText("total available quetion: "+questions.size());
+        PendingCount = findViewById(R.id.PendingCount);
+        AttemptedCount = findViewById(R.id.AttemptedCount);
+        SkippedCount = findViewById(R.id.SkippedCount);
+
+        skippedCount = 0;
+        attemptedCount = 0;
+
+        PendingCount.setText("total pending quetion:    "+questions.size());
+        AttemptedCount.setText("total attempted quetion:    0");
+        SkippedCount.setText("total skipped quetion:    0");
 
         int ii=1;
         while(ii*5<=questions.size()){
@@ -327,7 +345,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         if(testBegan)
             return;
         testBegan = true;
-        super.onResume();
+        /*super.onResume();*/
         //build our first question
         buildQuestion(0);
         new CountDownTimer(Objects.equals(getIntent().getStringExtra("section"), "lt")
@@ -357,6 +375,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 }
                 intent.putExtra("questions", (Serializable) questions);
                 startActivity(intent);
+                finish();
             }
         }.start();
     }
@@ -438,7 +457,10 @@ public class TestQuestionsActivity extends AppCompatActivity {
 
 
     public void SubmitAns(View v){
-        submitAnswer(picked_ans);
+        if(picked_ans == -1){
+            Toast.makeText(this, "please select an answer", Toast.LENGTH_SHORT).show();
+        }else
+            submitAnswer(picked_ans);
     }
 
     /**
@@ -475,6 +497,9 @@ public class TestQuestionsActivity extends AppCompatActivity {
         if (currentQues == questions.size() - 1){
             submitBtn.setVisibility(View.VISIBLE);
             nextBtn.setVisibility(View.INVISIBLE);
+        }else{
+            submitBtn.setVisibility(View.GONE);
+            nextBtn.setVisibility(View.VISIBLE);
         }
         ViewGroup.LayoutParams layoutParams = quesNavPanel.getLayoutParams();
         layoutParams.width = 0;
@@ -507,6 +532,15 @@ public class TestQuestionsActivity extends AppCompatActivity {
      * @param i position of user's answer
      */
     private void submitAnswer(int i) {
+        if(i != -1 && sub_ans[currentQues] == -1){
+            attemptedCount++;
+        }else if(i == -1 && pendingQuestions[currentQues] != 1){
+            skippedCount++;
+        }
+        pendingQuestions[currentQues] = 1;
+        PendingCount.setText("total pending quetion:    "+(questions.size() - (skippedCount+attemptedCount)));
+        SkippedCount.setText("total skipped quetion:    "+skippedCount);
+        AttemptedCount.setText("total attempted quetion:    "+attemptedCount);
         //call on next/submit click
         //currently ato-submit by on radio button lick listener above.
         //collect student answers in an array and proceed to next ques if not last.
@@ -538,6 +572,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                     }
                     intent.putExtra("questions", (Serializable) questions);
                     startActivity(intent);
+                    finish();
                 }
             });
             builder.setNegativeButton("No",new DialogInterface.OnClickListener() {

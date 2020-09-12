@@ -50,7 +50,7 @@ public class TestAnswerSheetActivity extends AppCompatActivity {
         mAnswerRow = View.inflate(this, R.layout.fragment_answer_sheet_row, null);
         ((TextView)mAnswerRow.findViewById(R.id.SheetIndex)).setText("Question "+num+":");
         ((TextView)mAnswerRow.findViewById(R.id.SheetQues)).setText(""+ques);
-        ((TextView)mAnswerRow.findViewById(R.id.SheetQues)).setText(""+ans);
+        ((TextView)mAnswerRow.findViewById(R.id.SheetAns)).setText(""+ans);
         AnswerList.addView(mAnswerRow);
     }
 

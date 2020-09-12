@@ -171,6 +171,7 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         android:layout_weight="5"
+        android:weightSum="10"
         android:gravity="center">
         <Button
             android:id="@+id/skipBtn"
@@ -185,32 +186,35 @@
             android:onClick="SkipQuestion"
             tools:ignore="ButtonStyle,NestedWeights" />
 
-        <Button
-            android:id="@+id/submitBtn"
+        <RelativeLayout
             android:layout_width="0dp"
-            android:layout_weight="4.9"
             android:layout_height="match_parent"
-            android:background="@color/white"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            tools:ignore="ButtonStyle,NestedWeights"
-            android:text="@string/submit"
-            android:visibility="gone"
-            android:onClick="SubmitAns"/>
+            android:layout_weight="5">
+            <Button
+                android:id="@+id/submitBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                tools:ignore="ButtonStyle,NestedWeights"
+                android:text="@string/submit"
+                android:visibility="gone"
+                android:onClick="SubmitAns"/>
 
-        <Button
-            android:id="@+id/nextBtn"
-            android:layout_width="0dp"
-            android:layout_weight="4.9"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            tools:ignore="ButtonStyle,NestedWeights"
-            android:text="@string/next"
-            android:onClick="SubmitAns"/>
+            <Button
+                android:id="@+id/nextBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                tools:ignore="ButtonStyle,NestedWeights"
+                android:text="@string/next"
+                android:onClick="SubmitAns"/>
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -270,36 +274,40 @@
                 android:layout_marginStart="10dp"
                 android:background="@color/white">
                 <TextView
+                    android:id="@+id/AvailableCount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:textColor="#006328"
                     android:textStyle="bold"
 
-                    android:text="total available quetion: 20" />
+                    android:text="total available quetion:" />
                 <TextView
+                    android:id="@+id/AttemptedCount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:textColor="#006328"
                     android:textStyle="bold"
-                    android:text="total attempted quetion:  10" />
+                    android:text="total attempted quetion:" />
                 <TextView
+                    android:id="@+id/SkippedCount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:textColor="#FF0000"
                     android:textStyle="bold"
 
-                    android:text="total skipped quetion:    5" />
+                    android:text="total skipped quetion:" />
                 <TextView
+                    android:id="@+id/PendingCount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:textColor="#9AB150"
                     android:textStyle="bold"
 
-                    android:text="total pending quetion: 5" />
+                    android:text="total pending quetion:" />
 
             </LinearLayout>
 

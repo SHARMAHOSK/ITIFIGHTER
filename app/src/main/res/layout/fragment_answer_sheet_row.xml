@@ -3,46 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:weightSum="100">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="75"
-        android:weightSum="4"
         android:orientation="vertical">
         <TextView
             android:id="@+id/SheetIndex"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="Question 1:"/>
         <TextView
             android:id="@+id/SheetQues"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_height="wrap_content"
             android:text="dskj\nsdjcbshd sbdvn vsdjvk dfks sgn kvjsfg\nsdifbkshdbivnkdv"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="25"
-        android:weightSum="2"
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="Correct Answer:"/>
         <TextView
             android:id="@+id/SheetAns"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:text="dchjbsdkvjbsv jsdvk "/>
     </LinearLayout>
 

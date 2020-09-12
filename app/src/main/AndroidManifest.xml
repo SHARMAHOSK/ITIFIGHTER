@@ -42,7 +42,6 @@
         <activity android:name=".Payment" />
         <activity
             android:name=".TestQuestionsActivity"
-            android:noHistory="true"
             android:alwaysRetainTaskState="true"
             android:theme="@style/CustomFullScreenStyle" />
         <activity android:name="com.example.itifighterAdmin.admin_upload_excel" />
