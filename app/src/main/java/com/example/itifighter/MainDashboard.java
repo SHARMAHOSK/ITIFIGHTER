@@ -27,8 +27,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.BuildConfig;
@@ -36,7 +37,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
 
@@ -77,11 +77,7 @@ public class MainDashboard extends AppCompatActivity {
         });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(MainDashboard.this,"success",Toast.LENGTH_LONG)
-                        .show();
-                openWhatsApp(view);
-            }
+            public void onClick(View view) { openWhatsApp(view);}
         });
         setHeaderDetails(navigationView);
     }
@@ -152,29 +148,14 @@ public class MainDashboard extends AppCompatActivity {
         }
     }
     public void setHeaderDetails(NavigationView navigationView){
-
         final String uid = FirebaseAuth.getInstance().getUid();
         final View view = navigationView.inflateHeaderView(R.layout.nav_header_main);
         assert uid != null;
-        final StorageReference reference = FirebaseStorage.getInstance().getReference().child("UserImage/"+uid);
-        reference.getDownloadUrl()
-                .addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                Toast.makeText(MainDashboard.this,"imagr",Toast.LENGTH_SHORT).show();
-                Glide.with(MainDashboard.this)
-                        .load(reference)
+        Glide.with(MainDashboard.this)
+                        .load(FirebaseStorage.getInstance().getReference().child("UserImage/"+uid))
+                        .placeholder(R.drawable.user)
+                        .apply(new RequestOptions().signature(new ObjectKey(String.valueOf(System.currentTimeMillis()))))
                         .into((ImageView)view.findViewById(R.id.HeaderImage));
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainDashboard.this,"failure",Toast.LENGTH_SHORT).show();
-                Glide.with(MainDashboard.this)
-                        .load(getImage("user"))
-                        .into((ImageView)view.findViewById(R.id.HeaderImage));
-            }
-        });
         FirebaseFirestore.getInstance().collection("users").document(uid)
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -208,9 +189,5 @@ public class MainDashboard extends AppCompatActivity {
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
-    }
-
-    public int getImage(String imageName) {
-        return this.getResources().getIdentifier(imageName, "drawable", this.getPackageName());
     }
 }

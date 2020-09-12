@@ -1,232 +1,234 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="100"
     android:orientation="vertical"
+    android:background="@color/ITIColor"
     tools:context=".TestQuestionsActivity">
+
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="100">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:weightSum="10">
-            <TextView
-                android:id="@+id/TestTimer"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:gravity="center"
-                android:keepScreenOn="true"
-                android:text="Time left"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"/>
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:onClick="OpenQuesNavPanel"
-                android:background="@drawable/open_quesnumwindow_icon"/>
-
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:weightSum="10">
-
-            <TextView
-                android:id="@+id/QuesNum"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:gravity="center"
-                android:keepScreenOn="true"
-                android:text="Ques Num"
-                android:textColor="@color/black"
-                android:textSize="12sp" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:text="LIVE"
-                android:textColor="@color/design_default_color_error"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/Marks"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:gravity="center"
-                android:keepScreenOn="true"
-                android:text="+1"
-                android:textColor="@color/black"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:orientation="horizontal">
         <TextView
-            android:id="@+id/questionText"
-            android:layout_width="match_parent"
-            android:layout_weight="35"
-            android:layout_height="0dp"
+            android:id="@+id/TestTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
             android:gravity="center"
             android:keepScreenOn="true"
-            android:text="dummy_question"
-            android:background="@color/black"
-            android:textColor="#33b5e5"
-            android:textSize="20sp"
-            android:textStyle="normal" />
+            android:text="@string/time_left"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            tools:ignore="NestedWeights" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="OpenQuesNavPanel"
+            android:layout_gravity="end"
+            android:background="@drawable/ozx"/>
 
-        <RadioGroup
-            android:id="@+id/radioGroup1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:layout_weight="40"
-            android:background="@color/white"
-            android:weightSum="40">
-
-            <RadioButton
-                android:id="@+id/radioButton"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:text="New RadioButton"
-                android:layout_weight="10"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <RadioButton
-                android:id="@+id/radioButton2"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:text="New RadioButton"
-                android:layout_weight="10"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <RadioButton
-                android:id="@+id/radioButton3"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:text="New RadioButton"
-                android:layout_weight="10"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <RadioButton
-                android:id="@+id/radioButton4"
-                android:layout_width="match_parent"
-                android:text="New RadioButton"
-                android:layout_height="0dp"
-                android:layout_weight="10"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </RadioGroup>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="5"
-            android:weightSum="1">
-            <TextView
-                android:id="@+id/QuesFeedback"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.65"
-                android:gravity="center"
-                android:keepScreenOn="true"
-                android:text="      Something wrong with this question?"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="normal" />
-            <TextView
-                android:id="@+id/QuesFeedbackSelect"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.35"
-                android:gravity="center_vertical"
-                android:keepScreenOn="true"
-                android:text="  Give feedback!"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:onClick="SubmitQuestionFeedback"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="5"
-            android:weightSum="10"
-            android:background="@color/white"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/skipBtn"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_weight="5"
-                android:layout_height="match_parent"
-                android:text="Skip"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:onClick="SkipQuestion"/>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_weight="5"
-                android:layout_height="match_parent">
-                <Button
-                    android:id="@+id/submitBtn"
-                    style="?metaButtonBarButtonStyle"
-                    android:textColor="@color/black"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:text="SUBMIT"
-                    android:onClick="SubmitAns"/>
-
-                <Button
-                    android:id="@+id/nextBtn"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:text="Next"
-                    android:onClick="SubmitAns"/>
-            </RelativeLayout>
-        </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="@string/live"
+            android:textColor="@color/design_default_color_error"
+            android:textSize="15sp"
+            tools:ignore="NestedWeights" />
+
+        <TextView
+            android:id="@+id/QuesNum"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:keepScreenOn="true"
+            android:text="@string/ques_num"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            tools:ignore="NestedWeights" />
+
+        <TextView
+            android:id="@+id/Marks"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:keepScreenOn="true"
+            android:text="@string/_1"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="match_parent"
+        android:layout_weight="35"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:text="@string/dummy_question"
+        android:background="@color/paytm_dark_blue"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="normal" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight="40"
+        android:background="@color/white"
+        android:weightSum="40">
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="New RadioButton"
+            android:layout_weight="10"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="New RadioButton"
+            android:layout_weight="10"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="New RadioButton"
+            android:layout_weight="10"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RadioButton
+            android:id="@+id/radioButton4"
+            android:layout_width="match_parent"
+            android:text="New RadioButton"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="6"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/QuesFeedback"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.7"
+            android:gravity="center"
+            android:keepScreenOn="true"
+            android:text="@string/something_wrong_with_this_question"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            tools:ignore="NestedWeights" />
+        <TextView
+            android:id="@+id/QuesFeedbackSelect"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
+            android:gravity="center_vertical"
+            android:keepScreenOn="true"
+            android:text="@string/give_feedback"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="5"
+        android:gravity="center">
+        <Button
+            android:id="@+id/skipBtn"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:text="@string/skip"
+            android:background="@color/white"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:onClick="SkipQuestion"
+            tools:ignore="ButtonStyle,NestedWeights" />
+
+        <Button
+            android:id="@+id/submitBtn"
+            android:layout_width="0dp"
+            android:layout_weight="4.9"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            tools:ignore="ButtonStyle,NestedWeights"
+            android:text="@string/submit"
+            android:visibility="gone"
+            android:onClick="SubmitAns"/>
+
+        <Button
+            android:id="@+id/nextBtn"
+            android:layout_width="0dp"
+            android:layout_weight="4.9"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            tools:ignore="ButtonStyle,NestedWeights"
+            android:text="@string/next"
+            android:onClick="SubmitAns"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+
     <LinearLayout
         android:id="@+id/QuesNavPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="100">
+
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="20"
-            android:onClick="CloseQuesNavPanel"/>
+            android:onClick="CloseQuesNavPanel"
+            android:contentDescription="@string/todo"/>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="80"
@@ -241,13 +243,16 @@
                 android:layout_height="0dp"
                 android:gravity="center_vertical"
                 android:background="@color/white"
+                android:textColor="@color/ITIColor"
+                android:textStyle="bold"
+                android:textSize="@dimen/dimen_20dp"
                 android:layout_weight="10"
-                android:text="TITLE HERE"/>
+                android:text="@string/title_here"
+                tools:ignore="NestedWeights" />
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="90">
-
 
                 <LinearLayout
                     android:id="@+id/tableLayoutList"
@@ -256,66 +261,48 @@
                     android:orientation="vertical"/>
 
             </ScrollView>
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/TQFeedbackLayout"
-        android:visibility="invisible"
-        android:weightSum="100"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="20"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="60"
-            android:weightSum="100"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="20"/>
             <LinearLayout
-                android:layout_width="@dimen/dimen_0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="60"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:weightSum="100"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
                 android:background="@color/white">
-                <Spinner
-                    android:id="@+id/TestQuestionFeedbackSpinner"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp" />
-                <Button
+                    android:background="@color/white"
+                    android:textColor="#006328"
+                    android:textStyle="bold"
+
+                    android:text="total available quetion: 20" />
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Submit Feedback"
-                    android:onClick="ConfirmSubmitFeedback"/>
-                <Button
+                    android:background="@color/white"
+                    android:textColor="#006328"
+                    android:textStyle="bold"
+                    android:text="total attempted quetion:  10" />
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Cancel"
-                    android:onClick="CancelSubmitFeedback"/>
+                    android:background="@color/white"
+                    android:textColor="#FF0000"
+                    android:textStyle="bold"
+
+                    android:text="total skipped quetion:    5" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:textColor="#9AB150"
+                    android:textStyle="bold"
+
+                    android:text="total pending quetion: 5" />
+
             </LinearLayout>
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="20"/>
+
         </LinearLayout>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="20"/>
     </LinearLayout>
 </FrameLayout>

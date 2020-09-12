@@ -4,7 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="white">#FFFFFF</color>
-    <color name="view_gray">#8d95989a</color>
     <color name="dark_blue">#3023AE</color>
     <color name="silver">#C0C0C0</color>
     <color name="startblue">#0000FF</color>
@@ -19,27 +18,15 @@
     <color name="black">#000000</color>
 
 
-    <color name="address">#2F7092</color>
-    <color name="followers">#0D5D98</color>
-    <color name="headings">#3797CF</color>
-    <color name="solidCircle">#AAFFFFFF</color>
     <color name="circleBorder">#50FFFFFF</color>
-    <color name="gradEnd">#67EFC8</color>
-    <color name="gradStart">#63C9FF</color>
     <color name="followersBg">#1CC8D5</color>
     <color name="followingBg">#49BEFF</color>
     <color name="grey">#E5E5E5</color>
-
-    <color name="contact_name">#333333</color>
-    <color name="contact_number">#8c8c8c</color>
 
     <color name="black_overlay">#66000000</color>
 
     <color name="green1">#29CF40</color>
     <color name="blue2">#0033cc</color>
-    <color name="textPrimary">#333333</color>
-    <color name="textPrimaryLight">#BEBEBE</color>
-    <color name="inputHint">#5C707070</color>
     <color name="ITIColor">#005da2</color>
 
 </resources>

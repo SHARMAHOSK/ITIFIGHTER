@@ -4,44 +4,45 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.itifighter.IOnBackPressed;
 import com.example.itifighter.MyAdapter;
 import com.example.itifighter.R;
 import com.google.android.material.tabs.TabLayout;
-public class HomeFragment extends Fragment implements IOnBackPressed {
 
-    private ViewPager viewPager;
-    MyAdapter adapter;
-    TabLayout tabLayout;
+import java.util.Objects;
 
-    @Override
-    public boolean onBackPressed() {
-        Fragment fragment =  adapter.getItem(viewPager.getCurrentItem());
-        if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
-            return false;
-        }
-        return true;
-    }
+public class HomeFragment extends Fragment {
+
+
+
+    private TabLayout tabLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+                             final ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_menu_home, container, false);
         tabLayout = root.findViewById(R.id.tabLayoutX);
-        viewPager = root.findViewById(R.id.viewPagerX);
+        final ViewPager viewPager = root.findViewById(R.id.viewPagerX);
         tabLayout.addTab(tabLayout.newTab().setText("Previous Paper"));
         tabLayout.addTab(tabLayout.newTab().setText("Mock Test"));
         tabLayout.addTab(tabLayout.newTab().setText("Daily Live Test"));
         tabLayout.addTab(tabLayout.newTab().setText("Test Series"));
         tabLayout.addTab(tabLayout.newTab().setText("My Test Series"));
-
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        adapter = new MyAdapter(getFragmentManager(),
-                tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
+        System.out.println("hello");
+        final MyAdapter adapter = new MyAdapter(getParentFragmentManager(), tabLayout.getTabCount());
+        new Runnable(){
+            @Override
+            public void run() {
+                viewPager.clearOnPageChangeListeners();
+                viewPager.setAdapter(adapter);
+                Objects.requireNonNull(viewPager.getAdapter()).finishUpdate(container);
+            }
+        }.run();
+        System.out.println("sk");
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -58,20 +59,17 @@ public class HomeFragment extends Fragment implements IOnBackPressed {
         tabLayout.post(mTabLayout_config);
         return root;
     }
-
-    Runnable mTabLayout_config = new Runnable()
+    protected Runnable mTabLayout_config = new Runnable()
     {
         @Override
         public void run()
         {
-
             if(tabLayout.getWidth() < requireContext().getResources().getDisplayMetrics().widthPixels)
             {
                 tabLayout.setTabMode(TabLayout.MODE_FIXED);
                 ViewGroup.LayoutParams mParams = tabLayout.getLayoutParams();
                 mParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 tabLayout.setLayoutParams(mParams);
-
             }
             else
             {
@@ -79,5 +77,4 @@ public class HomeFragment extends Fragment implements IOnBackPressed {
             }
         }
     };
-
 }

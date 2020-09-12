@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -28,68 +27,29 @@ import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MockTest#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class MockTest extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    private int currentLayer = 0;   //0=subjects, 1=chapters
+    private int currentLayer = 0;
     private int currentSubjectPos = 0, currentChapterPos = 0;   //records which item was clicked in previous list
 
     private ArrayList<CustomListItem> Subjects, Chapters;
-    private ArrayList<String>/* Chapters,*/ MPQs, Timers, Titles, SubjectIds, CHapterIds;
+    private ArrayList<String> MPQs, Timers, Titles, SubjectIds, CHapterIds;
     private ArrayList<Question> questions;
     private ListView listView;
 
     private View mtView, progressOverlay;
     private FirebaseFirestore db;
 
-    int _mpq, timer;
-
     private Context mContext;
 
-    //boolean loadingFinished = true;
 
-    //private ProgressBar spinner;
-
-    public MockTest() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MockTest.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MockTest newInstance(String param1, String param2) {
-        MockTest fragment = new MockTest();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public MockTest() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            // TODO: Rename and change types of parameters
-            String mParam1 = getArguments().getString(ARG_PARAM1);
-            String mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
         db = FirebaseFirestore.getInstance();
         mContext = getContext();
     }
@@ -99,34 +59,28 @@ public class MockTest extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mtView = inflater.inflate(R.layout.fragment_mock_test, container, false);
-        //this.spinner = R.layout.fragment_previous_paper.findViewById(R.id.progressBar1);
-
-        //loadingFinished = false;
-
-        //SHOW LOADING IF IT ISNT ALREADY VISIBLE
-        //this.spinner.setVisibility(View.VISIBLE);
-        listView = (ListView) mtView.findViewById(R.id.mt_branch_list);
+        listView = mtView.findViewById(R.id.mt_branch_list);
         progressOverlay = mtView.findViewById(R.id.progress_overlay);
-        ((Button)mtView.findViewById(R.id.CustomBackButtonMT)).setOnClickListener(new View.OnClickListener() {
+        mtView.findViewById(R.id.CustomBackButtonMT).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CustomBackButton();
             }
         });
-        CustomizeView(mtView);
+        CustomizeView();
         return mtView;
     }
 
     public void CustomBackButton(){
         switch (currentLayer){
             case 1:
-                LoadSubjects(mtView);
+                LoadSubjects();
 /*            case 2:
                 LoadChapters(mtView);*/
         }
     }
 
-    void LoadSubjects(final View _mtView){
+    void LoadSubjects(){
         currentLayer = 0;
         progressOverlay.setVisibility(View.VISIBLE);
         db.collection("section").document("mt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -172,18 +126,18 @@ public class MockTest extends Fragment {
                                     .show();*/
                             currentSubjectPos = position;
                             //LoadExams(_mtView);
-                            LoadChapters(_mtView);
+                            LoadChapters();
                         }
                     });
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
-                    LoadSubjects(_mtView);
+                    LoadSubjects();
                 }
             }
         });
     }
 
-    void LoadChapters(final View __mtView){
+    void LoadChapters(){
         progressOverlay.setVisibility(View.VISIBLE);
         currentLayer = 1;
         db.collection("section").document("mt").collection("branch").document("00"+(currentSubjectPos+1)).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -197,12 +151,6 @@ public class MockTest extends Fragment {
                     Timers = new ArrayList<>();
                     Titles = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        /*examList.add(document.getString("Name"));*/
-                                            /*Exams.add(new CustomListItem(document.getString("Name"),
-                                        document.getString("Description"),
-                                        document.getDouble("Price"),
-                                        document.getString("Image"),
-                                        *//*getExamCount(document.getId())*//*5));*/
                         CHapterIds.add(document.getId());
                         Chapters.add(new CustomListItem(document.getString("name"),
                                 document.getString("desc"),
@@ -212,44 +160,34 @@ public class MockTest extends Fragment {
                         Timers.add(document.getString("Timer"));
                         Titles.add(document.getString("name"));
                     }
-                    /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
-                            android.R.layout.simple_list_item_1,
-                            Chapters);*/
-
                     //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Chapters);
 
-                                        /*examListView = (ListView) _ppView.findViewById(R.id.branch_list);
-                                        examListView.setAdapter(adapter);*/
                     listView.setAdapter(adapter);
                     progressOverlay.setVisibility(View.GONE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            /*Toast.makeText(mContext,
-                                    "Clicked ListItem: " + list.get(position), Toast.LENGTH_LONG)
-                                    .show();*/
                             currentChapterPos = position;
-                            LoadTest(__mtView);
+                            LoadTest();
                         }
                     });
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
-                    LoadChapters(__mtView);
+                    LoadChapters();
                 }
             }
         });
     }
 
-    private void LoadTest(final View __mtView) {
+    private void LoadTest() {
         db.collection("section").document("mt").collection("branch").document("00"+(currentSubjectPos+1)).collection("chapter").document("00"+(currentChapterPos+1)).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    /*examList = new ArrayList<>();*/
                     questions = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         questions.add(new Question(document.getString("question"), document.getString("option1"),
                                 document.getString("option2"), document.getString("option3"),
                                 document.getString("option4"), document.getString("answer")));
@@ -266,14 +204,19 @@ public class MockTest extends Fragment {
                     startActivity(myIntent);
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
-                    LoadTest(__mtView);
+                    LoadTest();
                 }
             }
         });
     }
 
-    private void CustomizeView(final View _mtView) {
-        //TextView tv = _ppView.findViewById(R.id.ppTextView);
-        LoadSubjects(_mtView);
+    private void CustomizeView() {
+        LoadSubjects();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        LoadSubjects();
     }
 }

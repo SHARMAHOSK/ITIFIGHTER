@@ -5,6 +5,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/ITIColor</item>
+        <item name="android:textColorPrimary">@color/ITIColor</item>
+        <item name="android:background">@color/white</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -18,36 +24,12 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="FullscreenTheme" parent="AppTheme">
-        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
-        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
-    </style>
-
-    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@color/black_overlay</item>
-    </style>
-
     <style name="CustomFullScreenStyle" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">@color/black_overlay</item>
         <!--        <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>-->
         <item name="android:windowFullscreen">true</item>
     </style>
-
-    <style name ="MaterialDatePickerCustomTheme" parent="@style/Theme.MaterialComponents.NoActionBar.Bridge">
-        <item name="materialCalendarStyle">@style/Widget.MaterialComponents.MaterialCalendar</item>
-        <item name="materialCalendarFullscreenTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen</item>
-        <item name="materialCalendarTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar</item>
-        <item name="colorSurface">#610404</item>
-        <item name="colorPrimary">#00FFFF</item>
-        <item name="colorPrimaryDark">#0000FF</item>
-        <item name="colorAccent">#008080</item>
-    </style>
-
-
 
 
 </resources>

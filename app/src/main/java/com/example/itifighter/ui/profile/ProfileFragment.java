@@ -2,6 +2,8 @@ package com.example.itifighter.ui.profile;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +49,7 @@ public class ProfileFragment extends  Fragment {
     private ImageView UserImage;
     private String Uid;
     private View progressOver;
+    private ProgressBar progressBar;
 
 
     @SuppressLint("SetTextI18n")
@@ -64,6 +68,8 @@ public class ProfileFragment extends  Fragment {
         final TextView UserTrade = root.findViewById(R.id.UserTradeX);
 
         progressOver = root.findViewById(R.id.progress_overlay);
+        progressBar = root.findViewById(R.id.ProfileImageProgress);
+        progressBar.setProgressTintList(ColorStateList.valueOf(Color.BLUE));
 
         Uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         FirebaseFirestore.getInstance().collection("users").document(Uid)
@@ -153,7 +159,8 @@ public class ProfileFragment extends  Fragment {
     }
 
     void uploadImage(){
-        progressOver.setVisibility(View.VISIBLE);
+
+        progressBar.setVisibility(View.VISIBLE);
         final StorageReference ref = FirebaseStorage.getInstance().getReference().child(String.format("UserImage/%s",Uid));
         Glide.with(ProfileFragment.this)
                 .load(ref)
@@ -162,13 +169,13 @@ public class ProfileFragment extends  Fragment {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         Toast.makeText(getContext(),"not set",Toast.LENGTH_SHORT).show();
-                        progressOver.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
                         return false;
                     }
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         Toast.makeText(getContext(),"set",Toast.LENGTH_SHORT).show();
-                        progressOver.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
                         return false;
                     }
                 })

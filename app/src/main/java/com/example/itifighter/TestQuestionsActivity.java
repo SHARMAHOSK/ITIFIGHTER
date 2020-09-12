@@ -1,7 +1,4 @@
 package com.example.itifighter;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,15 +7,15 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.itifighterAdmin.Question;
 
@@ -27,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class TestQuestionsActivity extends AppCompatActivity {
     RadioGroup radioGroup;
@@ -52,10 +50,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_questions);
-
-        /*to hide bottom nav buttons permanently*/
         currentApiVersion = android.os.Build.VERSION.SDK_INT;
-
         final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -68,26 +63,16 @@ public class TestQuestionsActivity extends AppCompatActivity {
         {
 
             getWindow().getDecorView().setSystemUiVisibility(flags);
-
-            // Code below is to handle presses of Volume up or Volume down.
-            // Without this, after pressing volume buttons, the navigation bar will
-            // show up and won't hide
             final View decorView = getWindow().getDecorView();
-            decorView
-                    .setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
+            decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
                     {
-
                         @Override
                         public void onSystemUiVisibilityChange(int visibility)
                         {
-                            if((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0)
-                            {
-                                decorView.setSystemUiVisibility(flags);
-                            }
+                            if((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) decorView.setSystemUiVisibility(flags);
                         }
                     });
         }
-        /**/
 
         /* let's see if putting my code here works... */
         radioGroup = findViewById(R.id.radioGroup1);
@@ -101,8 +86,8 @@ public class TestQuestionsActivity extends AppCompatActivity {
         layoutParams.width = 0;
         quesNavPanel.setLayoutParams(layoutParams);
         title = getIntent().getStringExtra("title");
-        Spinner spin = findViewById(R.id.TestQuestionFeedbackSpinner);
-        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        //Spinner spin = findViewById(R.id.TestQuestionFeedbackSpinner);
+        /*spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedFeedbackOption[currentQues] = i;
@@ -116,7 +101,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
 
         ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,feedbackOptions);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin.setAdapter(aa);
+        spin.setAdapter(aa);*/
 
         submitBtn = findViewById(R.id.submitBtn);
         nextBtn = findViewById(R.id.nextBtn);
@@ -345,10 +330,11 @@ public class TestQuestionsActivity extends AppCompatActivity {
         super.onResume();
         //build our first question
         buildQuestion(0);
-        new CountDownTimer(getIntent().getStringExtra("section").equals("lt")
+        new CountDownTimer(Objects.equals(getIntent().getStringExtra("section"), "lt")
                 ? (getIntent().getLongExtra("timer", 0)+ (getIntent().getIntExtra("duration", 60)*60*1000))-Calendar.getInstance().getTimeInMillis() /*(55*60*1000)*/
                 : (timer * 60 * 1000), 1000) {
 
+            @SuppressLint("SetTextI18n")
             public void onTick(long millisUntilFinished) {
                 long secs = millisUntilFinished / 1000;
                 long min = secs / 60;
@@ -356,6 +342,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 timerText.setText("TIME LEFT: " + (min > 9 ? min : "0"+min) + ":" + (secs > 9 ? secs : "0"+secs));
             }
 
+            @SuppressLint("SetTextI18n")
             public void onFinish() {
                 timerText.setText("done!");
                 Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
@@ -363,7 +350,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 intent.putExtra("selectedFeedbackOption", selectedFeedbackOption);
                 intent.putExtra("section", getIntent().getStringExtra("section"));
                 intent.putExtra("subject", getIntent().getStringExtra("subject"));
-                if(getIntent().getStringExtra("section").equals("lt")){
+                if(Objects.equals(getIntent().getStringExtra("section"), "lt")){
                     intent.putExtra("tid", getIntent().getStringExtra("tid"));
                 }else{
                     intent.putExtra("chapter", getIntent().getStringExtra("chapter"));
@@ -459,6 +446,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
      *
      * @param question the position which question whould be shown to the user.
      */
+    @SuppressLint("SetTextI18n")
     private void buildQuestion(int question) {
         quesNumText.setText((question+1)+"/"+ questions.size());
         //this method would set and display your question
@@ -583,7 +571,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         quesNavPanel.setLayoutParams(layoutParams);
     }
 
-    public void SubmitQuestionFeedback(View view) {
+    /* public void SubmitQuestionFeedback(View view) {
         findViewById(R.id.TQFeedbackLayout).setVisibility(View.VISIBLE);
     }
 
@@ -599,6 +587,6 @@ public class TestQuestionsActivity extends AppCompatActivity {
     public void CancelSubmitFeedback(View view) {
         selectedFeedbackOption[currentQues] = -1;
         findViewById(R.id.TQFeedbackLayout).setVisibility(View.INVISIBLE);
-    }
+    } */
     /*my territory ends here.... idk what the hell is beyond here.*/
 }

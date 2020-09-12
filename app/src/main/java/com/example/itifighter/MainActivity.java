@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     handler.post(new Runnable() {
                         public void run() {
                             mProgressBar.setProgress(progressStatus);
-                            if (progressStatus == 100) startActivity(intent);
+                            if (progressStatus >= 100) startActivity(intent);
                         }
                     });
                     try {

@@ -20,6 +20,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
@@ -55,7 +56,7 @@ public class admin_chapter_list extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     Chapters = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         Chapters.add(""+document.getString("name"));
                         ChapterIds.add((""+document.getId()));
                     }
@@ -75,13 +76,13 @@ public class admin_chapter_list extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                if (getIntent().getStringExtra("section").contains("mt")){
+                if (Objects.requireNonNull(getIntent().getStringExtra("section")).contains("mt")){
                     Intent intent = new Intent(admin_chapter_list.this, admin_mockChapQoes_list.class);
                     intent.putExtra("subject", targetSubject);
                     intent.putExtra("section", targetSection);
                     intent.putExtra("chapter", ChapterIds.get(position));
                     startActivity(intent);
-                }else if (getIntent().getStringExtra("section").contains("ts")){
+                }else if (Objects.requireNonNull(getIntent().getStringExtra("section")).contains("ts")){
                     Intent intent = new Intent(admin_chapter_list.this, admin_mockChapQoes_list.class);
                     intent.putExtra("subject", targetSubject);
                     intent.putExtra("section", targetSection);
