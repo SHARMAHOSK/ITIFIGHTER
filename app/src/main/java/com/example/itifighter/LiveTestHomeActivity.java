@@ -19,7 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.itifighterAdmin.Question;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -38,6 +40,7 @@ public class LiveTestHomeActivity extends AppCompatActivity {
     private Context mContext;
     private View progressOverlay;
     private ArrayList<Question> questions, these_questions;
+    private ArrayList<String> attemptedTestIDs; //tests that student has taken in past.
     Button btnPrev, btnFuture;
 
     private ListView listView, listView2;
@@ -76,7 +79,19 @@ public class LiveTestHomeActivity extends AppCompatActivity {
         });
 
         mContext = getApplicationContext();
-        CustomizeView();
+        attemptedTestIDs = new ArrayList<>();
+        FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).collection("scoreboard").document("lt").collection("test").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot document : task.getResult()){
+                        attemptedTestIDs.add(document.getId());
+                    }
+                }
+                CustomizeView();
+            }
+        });
+        /*CustomizeView();*/
     }
 
     private void CustomizeView() {
@@ -100,7 +115,7 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                     prevIDs = new ArrayList<>();
                     futureTests = new ArrayList<>();
                     for(QueryDocumentSnapshot document : task.getResult()){
-                        if(document.getString("TestInHistory").equals("true")){
+                        if(document.getString("TestInHistory").equals("true") && attemptedTestIDs.contains(document.getId())){
                             prevLives.add(document.getString("title"));
                             prevIDs.add(document.getId());
                         }else{
@@ -131,22 +146,27 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                             countdown.setText("live!");
                             startTestBtn.setVisibility(View.VISIBLE);
                             //show start test btn...
-                            new CountDownTimer(
-                                    (upcomingTest.sTime + (upcomingTest.duration*60*1000)) - Calendar.getInstance().getTimeInMillis(), 1000) {
+                            if(attemptedTestIDs.contains(utID)){
+                                countdown.setText("You have successfully attempted the test. Wait for the result!");
+                                startTestBtn.setVisibility(View.INVISIBLE);
+                            }else{
+                                new CountDownTimer(
+                                        (upcomingTest.sTime + (upcomingTest.duration*60*1000)) - Calendar.getInstance().getTimeInMillis(), 1000) {
 
-                                public void onTick(long millisUntilFinished) {
-                                    long secs = millisUntilFinished / 1000;
-                                    long min = secs / 60;
-                                    secs %= 60;
-                                    countdown.setText("Test ends in: " + (min > 9 ? min : "0"+min) + ":" + (secs > 9 ? secs : "0"+secs));
-                                }
-                                public void onFinish() {
-                                    countdown.setText("Test has ended!");
-                                    //hide start test btn...
-                                    startTestBtn.setVisibility(View.INVISIBLE);
-                                    //move test to history...
-                                }
-                            }.start();
+                                    public void onTick(long millisUntilFinished) {
+                                        long secs = millisUntilFinished / 1000;
+                                        long min = secs / 60;
+                                        secs %= 60;
+                                        countdown.setText("Test ends in: " + (min > 9 ? min : "0"+min) + ":" + (secs > 9 ? secs : "0"+secs));
+                                    }
+                                    public void onFinish() {
+                                        countdown.setText("Test has ended!");
+                                        //hide start test btn...
+                                        startTestBtn.setVisibility(View.INVISIBLE);
+                                        //move test to history...
+                                    }
+                                }.start();
+                            }
                         }
                     }.start();
 
