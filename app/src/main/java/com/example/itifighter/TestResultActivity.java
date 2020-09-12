@@ -63,10 +63,12 @@ public class TestResultActivity extends AppCompatActivity {
         targetSubject = getIntent().getStringExtra("subject");
         targetChapter = getIntent().getStringExtra("chapter");
 
+        String finalTCID = targetSection.equals("lt") ? getIntent().getStringExtra("tid") : targetChapter;
+
         if(targetSection.equals("lt")){
-            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("tests").document(""+getIntent().getStringExtra("tid")).collection("scoreboard");
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("tests").document(finalTCID).collection("scoreboard");
         }else{
-            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(targetChapter).collection("scoreboard");
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(finalTCID).collection("scoreboard");
 
         }
 
@@ -111,7 +113,14 @@ public class TestResultActivity extends AppCompatActivity {
 
 
         final String uuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseFirestore.getInstance().collection("users").document(""+uuid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        final DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document(""+uuid);
+        final DocumentReference UserTestRecordDoc = userDoc.collection("scoreboard").document(""+targetSection).collection("test").document(""+finalTCID);
+        final float percentageMarks = (tca * _mpq)/total_marks;
+        double userRecordScore = targetSection.equals("mt") ? percentageMarks : targetSection.equals("lt") ? percentageMarks*2 : percentageMarks*1.5;
+        Map<String, String> userTestRecordMap = new HashMap<>();
+        userTestRecordMap.put("score", ""+userRecordScore);
+        UserTestRecordDoc.set(userTestRecordMap);
+        userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
@@ -131,7 +140,7 @@ public class TestResultActivity extends AppCompatActivity {
                             Toast.makeText(TestResultActivity.this, "score uploaded in database for user: "+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
                             marksUploaded = true;
                             //((TextView)findViewById(R.id.UploadingTXT)).setText("uploading feedback, please wait..");
-                            CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("common").document("post test").collection("feedback");
+                            final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("common").document("post test").collection("feedback");
                             feedbackBasePath.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -152,7 +161,7 @@ public class TestResultActivity extends AppCompatActivity {
                                                 }else{
                                                     _fb.put("chapter", targetChapter);
                                                 }
-                                                DocumentReference nycRef = mDatabaseReference.document("Feedback_ " + (++count));
+                                                DocumentReference nycRef = feedbackBasePath.document("Feedback_" + (++count));
                                                 batch.set(nycRef, _fb);
                                             }
                                         }

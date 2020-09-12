@@ -33,13 +33,17 @@
         <activity
             android:name=".TestInstructionsActivityX"
             android:noHistory="true" />
-        <activity android:name=".TestResultActivity" />
-        <activity android:name=".TestAnswerSheetActivity" />
-        <activity android:name=".TestLeaderBoardActivity" />
+        <activity android:name=".TestResultActivity"
+            android:alwaysRetainTaskState="true"/>
+        <activity android:name=".TestAnswerSheetActivity"
+            android:alwaysRetainTaskState="true"/>
+        <activity android:name=".TestLeaderBoardActivity"
+            android:alwaysRetainTaskState="true"/>
         <activity android:name=".Payment" />
         <activity
             android:name=".TestQuestionsActivity"
             android:noHistory="true"
+            android:alwaysRetainTaskState="true"
             android:theme="@style/CustomFullScreenStyle" />
         <activity android:name="com.example.itifighterAdmin.admin_upload_excel" />
         <activity android:name="com.example.itifighterAdmin.admin_mockChapQoes_list" />
@@ -63,7 +67,8 @@
         <activity android:name="com.example.itifighterAdmin.admin_section_list" />
         <activity android:name=".LoadPdf" />
         <activity android:name="com.example.itifighterAdmin.pp.AdminUpdatePpPdfs" />
-        <activity android:name=".MainDashboard" />
+        <activity android:name=".MainDashboard"
+            android:alwaysRetainTaskState="true"/>
         <activity android:name=".LiveTestHomeActivity" />
         <activity android:name=".PaytmPayment" />
         <activity android:name=".RegisterActivity" />
