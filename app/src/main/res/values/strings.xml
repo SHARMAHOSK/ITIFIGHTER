@@ -89,6 +89,11 @@
     <string name="live">LIVE</string>
     <string name="ques_num">Ques Num</string>
     <string name="time_left">Time left</string>
+    <string name="total_pending_quetion">total pending quetion:</string>
+    <string name="total_skipped_quetion">total skipped quetion:</string>
+    <string name="total_attempted_quetion">total attempted quetion:</string>
+    <string name="total_available_quetion">total available quetion:</string>
+    <string name="_10">10</string>
 
 
 </resources>

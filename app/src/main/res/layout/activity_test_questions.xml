@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/ITIColor"
     tools:context=".TestQuestionsActivity">
@@ -21,7 +21,7 @@
             android:id="@+id/TestTimer"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="6"
+            android:layout_weight="5"
             android:gravity="center"
             android:keepScreenOn="true"
             android:text="@string/time_left"
@@ -31,7 +31,7 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="1.2"
             android:onClick="OpenQuesNavPanel"
             android:layout_gravity="end"
             android:background="@drawable/ozx"/>
@@ -223,8 +223,7 @@
     <LinearLayout
         android:id="@+id/QuesNavPanel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="100">
+        android:layout_height="match_parent">
 
         <ImageView
             android:layout_width="0dp"
@@ -234,82 +233,125 @@
             android:contentDescription="@string/todo"/>
 
         <LinearLayout
-            android:layout_width="0dp"
             android:layout_weight="80"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="@color/white"
-            android:weightSum="100"
-            android:paddingHorizontal="15sp">
+            android:layout_width="0dp">
+
             <TextView
                 android:id="@+id/TestTitle"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:gravity="center_vertical"
-                android:background="@color/white"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:textColor="@color/ITIColor"
                 android:textStyle="bold"
                 android:textSize="@dimen/dimen_20dp"
-                android:layout_weight="10"
+                android:layout_margin="@dimen/dimen_20dp"
+                android:background="@color/white"
                 android:text="@string/title_here"
                 tools:ignore="NestedWeights" />
+
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="90">
-
+                android:layout_height="wrap_content">
                 <LinearLayout
                     android:id="@+id/tableLayoutList"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:orientation="vertical"/>
-
             </ScrollView>
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginStart="10dp"
-                android:background="@color/white">
-                <TextView
-                    android:id="@+id/AvailableCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:textColor="#006328"
-                    android:textStyle="bold"
+                android:layout_margin="@dimen/dimen_20dp"
+                android:background="@color/dark_blue"
+                android:padding="@dimen/dimen_20dp">
 
-                    android:text="total available quetion:" />
+                <TextView
+                        android:id="@+id/AvailableCount"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:background="@color/dark_blue"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:text="@string/total_available_quetion" />
+
+                <TextView
+                    android:id="@+id/availableX"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/dark_blue"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toEndOf="@+id/AvailableCount"
+                    app:layout_constraintTop_toTopOf="@id/AvailableCount"
+                    />
+
                 <TextView
                     android:id="@+id/AttemptedCount"
-                    android:layout_width="match_parent"
+                    android:layout_width="160dp"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:textColor="#006328"
-                    android:textStyle="bold"
-                    android:text="total attempted quetion:" />
+                    android:textColor="#55FE43"
+                    android:background="@color/dark_blue"
+                    app:layout_constraintStart_toStartOf="@+id/AvailableCount"
+                    app:layout_constraintEnd_toEndOf="@id/AvailableCount"
+                    app:layout_constraintTop_toBottomOf="@+id/AvailableCount"
+                    android:text="@string/total_attempted_quetion" />
+                <TextView
+                    android:id="@+id/attemptedX"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/dark_blue"
+                    android:textColor="#55FE43"
+                    app:layout_constraintStart_toStartOf="@+id/availableX"
+                    app:layout_constraintEnd_toEndOf="@+id/availableX"
+                    app:layout_constraintTop_toBottomOf="@+id/availableX"
+                    />
                 <TextView
                     android:id="@+id/SkippedCount"
-                    android:layout_width="match_parent"
+                    android:layout_width="160dp"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:textColor="#FF0000"
-                    android:textStyle="bold"
+                    android:textColor="#FE4F4F"
+                    android:background="@color/dark_blue"
+                    app:layout_constraintTop_toBottomOf="@+id/AttemptedCount"
+                    app:layout_constraintStart_toStartOf="@+id/AttemptedCount"
+                    app:layout_constraintEnd_toEndOf="@id/AttemptedCount"
+                    android:text="@string/total_skipped_quetion" />
+                <TextView
+                    android:id="@+id/skippedX"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/dark_blue"
+                    android:textColor="#FE4F4F"
+                    app:layout_constraintStart_toStartOf="@+id/attemptedX"
+                    app:layout_constraintEnd_toEndOf="@+id/attemptedX"
+                    app:layout_constraintTop_toBottomOf="@+id/attemptedX"
+                    />
 
-                    android:text="total skipped quetion:" />
                 <TextView
                     android:id="@+id/PendingCount"
-                    android:layout_width="match_parent"
+                    android:layout_width="160dp"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:textColor="#9AB150"
-                    android:textStyle="bold"
+                    android:textColor="#FEFD02"
+                    android:background="@color/dark_blue"
+                    app:layout_constraintTop_toBottomOf="@+id/SkippedCount"
+                    app:layout_constraintStart_toStartOf="@+id/SkippedCount"
+                    app:layout_constraintEnd_toEndOf="@id/SkippedCount"
+                    android:text="@string/total_pending_quetion" />
+                <TextView
+                    android:id="@+id/pendingX"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/dark_blue"
+                    android:textColor="#FEFD02"
+                    app:layout_constraintStart_toStartOf="@+id/skippedX"
+                    app:layout_constraintEnd_toEndOf="@+id/skippedX"
+                    app:layout_constraintTop_toBottomOf="@+id/skippedX"
+                    app:layout_constraintBottom_toBottomOf="@id/PendingCount"
+                    />
 
-                    android:text="total pending quetion:" />
-
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </LinearLayout>

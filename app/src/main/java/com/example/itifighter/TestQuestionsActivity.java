@@ -46,9 +46,10 @@ public class TestQuestionsActivity extends AppCompatActivity {
     ArrayList<Button> quesBtns;
 
     String[] feedbackOptions = { "Wrong Question", "Wrong Options", "Incomplete Question", "Incorrect Grammar", "Question out of syllabus",
-    "Question on old pattern", "Repeated Question"};
+            "Question on old pattern", "Repeated Question"};
     int[] selectedFeedbackOption;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,13 +69,13 @@ public class TestQuestionsActivity extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(flags);
             final View decorView = getWindow().getDecorView();
             decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
-                    {
-                        @Override
-                        public void onSystemUiVisibilityChange(int visibility)
-                        {
-                            if((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) decorView.setSystemUiVisibility(flags);
-                        }
-                    });
+            {
+                @Override
+                public void onSystemUiVisibilityChange(int visibility)
+                {
+                    if((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) decorView.setSystemUiVisibility(flags);
+                }
+            });
         }
 
         /* let's see if putting my code here works... */
@@ -95,13 +96,10 @@ public class TestQuestionsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedFeedbackOption[currentQues] = i;
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
-
         ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,feedbackOptions);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);*/
@@ -130,17 +128,17 @@ public class TestQuestionsActivity extends AppCompatActivity {
         pendingQuestions = new int[questions.size()];
         Arrays.fill(pendingQuestions, 0);
 
-        ((TextView)findViewById(R.id.AvailableCount)).setText("total available quetion: "+questions.size());
-        PendingCount = findViewById(R.id.PendingCount);
-        AttemptedCount = findViewById(R.id.AttemptedCount);
-        SkippedCount = findViewById(R.id.SkippedCount);
+        ((TextView)findViewById(R.id.availableX)).setText(""+questions.size());
+        PendingCount = findViewById(R.id.pendingX);
+        AttemptedCount = findViewById(R.id.attemptedX);
+        SkippedCount = findViewById(R.id.skippedX);
 
         skippedCount = 0;
         attemptedCount = 0;
 
-        PendingCount.setText("total pending quetion:    "+questions.size());
-        AttemptedCount.setText("total attempted quetion:    0");
-        SkippedCount.setText("total skipped quetion:    0");
+        PendingCount.setText(""+questions.size());
+        AttemptedCount.setText("0");
+        SkippedCount.setText("0");
 
         int ii=1;
         while(ii*5<=questions.size()){
@@ -391,14 +389,12 @@ public class TestQuestionsActivity extends AppCompatActivity {
         new CountDownTimer(getIntent().getStringExtra("section").equals("lt")
                 ? (getIntent().getLongExtra("timer", 0)+ (getIntent().getIntExtra("duration", 60)*60*1000))-Calendar.getInstance().getTimeInMillis() *//*(55*60*1000)*//*
                 : (timer * 60 * 1000), 1000) {
-
             public void onTick(long millisUntilFinished) {
                 long secs = millisUntilFinished / 1000;
                 long min = secs / 60;
                 secs %= 60;
                 timerText.setText("TIME LEFT: " + (min > 9 ? min : "0"+min) + ":" + (secs > 9 ? secs : "0"+secs));
             }
-
             public void onFinish() {
                 timerText.setText("done!");
                 Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
@@ -531,6 +527,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
      *
      * @param i position of user's answer
      */
+    @SuppressLint("SetTextI18n")
     private void submitAnswer(int i) {
         if(i != -1 && sub_ans[currentQues] == -1){
             attemptedCount++;
@@ -538,9 +535,9 @@ public class TestQuestionsActivity extends AppCompatActivity {
             skippedCount++;
         }
         pendingQuestions[currentQues] = 1;
-        PendingCount.setText("total pending quetion:    "+(questions.size() - (skippedCount+attemptedCount)));
-        SkippedCount.setText("total skipped quetion:    "+skippedCount);
-        AttemptedCount.setText("total attempted quetion:    "+attemptedCount);
+        PendingCount.setText(""+(questions.size() - (skippedCount+attemptedCount)));
+        SkippedCount.setText(""+skippedCount);
+        AttemptedCount.setText(""+attemptedCount);
         //call on next/submit click
         //currently ato-submit by on radio button lick listener above.
         //collect student answers in an array and proceed to next ques if not last.
@@ -609,7 +606,6 @@ public class TestQuestionsActivity extends AppCompatActivity {
     /* public void SubmitQuestionFeedback(View view) {
         findViewById(R.id.TQFeedbackLayout).setVisibility(View.VISIBLE);
     }
-
     public void ConfirmSubmitFeedback(View view) {
         //...
         if(selectedFeedbackOption[currentQues] < 0)
