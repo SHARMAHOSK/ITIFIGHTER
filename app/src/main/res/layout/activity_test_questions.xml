@@ -12,6 +12,7 @@
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -160,6 +161,7 @@
             android:gravity="center_vertical"
             android:keepScreenOn="true"
             android:text="@string/give_feedback"
+            android:onClick="SubmitQuestionFeedback"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="bold"/>
@@ -239,22 +241,37 @@
             android:background="@color/white"
             android:layout_width="0dp">
 
-            <TextView
-                android:id="@+id/TestTitle"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/ITIColor"
-                android:textStyle="bold"
-                android:textSize="@dimen/dimen_20dp"
                 android:layout_margin="@dimen/dimen_20dp"
-                android:background="@color/white"
-                android:text="@string/title_here"
-                tools:ignore="NestedWeights" />
+                android:background="#010A38"
+                android:padding="10sp">
+
+                <Button
+                    android:layout_height="25sp"
+                    android:layout_width="25sp"
+                    android:onClick="CloseQuesNavPanel"
+                    android:background="@drawable/ozx"/>
+                <TextView
+                    android:id="@+id/TestTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:background="#010A38"
+                    android:layout_marginStart="@dimen/dimen_20dp"
+                    android:textSize="@dimen/dimen_20dp"
+                    android:text="@string/title_here"
+                    tools:ignore="NestedWeights" />
+            </LinearLayout>
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="#0220BD"
+                android:layout_marginStart="@dimen/dimen_20dp"
+                android:layout_marginEnd="@dimen/dimen_20dp">
                 <LinearLayout
                     android:id="@+id/tableLayoutList"
                     android:layout_height="wrap_content"
@@ -265,7 +282,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dimen_20dp"
-                android:background="@color/dark_blue"
+                android:background="#010A38"
                 android:padding="@dimen/dimen_20dp">
 
                 <TextView
@@ -273,7 +290,7 @@
                         android:layout_width="160dp"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
-                        android:background="@color/dark_blue"
+                        android:background="#010A38"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         android:text="@string/total_available_quetion" />
@@ -282,7 +299,7 @@
                     android:id="@+id/availableX"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/dark_blue"
+                    android:background="#010A38"
                     android:textColor="@color/white"
                     app:layout_constraintStart_toEndOf="@+id/AvailableCount"
                     app:layout_constraintTop_toTopOf="@id/AvailableCount"
@@ -293,7 +310,7 @@
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"
                     android:textColor="#55FE43"
-                    android:background="@color/dark_blue"
+                    android:background="#010A38"
                     app:layout_constraintStart_toStartOf="@+id/AvailableCount"
                     app:layout_constraintEnd_toEndOf="@id/AvailableCount"
                     app:layout_constraintTop_toBottomOf="@+id/AvailableCount"
@@ -302,7 +319,7 @@
                     android:id="@+id/attemptedX"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/dark_blue"
+                    android:background="#010A38"
                     android:textColor="#55FE43"
                     app:layout_constraintStart_toStartOf="@+id/availableX"
                     app:layout_constraintEnd_toEndOf="@+id/availableX"
@@ -313,7 +330,7 @@
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"
                     android:textColor="#FE4F4F"
-                    android:background="@color/dark_blue"
+                    android:background="#010A38"
                     app:layout_constraintTop_toBottomOf="@+id/AttemptedCount"
                     app:layout_constraintStart_toStartOf="@+id/AttemptedCount"
                     app:layout_constraintEnd_toEndOf="@id/AttemptedCount"
@@ -322,7 +339,7 @@
                     android:id="@+id/skippedX"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/dark_blue"
+                    android:background="#010A38"
                     android:textColor="#FE4F4F"
                     app:layout_constraintStart_toStartOf="@+id/attemptedX"
                     app:layout_constraintEnd_toEndOf="@+id/attemptedX"
@@ -334,7 +351,7 @@
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"
                     android:textColor="#FEFD02"
-                    android:background="@color/dark_blue"
+                    android:background="#010A38"
                     app:layout_constraintTop_toBottomOf="@+id/SkippedCount"
                     app:layout_constraintStart_toStartOf="@+id/SkippedCount"
                     app:layout_constraintEnd_toEndOf="@id/SkippedCount"
@@ -343,7 +360,7 @@
                     android:id="@+id/pendingX"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/dark_blue"
+                    android:background="#010A38"
                     android:textColor="#FEFD02"
                     app:layout_constraintStart_toStartOf="@+id/skippedX"
                     app:layout_constraintEnd_toEndOf="@+id/skippedX"
@@ -354,5 +371,77 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/TQFeedbackLayout"
+        android:weightSum="100"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="20"
+            android:contentDescription="@string/todo" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="60"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="20"
+                tools:ignore="ContentDescription,NestedWeights" />
+            <LinearLayout
+                android:layout_width="@dimen/dimen_0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="60"
+                android:orientation="vertical"
+                android:weightSum="100"
+                android:background="@color/white">
+                <Spinner
+                    android:id="@+id/TestQuestionFeedbackSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@android:color/transparent"
+                    android:popupBackground="@color/white"
+                    android:hapticFeedbackEnabled="true"
+                    android:layout_marginTop="8dp" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="#010A38"
+                    android:textColor="@color/white"
+                    android:layout_margin="2sp"
+                    android:text="@string/submit_feedback"
+                    android:onClick="ConfirmSubmitFeedback"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/cancel"
+                    android:background="#010A38"
+                    android:layout_margin="2sp"
+                    android:textColor="@color/white"
+                    android:onClick="CancelSubmitFeedback"/>
+            </LinearLayout>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="20"
+                android:contentDescription="@string/todo" />
+        </LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="20"
+            android:contentDescription="@string/todo" />
     </LinearLayout>
 </FrameLayout>

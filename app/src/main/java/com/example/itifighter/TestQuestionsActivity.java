@@ -1,4 +1,5 @@
 package com.example.itifighter;
+
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,10 +8,13 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,8 +94,8 @@ public class TestQuestionsActivity extends AppCompatActivity {
         layoutParams.width = 0;
         quesNavPanel.setLayoutParams(layoutParams);
         title = getIntent().getStringExtra("title");
-        //Spinner spin = findViewById(R.id.TestQuestionFeedbackSpinner);
-        /*spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        Spinner spin = findViewById(R.id.TestQuestionFeedbackSpinner);
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedFeedbackOption[currentQues] = i;
@@ -102,7 +106,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         });
         ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,feedbackOptions);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin.setAdapter(aa);*/
+        spin.setAdapter(aa);
 
         submitBtn = findViewById(R.id.submitBtn);
         nextBtn = findViewById(R.id.nextBtn);
@@ -221,7 +225,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
             }
             ll.addView(mTableRow);
         }
-        ((TextView)findViewById(R.id.TestTitle)).setText(title != null ? title : "-");
+        ((TextView)findViewById(R.id.TestTitle)).setText(title != null ? title : "IBPS PO");
         FirstLoad();
         /*my territory ends here.... idk what the hell is beyond here.*/
     }
@@ -603,7 +607,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         quesNavPanel.setLayoutParams(layoutParams);
     }
 
-    /* public void SubmitQuestionFeedback(View view) {
+     public void SubmitQuestionFeedback(View view) {
         findViewById(R.id.TQFeedbackLayout).setVisibility(View.VISIBLE);
     }
     public void ConfirmSubmitFeedback(View view) {
@@ -618,6 +622,6 @@ public class TestQuestionsActivity extends AppCompatActivity {
     public void CancelSubmitFeedback(View view) {
         selectedFeedbackOption[currentQues] = -1;
         findViewById(R.id.TQFeedbackLayout).setVisibility(View.INVISIBLE);
-    } */
+    }
     /*my territory ends here.... idk what the hell is beyond here.*/
 }

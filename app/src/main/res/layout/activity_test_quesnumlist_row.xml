@@ -12,6 +12,8 @@
         android:layout_marginVertical="20sp"
         android:layout_gravity="center"
         android:layout_marginHorizontal="5sp"
+        android:textSize="12sp"
+        android:textStyle="bold"
         android:visibility="invisible"
         android:layout_weight="1"
         android:text="Q1"/>
@@ -22,6 +24,8 @@
         android:layout_marginVertical="20sp"
         android:layout_gravity="center"
         android:layout_marginHorizontal="5sp"
+        android:textSize="12sp"
+        android:textStyle="bold"
         android:visibility="invisible"
         android:layout_weight="1"
         android:text="Q2"/>
@@ -32,7 +36,9 @@
         android:layout_marginVertical="20sp"
         android:layout_gravity="center"
         android:layout_marginHorizontal="5sp"
+        android:textSize="12sp"
         android:visibility="invisible"
+        android:textStyle="bold"
         android:layout_weight="1"
         android:text="Q3"/>
     <Button
@@ -42,7 +48,9 @@
         android:layout_marginVertical="20sp"
         android:layout_gravity="center"
         android:layout_marginHorizontal="5sp"
+        android:textSize="12sp"
         android:visibility="invisible"
+        android:textStyle="bold"
         android:layout_weight="1"
         android:text="Q4"/>
     <Button
@@ -52,6 +60,8 @@
         android:layout_marginVertical="20sp"
         android:layout_gravity="center"
         android:layout_marginHorizontal="5sp"
+        android:textSize="12sp"
+        android:textStyle="bold"
         android:visibility="invisible"
         android:layout_weight="1"
         android:text="Q4"/>
