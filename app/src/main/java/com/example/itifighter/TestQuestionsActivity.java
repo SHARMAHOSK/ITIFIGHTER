@@ -8,13 +8,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -94,7 +91,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         layoutParams.width = 0;
         quesNavPanel.setLayoutParams(layoutParams);
         title = getIntent().getStringExtra("title");
-        Spinner spin = findViewById(R.id.TestQuestionFeedbackSpinner);
+        /*Spinner spin = findViewById(R.id.TestQuestionFeedbackSpinner);
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -104,10 +101,9 @@ public class TestQuestionsActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,feedbackOptions);
+        ArrayAdapter aa = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,feedbackOptions);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin.setAdapter(aa);
-
+        spin.setAdapter(aa);*/
         submitBtn = findViewById(R.id.submitBtn);
         nextBtn = findViewById(R.id.nextBtn);
         skipBtn = findViewById(R.id.skipBtn);

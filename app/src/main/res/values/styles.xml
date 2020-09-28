@@ -23,12 +23,22 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/black</item>
     </style>
+    <style name="spinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/white</item>
+    </style>
 
     <style name="CustomFullScreenStyle" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">@color/black_overlay</item>
         <!--        <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>-->
         <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppThemeX" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
 
