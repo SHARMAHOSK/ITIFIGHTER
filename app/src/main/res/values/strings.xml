@@ -94,6 +94,7 @@
     <string name="total_attempted_quetion">total attempted quetion:</string>
     <string name="total_available_quetion">total available quetion:</string>
     <string name="_10">10</string>
+    <string name="score">Score</string>
 
 
 </resources>
