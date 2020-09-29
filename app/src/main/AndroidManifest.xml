@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".ResultXyz"></activity>
+        <activity android:name=".ViewSolutionXyz"></activity>
+        <activity android:name=".ResultXyz" />
         <activity android:name="com.example.itifighterAdmin.admin_feedbackDetails" />
         <activity android:name="com.example.itifighterAdmin.admin_testFeedback_list" />
         <activity

@@ -7,6 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
     </style>
+
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/ITIColor</item>
         <item name="android:textColorPrimary">@color/ITIColor</item>
@@ -23,6 +24,7 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="spinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@color/white</item>
@@ -39,6 +41,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
 
