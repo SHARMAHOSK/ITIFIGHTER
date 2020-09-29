@@ -36,7 +36,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25sp"
-        android:background="@color/grey"
         android:orientation="horizontal"
         android:paddingTop="5sp"
         android:paddingBottom="5sp"
@@ -49,6 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="30"
+            android:background="@drawable/rounded_text"
             android:orientation="vertical"
             android:weightSum="10">
 
@@ -171,7 +171,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:layout_weight="10"
-        android:textColor="@color/dark_blue"
+        android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center"
         android:text="IBPS TestSeries"
