@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.itifighterAdmin.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -34,6 +35,9 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
     LinearLayout LeaderBoard;
     ArrayList<LeaderBoardQualifier> leaderBoard;
     StorageReference mStorageReference;
+    CollectionReference mDatabaseReference;
+    String targetSection, targetSubject, targetChapter;
+    String finalTCID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,19 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
         tid = getIntent().getStringExtra("tid");
         LeaderBoard = findViewById(R.id.LBList);
         mStorageReference = FirebaseStorage.getInstance().getReference();
+
+        targetSection = getIntent().getStringExtra("section");
+        targetSubject = getIntent().getStringExtra("subject");
+        targetChapter = getIntent().getStringExtra("chapter");
+
+        finalTCID = getIntent().getStringExtra("tid");
+
+        if(targetSection.equals("lt")){
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(targetChapter).collection("tests").document(finalTCID).collection("scoreboard");
+        }else{
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(finalTCID).collection("scoreboard");
+
+        }
         FirebaseFirestore.getInstance().collection("section").document("lt").collection("tests").document(""+tid).collection("scoreboard").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -75,7 +92,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
 
     private void fillLeaderBoard(String uuid, int rank, String name, int score) {
         View lbRow = null;
-        lbRow = View.inflate(this, R.layout.fragment_leader_board_row, null);
+        lbRow = View.inflate(this, R.layout.activity_leader_board_xyz, null);
         try {
             Glide.with(getApplicationContext())
                     .load(mStorageReference.child("UserImage/"+uuid))

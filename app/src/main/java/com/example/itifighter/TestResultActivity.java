@@ -228,6 +228,9 @@ else{
 
     public void CheckLeaderBoard(View view){
         Intent intent = new Intent(this, TestLeaderBoardActivity.class);
+        intent.putExtra("section", targetSection);
+        intent.putExtra("subject", targetSubject);
+        intent.putExtra("chapter", targetChapter);
         intent.putExtra("tid", ""+finalTCID);
         startActivity(intent);
     }
