@@ -83,8 +83,10 @@ public class TestResultActivity extends AppCompatActivity {
         TSQ = findViewById(R.id.TSQ);
         Accuracy = findViewById(R.id.Accuracy);
         TimePerQuestion = findViewById(R.id.TimePerQuestion);
-
+if(tca+tra > 0)
         Accuracy.setText(""+((tca/(tca+tra))*100));
+else
+        Accuracy.setText("0");
         double total_time_taken = ((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/((double)(tca+tra));
         TimePerQuestion.setText(""+total_time_taken);
 
