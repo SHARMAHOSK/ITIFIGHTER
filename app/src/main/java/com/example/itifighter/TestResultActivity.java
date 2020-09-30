@@ -3,7 +3,6 @@ package com.example.itifighter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,16 +25,19 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class TestResultActivity extends AppCompatActivity {
 
     List<Question> questions;
     int[] sub_ans, selectedFeedbackOption;
     int total_marks = 0;
+    long timeLeft;
     int marks_obtained = 0;
     int _mpq = 1;
     String[] feedbackOptions = { "Wrong Question", "Wrong Options", "Incomplete Question", "Incorrect Grammar", "Question out of syllabus",
@@ -43,17 +45,16 @@ public class TestResultActivity extends AppCompatActivity {
     boolean marksUploaded = false;
 
     int tca = 0, tra = 0, tsq = 0;
-    TextView MO, TM, TCA, TRA, TSQ;
+    TextView MO, TM, TCA, TRA, TSQ, Accuracy, TimePerQuestion;
     String targetSection, targetSubject, targetChapter;
+    String finalTCID;
 
-    private ListView listView;
-    String[] result;
     CollectionReference mDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_result);
+        setContentView(R.layout.activity_result_xyz);
 
         findViewById(R.id.ResultLL).setVisibility(View.INVISIBLE);
         findViewById(R.id.UploadingTXT).setVisibility(View.VISIBLE);
@@ -62,62 +63,76 @@ public class TestResultActivity extends AppCompatActivity {
         targetSection = getIntent().getStringExtra("section");
         targetSubject = getIntent().getStringExtra("subject");
         targetChapter = getIntent().getStringExtra("chapter");
+        timeLeft = getIntent().getLongExtra("timeLeft", 0);
+        questions = (List<Question>) getIntent().getSerializableExtra("questions");
+        _mpq = getIntent().getIntExtra("_mpq", 1);
 
-        String finalTCID = targetSection.equals("lt") ? getIntent().getStringExtra("tid") : targetChapter;
+        finalTCID = targetSection.equals("lt") ? getIntent().getStringExtra("tid") : targetChapter;
 
         if(targetSection.equals("lt")){
-            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("tests").document(finalTCID).collection("scoreboard");
+            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(targetChapter).collection("tests").document(finalTCID).collection("scoreboard");
         }else{
             mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(finalTCID).collection("scoreboard");
 
         }
 
-        questions = (List<Question>) getIntent().getSerializableExtra("questions");
-        _mpq = getIntent().getIntExtra("_mpq", 1);
-        sub_ans = getIntent().getIntArrayExtra("sub_ans");
-        selectedFeedbackOption = getIntent().getIntArrayExtra("selectedFeedbackOption");
-        Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
-        result = new String[sub_ans.length];
-
-        total_marks = _mpq * questions.size();
-
-        /*listView = (ListView) findViewById(R.id.mt_result_list);*/
         MO = findViewById(R.id.marksObtained);
         TM = findViewById(R.id.totalMarks);
         TCA = findViewById(R.id.TCA);
         TRA = findViewById(R.id.TRA);
         TSQ = findViewById(R.id.TSQ);
+        Accuracy = findViewById(R.id.Accuracy);
+        TimePerQuestion = findViewById(R.id.TimePerQuestion);
 
-        for(int i=0; i< sub_ans.length; i++){
-            //result[i] = ""+i;
-            Toast.makeText(this, ""+questions.get(i).getAnswer(), Toast.LENGTH_LONG).show();
-            if(sub_ans[i] == -1){
-                result[i] =  "skipped";
-                tsq++;
+        Accuracy.setText(""+((tca/(tca+tra))*100));
+        double total_time_taken = ((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/((double)(tca+tra));
+        TimePerQuestion.setText(""+total_time_taken);
+
+        total_marks = _mpq * questions.size();
+        TM.setText(""+(questions.size() * _mpq));
+
+        if(getIntent().getStringExtra("is_past_result") != null){
+            tsq = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_skipped")));
+            tca = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_correct")));
+            tra = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_attempted"))) - tca;
+        }else{
+            sub_ans = getIntent().getIntArrayExtra("sub_ans");
+            selectedFeedbackOption = getIntent().getIntArrayExtra("selectedFeedbackOption");
+            Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
+
+            for(int i=0; i< sub_ans.length; i++){
+                Toast.makeText(this, ""+questions.get(i).getAnswer(), Toast.LENGTH_LONG).show();
+                if(sub_ans[i] == -1){
+                    tsq++;
+                }
+                else if(sub_ans[i] == Integer.parseInt(questions.get(i).getAnswer())){
+                    marks_obtained += _mpq;
+                    tca++;
+                }else{
+                    tra++;
+                }
             }
-            else if(sub_ans[i] == Integer.parseInt(questions.get(i).getAnswer())){
-                result[i] =  "right";
-                marks_obtained += _mpq;
-                tca++;
-            }else{
-                result[i] =  "wrong";
-                tra++;
-            }
+
+            UploadData();
         }
 
         MO.setText(""+(tca * _mpq));
-        TM.setText(""+(questions.size() * _mpq));
-        TCA.setText(""+tca);
-        TRA.setText(""+tra);;
-        TSQ.setText(""+tsq);
+        TCA.setText(""+tca+" Correct");
+        TRA.setText(""+tra+" Incorrect");;
+        TSQ.setText(""+tsq+" Skipped");
+    }
 
-
+    void UploadData(){
         final String uuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         final DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document(""+uuid);
         final DocumentReference UserTestRecordDoc = userDoc.collection("scoreboard").document(""+targetSection).collection("test").document(""+finalTCID);
         final float percentageMarks = (tca * _mpq)/total_marks;
         double userRecordScore = targetSection.equals("mt") ? percentageMarks : targetSection.equals("lt") ? percentageMarks*2 : percentageMarks*1.5;
         Map<String, String> userTestRecordMap = new HashMap<>();
+        userTestRecordMap.put("score", ""+userRecordScore);
+        userTestRecordMap.put("total_skipped", ""+tsq);
+        userTestRecordMap.put("total_attempted", ""+(tca+tra));
+        userTestRecordMap.put("total_correct", ""+tca);
         userTestRecordMap.put("score", ""+userRecordScore);
         UserTestRecordDoc.set(userTestRecordMap);
         userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -195,6 +210,26 @@ public class TestResultActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void CheckLeaderBoard(View view){
+        Intent intent = new Intent(this, TestLeaderBoardActivity.class);
+        intent.putExtra("tid", ""+finalTCID);
+        startActivity(intent);
+    }
+
+    public void TakeARetest(View view){
+        if(targetSection.contains("lt"))
+            return;
+        Intent myIntent = new Intent(this, TestInstructionsActivity.class);
+        myIntent.putExtra("section", targetSection);
+        myIntent.putExtra("subject", targetSubject);
+        myIntent.putExtra("chapter", targetChapter);
+        myIntent.putExtra("questions", (Serializable) questions);
+        myIntent.putExtra("_mpq", _mpq);
+        myIntent.putExtra("timer", getIntent().getIntExtra("timer", 60));
+        myIntent.putExtra("title", getIntent().getStringExtra("title"));
+        startActivity(myIntent);
     }
 
     @Override

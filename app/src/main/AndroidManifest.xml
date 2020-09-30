@@ -31,20 +31,23 @@
         <activity android:name="com.example.itifighterAdmin.admin_live_test" />
         <activity
             android:name=".TestInstructionsActivity"
+            android:screenOrientation="portrait"
             android:noHistory="true" />
         <activity
             android:name=".TestInstructionsActivityX"
+            android:screenOrientation="portrait"
             android:noHistory="true" />
-        <activity
-            android:name=".TestResultActivity"
-            android:alwaysRetainTaskState="true" />
-        <activity
-            android:name=".TestAnswerSheetActivity"
-            android:alwaysRetainTaskState="true" />
-        <activity
-            android:name=".TestLeaderBoardActivity"
-            android:alwaysRetainTaskState="true" />
-        <activity android:name=".Payment" />
+        <activity android:name=".TestResultActivity"
+            android:screenOrientation="portrait"
+            android:alwaysRetainTaskState="true"/>
+        <activity android:name=".TestAnswerSheetActivity"
+            android:screenOrientation="portrait"
+            android:alwaysRetainTaskState="true"/>
+        <activity android:name=".TestLeaderBoardActivity"
+            android:screenOrientation="portrait"
+            android:alwaysRetainTaskState="true"/>
+        <activity android:name=".Payment"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".TestQuestionsActivity"
             android:alwaysRetainTaskState="true"
@@ -65,20 +68,30 @@
         <activity
             android:name="com.example.itifighterAdmin.admin_add_subject"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name="com.example.itifighterAdmin.pp.admin_pdf_list" />
-        <activity android:name="com.example.itifighterAdmin.admin_subject_list" />
-        <activity android:name="com.example.itifighterAdmin.pp.admin_pp_list" />
-        <activity android:name="com.example.itifighterAdmin.admin_section_list" />
-        <activity android:name=".LoadPdf" />
+        <activity android:name="com.example.itifighterAdmin.pp.admin_pdf_list"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.itifighterAdmin.admin_subject_list"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.itifighterAdmin.pp.admin_pp_list"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.itifighterAdmin.admin_section_list"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".LoadPdf"
+            android:screenOrientation="portrait"/>
         <activity android:name="com.example.itifighterAdmin.pp.AdminUpdatePpPdfs" />
-        <activity
-            android:name=".MainDashboard"
-            android:alwaysRetainTaskState="true" />
-        <activity android:name=".LiveTestHomeActivity" />
-        <activity android:name=".PaytmPayment" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".Login" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainDashboard"
+            android:screenOrientation="portrait"
+            android:alwaysRetainTaskState="true"/>
+        <activity android:name=".LiveTestHomeActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PaytmPayment"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".RegisterActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Login"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
