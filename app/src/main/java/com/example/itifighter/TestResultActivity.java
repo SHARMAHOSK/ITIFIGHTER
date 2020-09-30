@@ -126,7 +126,16 @@ else{
                     tra++;
                 }
             }
+            double total_time_taken = 0.0;
+            if(tca+tra > 0){
+                Accuracy.setText(""+((tca/(tca+tra))*100));
+                total_time_taken += ((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/((double)(tca+tra));
+            }
+            else{
+                Accuracy.setText("0");
+            }
 
+            TimePerQuestion.setText(""+total_time_taken);
             UploadData();
         }
 
