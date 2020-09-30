@@ -83,17 +83,21 @@ public class TestResultActivity extends AppCompatActivity {
         TSQ = findViewById(R.id.TSQ);
         Accuracy = findViewById(R.id.Accuracy);
         TimePerQuestion = findViewById(R.id.TimePerQuestion);
-if(tca+tra > 0)
-        Accuracy.setText(""+((tca/(tca+tra))*100));
-else
-        Accuracy.setText("0");
-        double total_time_taken = ((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/((double)(tca+tra));
+        double total_time_taken = 0.0;
+if(tca+tra > 0){
+    Accuracy.setText(""+((tca/(tca+tra))*100));
+    total_time_taken += ((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/((double)(tca+tra));
+}
+else{
+    Accuracy.setText("0");
+}
+
         TimePerQuestion.setText(""+total_time_taken);
 
         total_marks = _mpq * questions.size();
         TM.setText(""+(questions.size() * _mpq));
 
-        if(getIntent().getStringExtra("is_past_result") != null){
+        if(getIntent().getStringExtra("is_past_result") != null && getIntent().getStringExtra("is_past_result").contains("true")){
             tsq = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_skipped")));
             tca = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_correct")));
             tra = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_attempted"))) - tca;
