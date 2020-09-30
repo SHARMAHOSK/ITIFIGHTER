@@ -14,9 +14,13 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.itifighter.ui.chat.User;
 import com.example.itifighterAdmin.Question;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -39,7 +43,7 @@ public class MockTest extends Fragment {
     private ArrayList<Question> questions;
     private ListView listView;
 
-    private View mtView, progressOverlay;
+    private View progressOverlay;
     private FirebaseFirestore db;
 
     private Context mContext;
@@ -58,7 +62,7 @@ public class MockTest extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mtView = inflater.inflate(R.layout.fragment_mock_test, container, false);
+        View mtView = inflater.inflate(R.layout.fragment_mock_test, container, false);
         listView = mtView.findViewById(R.id.mt_branch_list);
         progressOverlay = mtView.findViewById(R.id.progress_overlay);
         mtView.findViewById(R.id.CustomBackButtonMT).setOnClickListener(new View.OnClickListener() {
@@ -72,11 +76,8 @@ public class MockTest extends Fragment {
     }
 
     public void CustomBackButton(){
-        switch (currentLayer){
-            case 1:
-                LoadSubjects();
-/*            case 2:
-                LoadChapters(mtView);*/
+        if (currentLayer == 1) {
+            LoadSubjects();
         }
     }
 
@@ -140,7 +141,7 @@ public class MockTest extends Fragment {
     void LoadChapters(){
         progressOverlay.setVisibility(View.VISIBLE);
         currentLayer = 1;
-        db.collection("section").document("mt").collection("branch").document("00"+(currentSubjectPos+1)).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("mt").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -182,7 +183,7 @@ public class MockTest extends Fragment {
     }
 
     private void LoadTest() {
-        db.collection("section").document("mt").collection("branch").document("00"+(currentSubjectPos+1)).collection("chapter").document("00"+(currentChapterPos+1)).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("mt").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("chapter").document(CHapterIds.get(currentChapterPos)).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -193,15 +194,64 @@ public class MockTest extends Fragment {
                                 document.getString("option4"), document.getString("answer")));
                     }
 
-                    Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
-                    myIntent.putExtra("section", "mt");
-                    myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
-                    myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
-                    myIntent.putExtra("questions", (Serializable) questions);
-                    myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
-                    myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
-                    myIntent.putExtra("title", Titles.get(currentChapterPos));
-                    startActivity(myIntent);
+                    final String uuid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+                    final DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document(""+uuid);
+                    final CollectionReference UserTestRecord = userDoc.collection("scoreboard").document("mt").collection("test");
+                    UserTestRecord.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                boolean found = false;
+                                String total_attempted="", total_skipped="", total_correct="";
+                                String targetChapterID = CHapterIds.get(currentChapterPos);
+                                for(QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())){
+                                    if(document.getId().equals(targetChapterID)){
+                                        found = true;
+                                        total_attempted = document.getString("total_attempted");
+                                        total_skipped = document.getString("total_skipped");
+                                        total_correct = document.getString("total_correct");
+                                        break;
+                                    }
+                                }
+                                if(found){
+                                    //load result activity
+                                    Intent myIntent = new Intent(getContext(), TestResultActivity.class);
+                                    myIntent.putExtra("is_past_result", "true");
+                                    myIntent.putExtra("total_skipped", total_skipped);
+                                    myIntent.putExtra("total_attempted", total_attempted);
+                                    myIntent.putExtra("total_correct", total_correct);
+                                    myIntent.putExtra("section", "mt");
+                                    myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
+                                    myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
+                                    myIntent.putExtra("questions", (Serializable) questions);
+                                    myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
+                                    myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
+                                    myIntent.putExtra("title", Titles.get(currentChapterPos));
+                                    startActivity(myIntent);
+                                }else{
+                                    Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
+                                    myIntent.putExtra("section", "mt");
+                                    myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
+                                    myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
+                                    myIntent.putExtra("questions", (Serializable) questions);
+                                    myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
+                                    myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
+                                    myIntent.putExtra("title", Titles.get(currentChapterPos));
+                                    startActivity(myIntent);
+                                }
+                            }else{
+                                Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
+                                myIntent.putExtra("section", "mt");
+                                myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
+                                myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
+                                myIntent.putExtra("questions", (Serializable) questions);
+                                myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
+                                myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
+                                myIntent.putExtra("title", Titles.get(currentChapterPos));
+                                startActivity(myIntent);
+                            }
+                        }
+                    });
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                     LoadTest();

@@ -29,6 +29,7 @@ import java.util.Objects;
 
 public class TestQuestionsActivity extends AppCompatActivity {
     RadioGroup radioGroup;
+    long millisecondsLeft = 0;
     int skippedCount, attemptedCount;
     int[] pendingQuestions;
     TextView SkippedCount, AttemptedCount, PendingCount;
@@ -40,6 +41,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
     int timer;  //time in seconds
     int currentApiVersion;
     TextView questionText, timerText, quesNumText;
+    CountDownTimer testTimer = null;
     Button submitBtn, nextBtn, skipBtn;
     int picked_ans = -1;
     String title;
@@ -325,6 +327,8 @@ public class TestQuestionsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 //if user pressed "yes", then he is allowed to exit from application
                 //startActivity(new Intent(TestQuestionsActivity.this, MainDashboard.class));
+                if(testTimer != null)
+                    testTimer.cancel();
                 finish();
             }
         });
@@ -346,12 +350,13 @@ public class TestQuestionsActivity extends AppCompatActivity {
         /*super.onResume();*/
         //build our first question
         buildQuestion(0);
-        new CountDownTimer(Objects.equals(getIntent().getStringExtra("section"), "lt")
+        testTimer = new CountDownTimer(Objects.equals(getIntent().getStringExtra("section"), "lt")
                 ? (getIntent().getLongExtra("timer", 0)+ (getIntent().getIntExtra("duration", 60)*60*1000))-Calendar.getInstance().getTimeInMillis() /*(55*60*1000)*/
                 : (timer * 60 * 1000), 1000) {
 
             @SuppressLint("SetTextI18n")
             public void onTick(long millisUntilFinished) {
+                millisecondsLeft = millisUntilFinished;
                 long secs = millisUntilFinished / 1000;
                 long min = secs / 60;
                 secs %= 60;
@@ -366,16 +371,20 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 intent.putExtra("selectedFeedbackOption", selectedFeedbackOption);
                 intent.putExtra("section", getIntent().getStringExtra("section"));
                 intent.putExtra("subject", getIntent().getStringExtra("subject"));
+                int tttt = getIntent().getStringExtra("section").contains("lt") ? getIntent().getIntExtra("duration", 60) : timer;
+                intent.putExtra("timer", tttt);
+                intent.putExtra("timeLeft", millisecondsLeft);
+                //ab to lt me bhi chapter hai...
+                intent.putExtra("chapter", getIntent().getStringExtra("chapter"));
                 if(Objects.equals(getIntent().getStringExtra("section"), "lt")){
                     intent.putExtra("tid", getIntent().getStringExtra("tid"));
-                }else{
-                    intent.putExtra("chapter", getIntent().getStringExtra("chapter"));
                 }
                 intent.putExtra("questions", (Serializable) questions);
                 startActivity(intent);
                 finish();
             }
-        }.start();
+        };
+        testTimer.start();
     }
 
     /*@Override
@@ -548,39 +557,44 @@ public class TestQuestionsActivity extends AppCompatActivity {
         else
             quesBtns.get(currentQues).setBackgroundColor(getResources().getColor(R.color.green1));
         if(++currentQues >= questions.size()){
-            //confirmation box before submission.
-            //submit test.
+            if(i != -1){
+                //confirmation box before submission.
+                //submit test.
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setCancelable(false);
-            builder.setMessage("Do you want to Submit?");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
-                    intent.putExtra("sub_ans", sub_ans);
-                    intent.putExtra("selectedFeedbackOption", selectedFeedbackOption);
-                    intent.putExtra("section", getIntent().getStringExtra("section"));
-                    intent.putExtra("subject", getIntent().getStringExtra("subject"));
-                    if(getIntent().getStringExtra("section").equals("lt")){
-                        intent.putExtra("tid", getIntent().getStringExtra("tid"));
-                    }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(false);
+                builder.setMessage("Do you want to Submit?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
+                        intent.putExtra("sub_ans", sub_ans);
+                        intent.putExtra("selectedFeedbackOption", selectedFeedbackOption);
+                        intent.putExtra("section", getIntent().getStringExtra("section"));
+                        intent.putExtra("subject", getIntent().getStringExtra("subject"));
+                        intent.putExtra("timeLeft", millisecondsLeft);
+                        //now even lt has chapter list, so...
                         intent.putExtra("chapter", getIntent().getStringExtra("chapter"));
+                        if(getIntent().getStringExtra("section").equals("lt")){
+                            intent.putExtra("tid", getIntent().getStringExtra("tid"));
+                        }
+                        intent.putExtra("questions", (Serializable) questions);
+                        if(testTimer != null)
+                            testTimer.cancel();
+                        startActivity(intent);
+                        finish();
                     }
-                    intent.putExtra("questions", (Serializable) questions);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-            builder.setNegativeButton("No",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //if user select "No", just cancel this dialog and continue with app
-                    dialog.cancel();
-                }
-            });
-            AlertDialog alert=builder.create();
-            alert.show();
+                });
+                builder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //if user select "No", just cancel this dialog and continue with app
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog alert=builder.create();
+                alert.show();
+            }
         }else{
             if (currentQues == questions.size() - 1){
                 submitBtn.setVisibility(View.VISIBLE);
