@@ -101,6 +101,14 @@ else{
             tsq = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_skipped")));
             tca = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_correct")));
             tra = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_attempted"))) - tca;
+            findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);
+            findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);
+
+            if(targetSection == "lt"){
+
+            }else{
+                findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);
+            }
         }else{
             sub_ans = getIntent().getIntArrayExtra("sub_ans");
             selectedFeedbackOption = getIntent().getIntArrayExtra("selectedFeedbackOption");
