@@ -25,7 +25,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -98,6 +97,7 @@ else{
         TM.setText(""+(questions.size() * _mpq));
 
         if(getIntent().getStringExtra("is_past_result") != null && getIntent().getStringExtra("is_past_result").contains("true")){
+
             tsq = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_skipped")));
             tca = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_correct")));
             tra = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_attempted"))) - tca;
