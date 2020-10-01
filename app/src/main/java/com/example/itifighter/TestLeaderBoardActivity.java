@@ -59,7 +59,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
             mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(finalTCID).collection("scoreboard");
 
         }
-        FirebaseFirestore.getInstance().collection("section").document("lt").collection("tests").document(""+tid).collection("scoreboard").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mDatabaseReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -67,14 +67,14 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         leaderBoard.add(new LeaderBoardQualifier(document.getId(),
                                 document.getString("name"),
-                                Integer.parseInt(document.getString("Score").trim()), -1));
+                                Integer.parseInt((document.getString("Score")).trim()), -1));
                     }
                     Collections.sort(leaderBoard, new Comparator<LeaderBoardQualifier>() {
                         @Override
                         public int compare(LeaderBoardQualifier o1, LeaderBoardQualifier o2) {
                             Integer s1 = o1.getScore();
                             Integer s2 = o2.getScore();
-                            return s1.compareTo(s2);
+                            return s2.compareTo(s1);
                         }
                     });
                     int _rank = 1;
@@ -96,6 +96,8 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
         try {
             Glide.with(getApplicationContext())
                     .load(mStorageReference.child("UserImage/"+uuid))
+                    .placeholder(R.drawable.user)
+                    .circleCrop()
                     .into(((ImageView)lbRow.findViewById(R.id.LeaderBoardUserImage)));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -104,6 +106,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
         ((TextView)lbRow.findViewById(R.id.LeaderBoardRank)).setText(""+rank);
         ((TextView)lbRow.findViewById(R.id.LeaderBoardName)).setText(""+name);
         ((TextView)lbRow.findViewById(R.id.LeaderBoardScore)).setText(""+score);
+        //((TextView)lbRow.findViewById(R.id.LeaderBoardSection)).setText();
         LeaderBoard.addView(lbRow);
     }
 

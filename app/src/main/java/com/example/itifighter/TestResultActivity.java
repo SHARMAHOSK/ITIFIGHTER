@@ -101,6 +101,7 @@ else{
             tsq = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_skipped")));
             tca = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_correct")));
             tra = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_attempted"))) - tca;
+            sub_ans = Objects.requireNonNull(getIntent().getIntArrayExtra("answer_key"));
             findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);
             findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);
 
@@ -151,13 +152,24 @@ else{
         final DocumentReference UserTestRecordDoc = userDoc.collection("scoreboard").document(""+targetSection).collection("test").document(""+finalTCID);
         final float percentageMarks = (tca * _mpq)/total_marks;
         double userRecordScore = targetSection.equals("mt") ? percentageMarks : targetSection.equals("lt") ? percentageMarks*2 : percentageMarks*1.5;
-        Map<String, String> userTestRecordMap = new HashMap<>();
+        /*Map<String, String> userTestRecordMap = new HashMap<>();
         userTestRecordMap.put("score", ""+userRecordScore);
         userTestRecordMap.put("total_skipped", ""+tsq);
         userTestRecordMap.put("total_attempted", ""+(tca+tra));
         userTestRecordMap.put("total_correct", ""+tca);
         userTestRecordMap.put("score", ""+userRecordScore);
+        UserTestRecordDoc.set(userTestRecordMap);*/
+
+        Map<String, Object> userTestRecordMap = new HashMap<>();
+        userTestRecordMap.put("score", ""+userRecordScore);
+        userTestRecordMap.put("total_skipped", ""+tsq);
+        userTestRecordMap.put("total_attempted", ""+(tca+tra));
+        userTestRecordMap.put("total_correct", ""+tca);
+        userTestRecordMap.put("score", ""+userRecordScore);
+        userTestRecordMap.put("answer_key", ""+sub_ans);
+
         UserTestRecordDoc.set(userTestRecordMap);
+
         userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
@@ -240,7 +252,7 @@ else{
         intent.putExtra("section", targetSection);
         intent.putExtra("subject", targetSubject);
         intent.putExtra("chapter", targetChapter);
-        intent.putExtra("tid", ""+finalTCID);
+        intent.putExtra("tid", finalTCID);
         startActivity(intent);
     }
 
@@ -276,6 +288,7 @@ else{
     public void CheckAnswerSheet(View view){
         Intent intent = new Intent(this, TestAnswerSheetActivity.class);
         intent.putExtra("questions", (Serializable) questions);
+        intent.putExtra("answer_key", (Serializable) sub_ans);
         if(marksUploaded) startActivity(intent);
         else
             Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
