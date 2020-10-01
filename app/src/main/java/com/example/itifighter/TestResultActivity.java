@@ -25,7 +25,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +42,8 @@ public class TestResultActivity extends AppCompatActivity {
     int[] sub_ans, selectedFeedbackOption;
     int total_marks = 0;
     long timeLeft;
+    double accuracy = 0.0;
+    int tpq = 0;
     int marks_obtained = 0;
     int _mpq = 1;
     String[] feedbackOptions = { "Wrong Question", "Wrong Options", "Incomplete Question", "Incorrect Grammar", "Question out of syllabus",
@@ -82,7 +89,7 @@ public class TestResultActivity extends AppCompatActivity {
         TSQ = findViewById(R.id.TSQ);
         Accuracy = findViewById(R.id.Accuracy);
         TimePerQuestion = findViewById(R.id.TimePerQuestion);
-        double total_time_taken = 0.0;
+        int total_time_taken = 0;
 if(tca+tra > 0){
     Accuracy.setText(""+((tca/(tca+tra))*100));
     total_time_taken += ((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/((double)(tca+tra));
@@ -97,11 +104,16 @@ else{
         TM.setText(""+(questions.size() * _mpq));
 
         if(getIntent().getStringExtra("is_past_result") != null && getIntent().getStringExtra("is_past_result").contains("true")){
-
+            marksUploaded = true;
             tsq = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_skipped")));
             tca = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_correct")));
             tra = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_attempted"))) - tca;
-            sub_ans = Objects.requireNonNull(getIntent().getIntArrayExtra("answer_key"));
+            String sub_list = Objects.requireNonNull(getIntent().getStringExtra("answer_key"));
+            _mpq = getIntent().getIntExtra("_mpq", 1);
+            String[] str_ans = sub_list.split("_");
+            sub_ans = new int[str_ans.length];
+            for(int i=0; i<str_ans.length; i++)
+                sub_ans[i] = Integer.parseInt(str_ans[i]);
             findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);
             findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);
 
@@ -110,6 +122,10 @@ else{
             }else{
                 findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);
             }
+            accuracy = Double.parseDouble(Objects.requireNonNull(getIntent().getStringExtra("accuracy")));
+            total_time_taken = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("tpq")));
+            Accuracy.setText(""+accuracy);
+            TimePerQuestion.setText(""+total_time_taken);
         }else{
             sub_ans = getIntent().getIntArrayExtra("sub_ans");
             selectedFeedbackOption = getIntent().getIntArrayExtra("selectedFeedbackOption");
@@ -127,15 +143,17 @@ else{
                     tra++;
                 }
             }
-             total_time_taken = 0.0;
+             total_time_taken = 0;
+            accuracy = ((((double)tca)/(tca+tra))*100.0);
+            accuracy = new BigDecimal(accuracy).setScale(2, RoundingMode.HALF_UP).doubleValue();
             if(tca+tra > 0){
-                Accuracy.setText(""+((((double)tca)/(tca+tra))*100.0));
-                total_time_taken += (((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/(1000.0))/((double)(tca+tra));
+                Accuracy.setText(""+accuracy);
+                total_time_taken = Math.toIntExact(Math.round((((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/(1000.0))/((double)(tca+tra))));
             }
             else{
                 Accuracy.setText("0");
             }
-
+            tpq = total_time_taken;
             TimePerQuestion.setText(""+total_time_taken);
             UploadData();
         }
@@ -160,13 +178,18 @@ else{
         userTestRecordMap.put("score", ""+userRecordScore);
         UserTestRecordDoc.set(userTestRecordMap);*/
 
-        Map<String, Object> userTestRecordMap = new HashMap<>();
+        Map<String, String> userTestRecordMap = new HashMap<>();
         userTestRecordMap.put("score", ""+userRecordScore);
         userTestRecordMap.put("total_skipped", ""+tsq);
         userTestRecordMap.put("total_attempted", ""+(tca+tra));
         userTestRecordMap.put("total_correct", ""+tca);
-        userTestRecordMap.put("score", ""+userRecordScore);
-        userTestRecordMap.put("answer_key", ""+sub_ans);
+        userTestRecordMap.put("_mpq", ""+_mpq);
+        userTestRecordMap.put("accuracy", ""+accuracy);
+        userTestRecordMap.put("tpq", ""+tpq);
+        String answerString = "";
+        for(int n : sub_ans)
+            answerString+=n+"_";
+        userTestRecordMap.put("answer_key", answerString.substring(0, answerString.length()-1));
 
         UserTestRecordDoc.set(userTestRecordMap);
 

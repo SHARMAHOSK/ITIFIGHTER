@@ -560,7 +560,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
             if(i != -1){
                 //confirmation box before submission.
                 //submit test.
-
+                currentQues = questions.size()-1;
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setCancelable(false);
                 builder.setMessage("Do you want to Submit?");

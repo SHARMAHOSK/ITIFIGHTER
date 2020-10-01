@@ -29,6 +29,7 @@
 
 
                 <TextView
+                    android:id="@+id/SheetIndex"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@drawable/rounded_text"
@@ -52,6 +53,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
+                    android:id="@+id/SheetResponseTag"
                     android:layout_width="150dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center|end"
@@ -73,6 +75,7 @@
         android:padding="@dimen/dimen_15dp"
         android:layout_marginTop="10dp">
         <TextView
+            android:id="@+id/SheetQues"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -102,6 +105,7 @@
             android:text="A"
             android:textStyle="bold" />
         <TextView
+            android:id="@+id/SheetOption1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -119,9 +123,9 @@
             android:layout_marginEnd="10dp"
             android:layout_weight="1">
             <ImageView
+                android:id="@+id/SheetCheck1"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/checked"
                 android:contentDescription="@string/todo" />
         </LinearLayout>
 
@@ -143,6 +147,7 @@
             android:text="B"
             android:textStyle="bold" />
         <TextView
+            android:id="@+id/SheetOption2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -160,6 +165,7 @@
             android:layout_marginEnd="10dp"
             android:layout_weight="1">
             <ImageView
+                android:id="@+id/SheetCheck2"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:contentDescription="@string/todo" />
@@ -183,6 +189,7 @@
             android:text="C"
             android:textStyle="bold" />
         <TextView
+            android:id="@+id/SheetOption3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -200,9 +207,9 @@
             android:layout_marginEnd="10dp"
             android:layout_weight="1">
             <ImageView
+                android:id="@+id/SheetCheck3"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/cancel"
                 android:contentDescription="@string/todo" />
         </LinearLayout>
     </LinearLayout>
@@ -223,6 +230,7 @@
             android:text="D"
             android:textStyle="bold" />
         <TextView
+            android:id="@+id/SheetOption4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -240,6 +248,7 @@
             android:layout_marginEnd="10dp"
             android:layout_weight="1">
             <ImageView
+                android:id="@+id/SheetCheck4"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:contentDescription="@string/todo" />

@@ -27,6 +27,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
@@ -203,7 +204,8 @@ public class MockTest extends Fragment {
                             if(task.isSuccessful()){
                                 boolean found = false;
                                 String total_attempted="", total_skipped="", total_correct="";
-                                int[] sub_ans = null;
+                                String sub_list = "";
+                                String accuracy = "", tpq = "", _mpq = "";
                                 String targetChapterID = CHapterIds.get(currentChapterPos);
                                 for(QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())){
                                     if(document.getId().equals(targetChapterID)){
@@ -211,8 +213,10 @@ public class MockTest extends Fragment {
                                         total_attempted = document.getString("total_attempted");
                                         total_skipped = document.getString("total_skipped");
                                         total_correct = document.getString("total_correct");
-                                        sub_ans = (int[]) document.get("answer_key");
-
+                                        accuracy = document.getString("accuracy");
+                                        tpq = document.getString("tpq");
+                                        _mpq = document.getString("_mpq");
+                                        sub_list = document.getString("answer_key");
                                         break;
                                     }
                                 }
@@ -227,10 +231,12 @@ public class MockTest extends Fragment {
                                     myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
                                     myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
                                     myIntent.putExtra("questions", (Serializable) questions);
-                                    myIntent.putExtra("answer_key", (Serializable) sub_ans);
-                                    myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
+                                    myIntent.putExtra("answer_key", sub_list);
+                                    myIntent.putExtra("_mpq", Integer.parseInt(_mpq));
                                     myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
                                     myIntent.putExtra("title", Titles.get(currentChapterPos));
+                                    myIntent.putExtra("accuracy", accuracy);
+                                    myIntent.putExtra("tpq", tpq);
                                     startActivity(myIntent);
                                 }else{
                                     Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);

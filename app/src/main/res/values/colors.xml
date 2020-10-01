@@ -16,6 +16,11 @@
     <color name="list_row_hover_end_color">#ebeef0</color>
     <color name="genre">#666666</color>
     <color name="black">#000000</color>
+    <color name="holo_green_dark">#ff669900</color>
+    <!-- A dark Holo shade of red. Equivalent to #ffcc0000 -->
+    <color name="holo_red_dark">#ffcc0000</color>
+    <!-- A Holo shade of purple. Equivalent to #ffaa66cc -->
+    <color name="holo_purple">#ffaa66cc</color>
 
 
     <color name="circleBorder">#50FFFFFF</color>
