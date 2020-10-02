@@ -102,7 +102,23 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
             ex.printStackTrace();
             Toast.makeText(getApplicationContext(),"something wrong to upload",Toast.LENGTH_SHORT).show();
         }
-        ((TextView)lbRow.findViewById(R.id.LeaderBoardRank)).setText(rank);
+        TextView _rank = lbRow.findViewById(R.id.LeaderBoardRank);
+        switch(rank){
+            case "1":
+                _rank.setText("");
+                _rank.setBackgroundResource(R.drawable.cup);
+                break;
+            case "2":
+                _rank.setText("");
+                _rank.setBackgroundResource(R.drawable.second);
+                break;
+            case "3":
+                _rank.setText("");
+                _rank.setBackgroundResource(R.drawable.third);
+                break;
+            default:
+                _rank.setText(rank);
+        }
         ((TextView)lbRow.findViewById(R.id.LeaderBoardName)).setText(""+name);
         ((TextView)lbRow.findViewById(R.id.LeaderBoardScore)).setText(""+score);
         //((TextView)lbRow.findViewById(R.id.LeaderBoardSection)).setText();
@@ -151,6 +167,9 @@ class LeaderBoardQualifier{
     }
 
     public String getRankString(){
+        if(rank < 4){
+            return rank+"";
+        }
         int cc = rank%10;
         return ""+rank+(cc == 1 ? "st" : cc == 2 ? "nd" : cc == 3 ? "rd" : "th");
     }
