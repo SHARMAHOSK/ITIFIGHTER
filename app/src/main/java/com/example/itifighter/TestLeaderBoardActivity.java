@@ -80,7 +80,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
                     int _rank = 1;
                     for(LeaderBoardQualifier lbq : leaderBoard){
                         lbq.setRank(_rank++);
-                        fillLeaderBoard(lbq.uuid, lbq.getRank(), lbq.getName(), lbq.getScore());
+                        fillLeaderBoard(lbq.uuid, lbq.getRankString(), lbq.getName(), lbq.getScore());
                     }
                 } else {
                     Toast.makeText(TestLeaderBoardActivity.this, "error getting leader board", Toast.LENGTH_LONG).show();
@@ -90,7 +90,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
         });
     }
 
-    private void fillLeaderBoard(String uuid, int rank, String name, int score) {
+    private void fillLeaderBoard(String uuid, String rank, String name, int score) {
         View lbRow = null;
         lbRow = View.inflate(this, R.layout.activity_leader_board_xyz, null);
         try {
@@ -103,7 +103,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
             ex.printStackTrace();
             Toast.makeText(getApplicationContext(),"something wrong to upload",Toast.LENGTH_SHORT).show();
         }
-        ((TextView)lbRow.findViewById(R.id.LeaderBoardRank)).setText(""+rank);
+        ((TextView)lbRow.findViewById(R.id.LeaderBoardRank)).setText(rank);
         ((TextView)lbRow.findViewById(R.id.LeaderBoardName)).setText(""+name);
         ((TextView)lbRow.findViewById(R.id.LeaderBoardScore)).setText(""+score);
         //((TextView)lbRow.findViewById(R.id.LeaderBoardSection)).setText();
@@ -149,6 +149,10 @@ class LeaderBoardQualifier{
 
     public int getRank() {
         return rank;
+    }
+
+    public String getRankString(){
+        return ""+rank+(rank%10 == 1 ? "st" : rank%10 == 2 ? "nd" : rank%10 == 3 ? "rd" : "th");
     }
 
     public void setRank(int rank) {
