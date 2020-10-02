@@ -152,7 +152,8 @@ class LeaderBoardQualifier{
     }
 
     public String getRankString(){
-        return ""+rank+(rank%10 == 1 ? "st" : rank%10 == 2 ? "nd" : rank%10 == 3 ? "rd" : "th");
+        int cc = rank%10;
+        return ""+rank+(cc == 1 ? "st" : cc == 2 ? "nd" : cc == 3 ? "rd" : "th");
     }
 
     public void setRank(int rank) {
