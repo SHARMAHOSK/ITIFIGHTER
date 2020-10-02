@@ -104,6 +104,11 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="prev">PREV</string>
+    <string name="leaderboard">LEADERBOARD</string>
+    <string name="student_name">Student Name</string>
+    <string name="rank">Rank</string>
+    <string name="percentage">Percentage</string>
+    <string name="points">Points</string>
 
 
 </resources>

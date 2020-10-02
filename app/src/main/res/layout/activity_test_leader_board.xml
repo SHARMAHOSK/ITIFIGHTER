@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-tools:context=".TestLeaderBoardActivity">
-
-<!--<Button
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="View Answer Sheet"
-    android:onClick="CheckAnswerSheetFromLB"/>-->
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".TestLeaderBoardActivity">
+
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:orientation="vertical"
-    android:layout_weight="100">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,40 +22,52 @@ tools:context=".TestLeaderBoardActivity">
             android:textStyle="bold"
             android:textSize="15sp"
             android:gravity="center"
-            android:text="LEADERBOARD"/>
+            android:text="@string/leaderboard"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/grey"
         android:padding="10sp"
-        android:layout_margin="10dp">
-        <TextView
+        android:gravity="center"
+        android:layout_margin="10dp"
+        android:baselineAligned="false">
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:gravity="start"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:text="Student Name"/>
-        <TextView
-            android:layout_width="40dp"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:text="@string/student_name"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:layout_weight="0.4"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:layout_marginStart="20dp"
-            android:text="Rank" />
-        <TextView
-            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="end">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"
+                android:text="@string/rank" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:layout_marginEnd="10sp"
-            android:text="Percentage"/>
+            android:layout_weight="1"
+            android:gravity="end">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:text="@string/points"/>
+        </LinearLayout>
     </LinearLayout>
     </LinearLayout>
     <ScrollView
@@ -74,9 +79,4 @@ tools:context=".TestLeaderBoardActivity">
             android:layout_width="match_parent"
             android:orientation="vertical"/>
     </ScrollView>
-    <!--<Button
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"
-        android:text="Return to Main Menu"/>-->
 </LinearLayout>
