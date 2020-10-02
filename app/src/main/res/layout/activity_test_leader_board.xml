@@ -15,27 +15,68 @@ tools:context=".TestLeaderBoardActivity">
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="0dp"
     android:orientation="vertical"
     android:layout_weight="100">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:text="LEADERBOARD"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey"
+        android:padding="10sp"
+        android:layout_margin="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:gravity="start"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="Student Name"/>
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_weight="0.4"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_marginStart="20dp"
+            android:text="Rank" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:layout_marginEnd="10sp"
+            android:text="Percentage"/>
+    </LinearLayout>
+    </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="100">
-
-
+        android:layout_height="wrap_content">
         <LinearLayout
             android:id="@+id/LBList"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"/>
-
     </ScrollView>
     <!--<Button
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"
         android:text="Return to Main Menu"/>-->
-</LinearLayout>
-
 </LinearLayout>
