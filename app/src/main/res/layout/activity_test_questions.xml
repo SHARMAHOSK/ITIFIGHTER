@@ -197,7 +197,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="18sp"
-            android:onClick="SkipQuestion"
+            android:onClick="GoToPreviousQuestionWithoutSkip"
             tools:ignore="ButtonStyle,NestedWeights" />
 
         <RelativeLayout

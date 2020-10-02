@@ -601,6 +601,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
                 nextBtn.setVisibility(View.INVISIBLE);
             }
             radioGroup.clearCheck();
+            picked_ans = -1;
             buildQuestion(currentQues);
         }
     }
@@ -632,6 +633,13 @@ public class TestQuestionsActivity extends AppCompatActivity {
     public void CancelSubmitFeedback(View view) {
         selectedFeedbackOption[currentQues] = -1;
         findViewById(R.id.TQFeedbackLayout).setVisibility(View.INVISIBLE);
+    }
+
+    public void GoToPreviousQuestionWithoutSkip(View view) {
+        if(currentQues<1) return;
+        radioGroup.clearCheck();
+        picked_ans = -1;
+        buildQuestion(--currentQues);
     }
     /*my territory ends here.... idk what the hell is beyond here.*/
 }

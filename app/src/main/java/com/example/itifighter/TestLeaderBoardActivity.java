@@ -167,9 +167,9 @@ class LeaderBoardQualifier{
     }
 
     public String getRankString(){
-        if(rank < 4){
+        /*if(rank < 4){
             return rank+"";
-        }
+        }*/
         int cc = rank%10;
         return ""+rank+(cc == 1 ? "st" : cc == 2 ? "nd" : cc == 3 ? "rd" : "th");
     }
