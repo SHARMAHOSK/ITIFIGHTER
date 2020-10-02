@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class TestQuestionsActivity extends AppCompatActivity {
-    RadioGroup radioGroup;
+    RadioGroup radioGroup, feedbackGroup;
     long millisecondsLeft = 0;
     int skippedCount, attemptedCount;
     int[] pendingQuestions;
@@ -83,7 +83,9 @@ public class TestQuestionsActivity extends AppCompatActivity {
 
         /* let's see if putting my code here works... */
         radioGroup = findViewById(R.id.radioGroup1);
+        feedbackGroup = findViewById(R.id.feedBackGroup);
         radioGroup.setOnCheckedChangeListener(radioListener);
+        feedbackGroup.setOnCheckedChangeListener(feedBackListener);
         questionText = findViewById(R.id.questionText);
         quesNumText = findViewById(R.id.QuesNum);
         timerText = findViewById(R.id.TestTimer);
@@ -319,7 +321,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setMessage("Do you want to Quit?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -340,7 +342,8 @@ public class TestQuestionsActivity extends AppCompatActivity {
             }
         });
         AlertDialog alert=builder.create();
-        alert.show();
+        alert.show();*/
+        findViewById(R.id.TQAlertQuitExamLayout).setVisibility(View.VISIBLE);
     }
 
     void FirstLoad(){
@@ -429,6 +432,39 @@ public class TestQuestionsActivity extends AppCompatActivity {
      * we can modify the accessor method submitAnswer(int) to be something like collectAnswer(int) instead.
      * Then with the use of a button on the screen which the user can use to submit their answer.
      */
+
+    RadioGroup.OnCheckedChangeListener feedBackListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            switch (checkedId) {
+                default:
+                    selectedFeedbackOption[currentQues] = -1;
+                    break;
+                case R.id.feedbackOption1:
+                    selectedFeedbackOption[currentQues] = 0;
+                    break;
+                case R.id.feedbackOption2:
+                    selectedFeedbackOption[currentQues] = 1;
+                    break;
+                case R.id.feedbackOption3:
+                    selectedFeedbackOption[currentQues] = 2;
+                    break;
+                case R.id.feedbackOption4:
+                    selectedFeedbackOption[currentQues] = 3;
+                    break;
+                case R.id.feedbackOption5:
+                    selectedFeedbackOption[currentQues] = 4;
+                    break;
+                case R.id.feedbackOption6:
+                    selectedFeedbackOption[currentQues] = 5;
+                    break;
+                case R.id.feedbackOption7:
+                    selectedFeedbackOption[currentQues] = 6;
+                    break;
+            }
+        }
+    };
+
     RadioGroup.OnCheckedChangeListener radioListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -557,11 +593,11 @@ public class TestQuestionsActivity extends AppCompatActivity {
         else
             quesBtns.get(currentQues).setBackgroundColor(getResources().getColor(R.color.green1));
         if(++currentQues >= questions.size()){
+            currentQues = questions.size()-1;
             if(i != -1){
                 //confirmation box before submission.
                 //submit test.
-                currentQues = questions.size()-1;
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setCancelable(false);
                 builder.setMessage("Do you want to Submit?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -593,7 +629,8 @@ public class TestQuestionsActivity extends AppCompatActivity {
                     }
                 });
                 AlertDialog alert=builder.create();
-                alert.show();
+                alert.show();*/
+                findViewById(R.id.TQAlertSubmitExamLayout).setVisibility(View.VISIBLE);
             }
         }else{
             if (currentQues == questions.size() - 1){
@@ -604,6 +641,40 @@ public class TestQuestionsActivity extends AppCompatActivity {
             picked_ans = -1;
             buildQuestion(currentQues);
         }
+    }
+
+
+    public void FinalSubmission(View view){
+        Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
+        intent.putExtra("sub_ans", sub_ans);
+        intent.putExtra("selectedFeedbackOption", selectedFeedbackOption);
+        intent.putExtra("section", getIntent().getStringExtra("section"));
+        intent.putExtra("subject", getIntent().getStringExtra("subject"));
+        intent.putExtra("timeLeft", millisecondsLeft);
+        //now even lt has chapter list, so...
+        intent.putExtra("chapter", getIntent().getStringExtra("chapter"));
+        if(getIntent().getStringExtra("section").equals("lt")){
+            intent.putExtra("tid", getIntent().getStringExtra("tid"));
+        }
+        intent.putExtra("questions", (Serializable) questions);
+        if(testTimer != null)
+            testTimer.cancel();
+        startActivity(intent);
+        finish();
+    }
+
+    public void CancelFinalSubmission(View view){
+        findViewById(R.id.TQAlertSubmitExamLayout).setVisibility(View.GONE);
+    }
+
+    public void FinalizeExamQuit(View view){
+        if(testTimer != null)
+            testTimer.cancel();
+        finish();
+    }
+
+    public void CancelQuitFinalization(View view){
+        findViewById(R.id.TQAlertQuitExamLayout).setVisibility(View.GONE);
     }
 
     public void OpenQuesNavPanel(View view) {
@@ -627,12 +698,12 @@ public class TestQuestionsActivity extends AppCompatActivity {
             Toast.makeText(this, "select a reason...", Toast.LENGTH_SHORT).show();
         else{
             Toast.makeText(this, "your feedback has been recorded..", Toast.LENGTH_SHORT).show();
-            findViewById(R.id.TQFeedbackLayout).setVisibility(View.INVISIBLE);
+            findViewById(R.id.TQFeedbackLayout).setVisibility(View.GONE);
         }
     }
     public void CancelSubmitFeedback(View view) {
         selectedFeedbackOption[currentQues] = -1;
-        findViewById(R.id.TQFeedbackLayout).setVisibility(View.INVISIBLE);
+        findViewById(R.id.TQFeedbackLayout).setVisibility(View.GONE);
     }
 
     public void GoToPreviousQuestionWithoutSkip(View view) {

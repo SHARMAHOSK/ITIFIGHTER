@@ -85,16 +85,17 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <LinearLayout
+        android:id="@+id/SheetStrip1"
         android:layout_width="match_parent"
         android:layout_margin="2dp"
-        android:background="#DEFDC8"
         android:layout_height="55dp"
         android:orientation="horizontal">
         <TextView
+            android:id="@+id/SheetCHar1"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:background="@drawable/rounded_text"
-            android:backgroundTint="@color/green1"
+            android:backgroundTint="@color/grey"
             android:textColor="@color/black"
             android:gravity="center"
             android:layout_marginStart="10dp"
@@ -127,11 +128,13 @@
 
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/SheetStrip2"
         android:layout_width="match_parent"
         android:layout_margin="2dp"
         android:layout_height="55dp"
         android:orientation="horizontal">
         <TextView
+            android:id="@+id/SheetCHar2"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:background="@drawable/rounded_text"
@@ -167,12 +170,13 @@
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/SheetStrip3"
         android:layout_width="match_parent"
         android:layout_margin="2dp"
-        android:background="#FDC8C8"
         android:layout_height="55dp"
         android:orientation="horizontal">
         <TextView
+            android:id="@+id/SheetCHar3"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:background="@drawable/rounded_text"
@@ -208,11 +212,13 @@
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/SheetStrip4"
         android:layout_width="match_parent"
         android:layout_margin="2dp"
         android:layout_height="55dp"
         android:orientation="horizontal">
         <TextView
+            android:id="@+id/SheetCHar4"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:background="@drawable/rounded_text"

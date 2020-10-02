@@ -2,6 +2,7 @@ package com.example.itifighter;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -74,21 +75,33 @@ public class TestAnswerSheetActivity extends AppCompatActivity {
         if(index<1 || index>4)
             return;
         ImageView _img = null;
+        LinearLayout _strip = null;
+        TextView _char = null;
         switch (index){
             case 1:
                 _img = mAnsRow.findViewById(R.id.SheetCheck1);
+                _strip = mAnsRow.findViewById(R.id.SheetStrip1);
+                _char = mAnsRow.findViewById(R.id.SheetCHar1);
                 break;
             case 2:
                 _img = mAnsRow.findViewById(R.id.SheetCheck2);
+                _strip = mAnsRow.findViewById(R.id.SheetStrip2);
+                _char = mAnsRow.findViewById(R.id.SheetCHar2);
                 break;
             case 3:
                 _img = mAnsRow.findViewById(R.id.SheetCheck3);
+                _strip = mAnsRow.findViewById(R.id.SheetStrip3);
+                _char = mAnsRow.findViewById(R.id.SheetCHar3);
                 break;
             case 4:
                 _img = mAnsRow.findViewById(R.id.SheetCheck4);
+                _strip = mAnsRow.findViewById(R.id.SheetStrip4);
+                _char = mAnsRow.findViewById(R.id.SheetCHar4);
                 break;
         }
         _img.setImageResource(affirmative ? R.drawable.checked : R.drawable.cancel);
+        _strip.setBackgroundColor(Color.parseColor(affirmative ? "#DEFDC8" : "#FDC8C8"));
+        _char.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(affirmative ? R.color.green1 : R.color.grey)));
     }
 
     public void CheckLeaderBoard(View view) {

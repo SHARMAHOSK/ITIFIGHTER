@@ -413,35 +413,43 @@
                 android:layout_marginBottom="20dp"
                 android:textAlignment="center"/>
             <RadioGroup
+                android:id="@+id/feedBackGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white">
 
                 <RadioButton
+                    android:id="@+id/feedbackOption1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Wrong Question"/>
                 <RadioButton
+                    android:id="@+id/feedbackOption2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Wrong Options"/>
                 <RadioButton
+                    android:id="@+id/feedbackOption3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Incomplete Question"/>
                 <RadioButton
+                    android:id="@+id/feedbackOption4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Incorrect Grammar"/>
                 <RadioButton
+                    android:id="@+id/feedbackOption5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Question out of syllabus"/>
                 <RadioButton
+                    android:id="@+id/feedbackOption6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Question on old pattern"/>
                 <RadioButton
+                    android:id="@+id/feedbackOption7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Repeated Question"/>
@@ -476,5 +484,113 @@
             </LinearLayout>
 
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/TQAlertSubmitExamLayout"
+        android:layout_width="match_parent"
+        android:background="#E6000000"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="200sp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="You are about to submit exam. Confirm to continue.."
+                android:textSize="15sp"
+                android:layout_margin="2sp"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:textAlignment="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:layout_marginTop="0dp"
+                android:orientation="vertical" >
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="#010A38"
+                    android:textColor="@color/white"
+                    android:layout_margin="2sp"
+                    android:text="Confirm"
+                    android:onClick="FinalSubmission"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/cancel"
+                    android:background="#010A38"
+                    android:layout_margin="2sp"
+                    android:textColor="@color/white"
+                    android:onClick="CancelFinalSubmission"/>
+            </LinearLayout>
+
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/TQAlertQuitExamLayout"
+        android:layout_width="match_parent"
+        android:background="#E6000000"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="200sp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/holo_red_dark"
+                android:textColor="@color/white"
+                android:text="Do you want to quit exam ?"
+                android:textSize="15sp"
+                android:layout_margin="2sp"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:textAlignment="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:layout_marginTop="0dp"
+                android:orientation="vertical" >
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="#010A38"
+                    android:textColor="@color/white"
+                    android:layout_margin="2sp"
+                    android:text="Confirm"
+                    android:onClick="FinalizeExamQuit"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/cancel"
+                    android:background="#010A38"
+                    android:layout_margin="2sp"
+                    android:textColor="@color/white"
+                    android:onClick="CancelQuitFinalization"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>
