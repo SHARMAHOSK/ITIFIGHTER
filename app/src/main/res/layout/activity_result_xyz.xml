@@ -7,21 +7,30 @@
     tools:context=".TestResultActivity">
     <LinearLayout
         android:id="@+id/ResultLL"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
-
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="RESULT"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:background="@color/white"
+                android:padding="10sp"
+                android:layout_margin="10sp"
+                android:layout_marginTop="@dimen/dimen_15dp"
+                android:gravity="center" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@color/grey"
-                android:layout_marginTop="@dimen/dimen_15dp"/>
+                android:background="@color/white"
+                android:layout_margin="10sp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -138,7 +147,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@color/grey"
+                android:background="@color/white"
+                android:layout_margin="10sp"
                 android:layout_marginTop="@dimen/dimen_15dp"/>
             <TextView
                 android:layout_width="match_parent"
@@ -238,7 +248,7 @@
                 android:orientation="vertical">
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="30dp"
                     android:background="@color/blue2"
                     android:onClick="CheckAnswerSheet"
                     android:text="View Solution"
@@ -247,7 +257,7 @@
                     android:layout_margin="4dp"/>
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="30dp"
                     android:background="@color/blue2"
                     android:text="View Leader Board"
                     android:textStyle="bold"
@@ -256,7 +266,7 @@
                     android:onClick="CheckLeaderBoard"/>
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="30dp"
                     android:background="@color/blue2"
                     android:text="Re-Take Exam"
                     android:textStyle="bold"
@@ -279,11 +289,14 @@
             android:layout_margin="4dp"
             android:onClick="FinishExam"/>
     </LinearLayout>
-    <TextView
+    <ImageView
         android:id="@+id/UploadingTXT"
+        android:visibility="invisible"
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="match_parent"
+        android:src="@drawable/resultw"
         android:gravity="center"
-        android:text="uploading test, please wait..."/>
+        android:contentDescription="@string/todo" />
 
 </RelativeLayout>
