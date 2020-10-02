@@ -104,7 +104,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
         }
         TextView _rank = lbRow.findViewById(R.id.LeaderBoardRank);
         switch(rank){
-            case "1":
+            /*case "1":
                 _rank.setText("");
                 _rank.setBackgroundResource(R.drawable.cup);
                 break;
@@ -115,7 +115,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
             case "3":
                 _rank.setText("");
                 _rank.setBackgroundResource(R.drawable.third);
-                break;
+                break;*/
             default:
                 _rank.setText(rank);
         }
