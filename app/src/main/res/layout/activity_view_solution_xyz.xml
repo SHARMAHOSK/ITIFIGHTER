@@ -99,7 +99,7 @@
             android:gravity="center"
             android:layout_marginStart="10dp"
             android:layout_gravity="center|start"
-            android:text="A"
+            android:text="@string/a"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/SheetOption1"
@@ -140,7 +140,7 @@
             android:gravity="center"
             android:layout_marginStart="10dp"
             android:layout_gravity="center|start"
-            android:text="B"
+            android:text="@string/b"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/SheetOption2"
@@ -181,7 +181,7 @@
             android:gravity="center"
             android:layout_marginStart="10dp"
             android:layout_gravity="center|start"
-            android:text="C"
+            android:text="@string/c"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/SheetOption3"
@@ -221,7 +221,7 @@
             android:gravity="center"
             android:layout_marginStart="10dp"
             android:layout_gravity="center|start"
-            android:text="D"
+            android:text="@string/d"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/SheetOption4"
@@ -244,8 +244,7 @@
                 android:id="@+id/SheetCheck4"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/cancel"
-                android:contentDescription="@string/todo" />
+                android:contentDescription="@string/todo"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

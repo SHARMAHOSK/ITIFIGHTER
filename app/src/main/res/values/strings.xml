@@ -109,6 +109,21 @@
     <string name="rank">Rank</string>
     <string name="percentage">Percentage</string>
     <string name="points">Points</string>
+    <string name="resultX">RESULT</string>
+    <string name="analysis">Analysis</string>
+    <string name="percent">Percent</string>
+    <string name="second">Second</string>
+    <string name="accuracy">Accuracy</string>
+    <string name="time_quetion">Time / Quetion</string>
+    <string name="view_solution">View Solution</string>
+    <string name="view_leader_board">View Leader Board</string>
+    <string name="re_take_exam">Re-Take Exam</string>
+    <string name="close">CLOSE</string>
+    <string name="solution">SOLUTION</string>
+    <string name="a">A</string>
+    <string name="b">B</string>
+    <string name="c">C</string>
+    <string name="d">D</string>
 
 
 </resources>

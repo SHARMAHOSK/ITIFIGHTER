@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,14 +19,15 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="RESULT"
+                android:text="@string/resultX"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:background="@color/white"
                 android:padding="10sp"
                 android:layout_margin="10sp"
                 android:layout_marginTop="@dimen/dimen_15dp"
-                android:gravity="center" />
+                android:gravity="center"
+                app:drawableEndCompat="@drawable/cross" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
@@ -56,7 +58,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12"
                         android:textSize="20sp"
                         android:layout_marginTop="@dimen/dimen_15dp"
                         android:textColor="#4C4A4A"
@@ -70,7 +71,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12"
                         android:textSize="20sp"
                         android:layout_marginBottom="@dimen/dimen_15dp"
                         android:textColor="#4C4A4A"
@@ -86,12 +86,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dimen_10dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        tools:ignore="UseCompoundDrawables">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:src="@drawable/checked"/>
+                            android:src="@drawable/checked"
+                            android:contentDescription="@string/todo" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -99,19 +101,20 @@
                             android:textStyle="bold"
                             android:textColor="@color/black_overlay"
                             android:layout_marginStart="@dimen/dimen_15dp"
-                            android:id="@+id/TCA"
-                            android:text="0 Correct"/>
+                            android:id="@+id/TCA"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dimen_10dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        tools:ignore="UseCompoundDrawables">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:src="@drawable/cancel"/>
+                            android:src="@drawable/cancel"
+                            android:contentDescription="@string/todo" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -119,19 +122,20 @@
                             android:textStyle="bold"
                             android:textColor="@color/black_overlay"
                             android:layout_marginStart="@dimen/dimen_15dp"
-                            android:id="@+id/TRA"
-                            android:text="12 Incorrect"/>
+                            android:id="@+id/TRA"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dimen_10dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        tools:ignore="UseCompoundDrawables">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:src="@drawable/skipped"/>
+                            android:src="@drawable/skipped"
+                            android:contentDescription="@string/todo" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -139,8 +143,7 @@
                             android:textStyle="bold"
                             android:textColor="@color/black_overlay"
                             android:layout_marginStart="@dimen/dimen_15dp"
-                            android:id="@+id/TSQ"
-                            android:text="0 Skipped"/>
+                            android:id="@+id/TSQ"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -153,7 +156,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Analysis"
+                android:text="@string/analysis"
                 android:textColor="#4C4A4A"
                 android:paddingStart="35dp"
                 android:textStyle="bold"
@@ -177,7 +180,6 @@
                         android:id="@+id/Accuracy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12"
                         android:textSize="20sp"
                         android:layout_marginTop="@dimen/dimen_15dp"
                         android:textColor="#4C4A4A"
@@ -185,7 +187,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Percent"
+                        android:text="@string/percent"
                         android:textSize="15sp"
                         android:layout_marginBottom="@dimen/dimen_15dp"
                         android:textColor="@color/black_overlay"
@@ -202,7 +204,6 @@
                         android:id="@+id/TimePerQuestion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12"
                         android:textSize="20sp"
                         android:layout_marginTop="@dimen/dimen_15dp"
                         android:textColor="#4C4A4A"
@@ -210,7 +211,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Second"
+                        android:text="@string/second"
                         android:textSize="15sp"
                         android:layout_marginBottom="@dimen/dimen_15dp"
                         android:textColor="@color/black_overlay"
@@ -230,7 +231,7 @@
                     android:gravity="center"
                     android:layout_marginStart="@dimen/dimen_15dp"
                     android:layout_marginEnd="@dimen/dimen_15dp"
-                    android:text="Accuracy"/>
+                    android:text="@string/accuracy"/>
                 <TextView
                     android:layout_width="125dp"
                     android:layout_height="wrap_content"
@@ -238,7 +239,7 @@
                     android:gravity="center"
                     android:layout_marginStart="@dimen/dimen_15dp"
                     android:layout_marginEnd="@dimen/dimen_15dp"
-                    android:text="Time / Quetion"/>
+                    android:text="@string/time_quetion"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -251,7 +252,7 @@
                     android:layout_height="30dp"
                     android:background="@color/blue2"
                     android:onClick="CheckAnswerSheet"
-                    android:text="View Solution"
+                    android:text="@string/view_solution"
                     android:textStyle="bold"
                     android:textColor="@color/white"
                     android:layout_margin="4dp"/>
@@ -259,7 +260,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="@color/blue2"
-                    android:text="View Leader Board"
+                    android:text="@string/view_leader_board"
                     android:textStyle="bold"
                     android:textColor="@color/white"
                     android:layout_margin="4dp"
@@ -268,7 +269,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="@color/blue2"
-                    android:text="Re-Take Exam"
+                    android:text="@string/re_take_exam"
                     android:textStyle="bold"
                     android:textColor="@color/white"
                     android:layout_margin="4dp"
@@ -282,7 +283,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@color/blue2"
-            android:text="CLOSE"
+            android:text="@string/close"
             android:visibility="invisible"
             android:textStyle="bold"
             android:textColor="@color/white"
@@ -291,9 +292,9 @@
     </LinearLayout>
     <ImageView
         android:id="@+id/UploadingTXT"
-        android:visibility="invisible"
         android:layout_width="match_parent"
         android:background="@color/white"
+        android:visibility="invisible"
         android:layout_height="match_parent"
         android:src="@drawable/resultw"
         android:gravity="center"
