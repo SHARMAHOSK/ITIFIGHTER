@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".InstructionXyz"></activity>
+        <activity android:name=".LiveTestXyz"></activity>
+        <activity android:name=".InstructionXyz" />
         <activity android:name=".LeaderBoardXyz" />
         <activity android:name=".ViewSolutionXyz" />
         <activity android:name=".ResultXyz" />
