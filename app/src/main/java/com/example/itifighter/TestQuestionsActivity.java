@@ -511,6 +511,11 @@ public class TestQuestionsActivity extends AppCompatActivity {
      */
     @SuppressLint("SetTextI18n")
     private void buildQuestion(int question) {
+        if(sub_ans[question] < 1){
+            radioGroup.clearCheck();
+        }else{
+            radioGroup.check(radioGroup.getChildAt(sub_ans[question]-1).getId());
+        }
         quesNumText.setText((question+1)+"/"+ questions.size());
         //this method would set and display your question
         displayQuestionText(question);

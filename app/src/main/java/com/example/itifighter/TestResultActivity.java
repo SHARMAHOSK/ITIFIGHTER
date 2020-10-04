@@ -1,7 +1,9 @@
 package com.example.itifighter;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,14 +59,32 @@ public class TestResultActivity extends AppCompatActivity {
 
     CollectionReference mDatabaseReference;
 
+    @SuppressLint({"WrongViewCast", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_xyz);
 
+
+
         findViewById(R.id.ResultLL).setVisibility(View.INVISIBLE);
         findViewById(R.id.UploadingTXT).setVisibility(View.VISIBLE);
-        findViewById(R.id.ContinueBTNRT).setVisibility(View.INVISIBLE);
+
+        final TextView cbt = findViewById(R.id.ContinueBTNRT);
+        cbt.setVisibility(View.INVISIBLE);
+        cbt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= cbt.getRight() - cbt.getTotalPaddingRight()) {
+                        // your action for drawable click event
+                        FinishExam();
+                        return true;
+                    }
+                }
+                return true;
+            }
+        });
 
         targetSection = getIntent().getStringExtra("section");
         targetSubject = getIntent().getStringExtra("subject");
@@ -213,7 +233,8 @@ else{
                             Toast.makeText(TestResultActivity.this, "score uploaded in database for user: "+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
                             marksUploaded = true;
                             //((TextView)findViewById(R.id.UploadingTXT)).setText("uploading feedback, please wait..");
-                            final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("common").document("post test").collection("feedback");
+                            //final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("common").document("post test").collection("feedback");
+                            final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("users").document(""+uuid).collection("feedback");
                             feedbackBasePath.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -227,14 +248,15 @@ else{
                                                 _fb.put("issue", feedbackOptions[selectedFeedbackOption[i]]);
                                                 _fb.put("section", targetSection);
                                                 _fb.put("subject", targetSubject);
-                                                _fb.put("student", studentName);
-                                                _fb.put("date", ""+Calendar.getInstance().getTimeInMillis());
+                                                /*_fb.put("student", studentName);*/
+                                                /*_fb.put("date", ""+Calendar.getInstance().getTimeInMillis());*/
                                                 if(targetSection == "lt"){
                                                     _fb.put("testID", getIntent().getStringExtra("tid"));
                                                 }else{
                                                     _fb.put("chapter", targetChapter);
                                                 }
-                                                DocumentReference nycRef = feedbackBasePath.document("Feedback_" + (++count));
+                                                //DocumentReference nycRef = feedbackBasePath.document("Feedback_" + (++count));
+                                                DocumentReference nycRef = feedbackBasePath.document("Feedback_" + Calendar.getInstance().getTimeInMillis());
                                                 batch.set(nycRef, _fb);
                                             }
                                         }
@@ -283,6 +305,8 @@ else{
         if(targetSection.contains("lt"))
             return;
         Intent myIntent = new Intent(this, TestInstructionsActivity.class);
+        //clears all other activities from stack and makes the new one the root of stack
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         myIntent.putExtra("section", targetSection);
         myIntent.putExtra("subject", targetSubject);
         myIntent.putExtra("chapter", targetChapter);
@@ -301,7 +325,7 @@ else{
             Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
     }
 
-    public void FinishExam(View view) {
+    public void FinishExam() {
         //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
         if(marksUploaded) finish();
         else

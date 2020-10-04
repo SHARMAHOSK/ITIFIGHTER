@@ -56,6 +56,7 @@ public class TestAnswerSheetActivity extends AppCompatActivity {
             //display skipped tag
             _response.setText("Skipped");
             _response.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.holo_purple)));
+            loadCheck(correct_ans, mAnswerRow, true);
         }else{
             if(correct_ans == ans){
                 _response.setText("Correct Answer");

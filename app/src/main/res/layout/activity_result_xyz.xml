@@ -17,6 +17,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/ContinueBTNRT"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/resultX"
@@ -278,8 +279,8 @@
             </LinearLayout>
 
         </LinearLayout>
-        <Button
-            android:id="@+id/ContinueBTNRT"
+        <!--<Button
+
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@color/blue2"
@@ -288,7 +289,7 @@
             android:textStyle="bold"
             android:textColor="@color/white"
             android:layout_margin="4dp"
-            android:onClick="FinishExam"/>
+            android:onClick="FinishExam"/>-->
     </LinearLayout>
     <ImageView
         android:id="@+id/UploadingTXT"
