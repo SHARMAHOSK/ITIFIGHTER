@@ -36,7 +36,7 @@ public class LoadPdf extends AppCompatActivity {
         StorageReference mmFirebaseStorageRef = mFirebaseStorage.getReference().child("uploads");
         final long ONE_MEGABYTE = 1024 * 1024;
 
-        mmFirebaseStorageRef.child(Objects.requireNonNull(getIntent().getStringExtra("pdf"))).getBytes(ONE_MEGABYTE)
+        mmFirebaseStorageRef.child(Objects.requireNonNull(getIntent().getStringExtra("pdf"))).getBytes(10*ONE_MEGABYTE)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
