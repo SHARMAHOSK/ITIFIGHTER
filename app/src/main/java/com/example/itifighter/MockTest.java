@@ -1,5 +1,6 @@
 package com.example.itifighter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,12 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.itifighter.ui.chat.User;
 import com.example.itifighterAdmin.Question;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,9 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
@@ -38,17 +37,16 @@ public class MockTest extends Fragment {
 
     private int currentLayer = 0;
     private int currentSubjectPos = 0, currentChapterPos = 0;   //records which item was clicked in previous list
-
+    private ProgressDialog dialog;
     private ArrayList<CustomListItem> Subjects, Chapters;
     private ArrayList<String> MPQs, Timers, Titles, SubjectIds, CHapterIds;
     private ArrayList<Question> questions;
     private ListView listView;
+    private ImageButton back;
 
-    private View progressOverlay;
+    //private View progressOverlay;
     private FirebaseFirestore db;
-
     private Context mContext;
-
 
     public MockTest() {}
 
@@ -65,8 +63,11 @@ public class MockTest extends Fragment {
         // Inflate the layout for this fragment
         View mtView = inflater.inflate(R.layout.fragment_mock_test, container, false);
         listView = mtView.findViewById(R.id.mt_branch_list);
-        progressOverlay = mtView.findViewById(R.id.progress_overlay);
-        mtView.findViewById(R.id.CustomBackButtonMT).setOnClickListener(new View.OnClickListener() {
+        dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
+        back = mtView.findViewById(R.id.CustomBackButtonMT);
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CustomBackButton();
@@ -84,7 +85,7 @@ public class MockTest extends Fragment {
 
     void LoadSubjects(){
         currentLayer = 0;
-        progressOverlay.setVisibility(View.VISIBLE);
+        dialog.show();
         db.collection("section").document("mt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -101,33 +102,20 @@ public class MockTest extends Fragment {
                         SubjectIds.add(document.getId());
                         Subjects.add(new CustomListItem(document.getString("name"),
                                 document.getString("desc"),
-                                0.00,
-                                /*document.getString("Image")*/document.getString("name"),
-                                /*getExamCount(document.getId())*/5,"mt"));
-                        /*Subjects.add(new CustomListItem(document.getString("Name"),
-                                "is a turner for the price of mechanic and include subjects equivalent to electrician. Copa COpa COpa!!!",
-                                0.00, "cccc.png", 5));*/
+                                0.00, document.getString("name"), 5,"mt"));
                     }
-                    /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
-                            R.layout.activity__branch_list_view, list);*/
-
-
                     //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
 
-
                     /*listView = (ListView) _ppView.findViewById(R.id.branch_list);*/
                     listView.setAdapter(adapter);
-                    progressOverlay.setVisibility(View.GONE);
+                    dialog.dismiss();
+                    back.setVisibility(View.INVISIBLE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            /*Toast.makeText(mContext,
-                                    "Clicked ListItem: " + list.get(position), Toast.LENGTH_LONG)
-                                    .show();*/
                             currentSubjectPos = position;
-                            //LoadExams(_mtView);
                             LoadChapters();
                         }
                     });
@@ -140,7 +128,7 @@ public class MockTest extends Fragment {
     }
 
     void LoadChapters(){
-        progressOverlay.setVisibility(View.VISIBLE);
+        dialog.show();
         currentLayer = 1;
         db.collection("section").document("mt").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -166,7 +154,8 @@ public class MockTest extends Fragment {
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Chapters);
 
                     listView.setAdapter(adapter);
-                    progressOverlay.setVisibility(View.GONE);
+                    dialog.dismiss();
+                    back.setVisibility(View.VISIBLE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
@@ -230,8 +219,9 @@ public class MockTest extends Fragment {
                                     myIntent.putExtra("section", "mt");
                                     myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
                                     myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
-                                    myIntent.putExtra("questions", (Serializable) questions);
+                                    myIntent.putExtra("questions", questions);
                                     myIntent.putExtra("answer_key", sub_list);
+                                    assert _mpq != null;
                                     myIntent.putExtra("_mpq", Integer.parseInt(_mpq));
                                     myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
                                     myIntent.putExtra("title", Titles.get(currentChapterPos));
@@ -243,7 +233,7 @@ public class MockTest extends Fragment {
                                     myIntent.putExtra("section", "mt");
                                     myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
                                     myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
-                                    myIntent.putExtra("questions", (Serializable) questions);
+                                    myIntent.putExtra("questions", questions);
                                     myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
                                     myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
                                     myIntent.putExtra("title", Titles.get(currentChapterPos));
@@ -254,7 +244,7 @@ public class MockTest extends Fragment {
                                 myIntent.putExtra("section", "mt");
                                 myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
                                 myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
-                                myIntent.putExtra("questions", (Serializable) questions);
+                                myIntent.putExtra("questions", questions);
                                 myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
                                 myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
                                 myIntent.putExtra("title", Titles.get(currentChapterPos));

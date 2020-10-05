@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -53,7 +52,7 @@ public class PreviousPaper extends Fragment {
 
     public void CustomBackButton(){
 
-        Toast.makeText(getContext(), "current layer: "+currentLayer, Toast.LENGTH_LONG);
+        //Toast.makeText(getContext(), "current layer: "+currentLayer, Toast.LENGTH_LONG);
 
         switch (currentLayer){
             case 1: LoadSubjects();
