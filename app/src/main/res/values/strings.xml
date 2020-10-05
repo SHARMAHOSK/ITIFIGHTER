@@ -124,6 +124,7 @@
     <string name="b">B</string>
     <string name="c">C</string>
     <string name="d">D</string>
+    <string name="_100_u20b9"><strike>100 ₹</strike></string>
 
 
 </resources>
