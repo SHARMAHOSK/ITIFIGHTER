@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,8 @@ public class TestInstructionsActivity extends AppCompatActivity {
         questions = (List<Question>) getIntent().getSerializableExtra("questions");  //= question list from prev activity
         _mpq = getIntent().getIntExtra("_mpq", 1);
         title = getIntent().getStringExtra("title");
+
+        ((WebView)findViewById(R.id.webXview)).loadUrl("https://drive.google.com/file/d/1Cv83gveEE1ZRD1X122267JpqSAYs3ybh/view?usp=sharing");
 
         if(getIntent().getStringExtra("section").equals("lt")){
             timer = getIntent().getIntExtra("duration", 60);   //value comes in milliseconds for lt
