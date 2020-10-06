@@ -21,7 +21,7 @@ import java.util.List;
 
 public class TestInstructionsActivity extends AppCompatActivity {
 
-    TextView tQues, tMarks, tMin, instructionTV;
+    TextView tQues, tMarks, tMin;
     CheckBox insCB;
 
     List<Question> questions;
@@ -52,21 +52,14 @@ public class TestInstructionsActivity extends AppCompatActivity {
         tQues.setText(""+questions.size());
         tMarks.setText(""+_mpq*questions.size());
         tMin.setText(""+timer);
-
-        instructionTV = findViewById(R.id.InstructionText);
         ((TextView)findViewById(R.id.TestTitleIP)).setText(title != null ? title : "-");
-        insCB = findViewById(R.id.InsCB);
+        insCB = findViewById(R.id.InsCB);/*
         FirebaseFirestore.getInstance().collection("common").document("pre test").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 instructionTV.setText(""+documentSnapshot.getString("instruction"));
             }
-        });
-        /*instructionTV.setText("blah blah \nblah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah \nblah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
-                "\nblah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
-                "\nblah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
-                "\nblah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
-                "");*/
+        });*/
         progressOverlay.setVisibility(View.GONE);
     }
 
