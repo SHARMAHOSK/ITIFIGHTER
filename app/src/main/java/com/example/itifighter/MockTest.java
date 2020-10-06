@@ -145,7 +145,7 @@ public class MockTest extends Fragment {
                                 document.getString("desc"),
                                 Double.parseDouble(Objects.requireNonNull(document.getString("price"))),
                                 Double.parseDouble(Objects.requireNonNull(document.getString("discount"))),
-                                4, Integer.parseInt(Objects.requireNonNull(document.getString("Timer"))),
+                                Integer.parseInt((Objects.requireNonNull(document.getString("NOQ")))), Integer.parseInt(Objects.requireNonNull(document.getString("Timer"))),
                                 Integer.parseInt(Objects.requireNonNull(document.getString("MPQ"))),"mt/chapter"));
                         /*Chapters.add(document.getString("Name"));*/
                         MPQs.add(document.getString("MPQ"));
