@@ -90,10 +90,7 @@ public class LiveTest extends Fragment {
                         /*list.add(document.getString("Name"));*/
                         SubjectID.add(document.getId());
                         Subjects.add(new CustomListItem(document.getString("name"),
-                                document.getString("desc"),
-                                0.00,
-                                /*document.getString("Image")*/document.getString("name"),
-                                /*getExamCount(document.getId())*/5,"lt"));
+                                document.getString("desc"),"lt"));
                     }
 
                     //create our new array adapter

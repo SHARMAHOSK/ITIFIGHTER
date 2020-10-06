@@ -87,9 +87,7 @@ public class TestSeries extends Fragment {
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         Subjects.add(new CustomListItem(document.getString("name"),
                                 document.getString("desc"),
-                                0.00,
-                                document.getString("name"),
-                                /*getExamCount(document.getId())*/5,"ts"));
+                                "ts"));
                         SubjectId.add(document.getId());
                     }
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);

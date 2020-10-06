@@ -101,8 +101,7 @@ public class MockTest extends Fragment {
                         /*list.add(document.getString("Name"));*/
                         SubjectIds.add(document.getId());
                         Subjects.add(new CustomListItem(document.getString("name"),
-                                document.getString("desc"),
-                                0.00, document.getString("name"), 5,"mt"));
+                                document.getString("desc"),"mt"));
                     }
                     //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
@@ -144,7 +143,10 @@ public class MockTest extends Fragment {
                         CHapterIds.add(document.getId());
                         Chapters.add(new CustomListItem(document.getString("name"),
                                 document.getString("desc"),
-                                0.00, document.getString("Image"), 4,"mt"));
+                                Double.parseDouble(Objects.requireNonNull(document.getString("price"))),
+                                Double.parseDouble(Objects.requireNonNull(document.getString("discount"))),
+                                4, Integer.parseInt(Objects.requireNonNull(document.getString("Timer"))),
+                                Integer.parseInt(Objects.requireNonNull(document.getString("MPQ"))),"mt/chapter"));
                         /*Chapters.add(document.getString("Name"));*/
                         MPQs.add(document.getString("MPQ"));
                         Timers.add(document.getString("Timer"));
