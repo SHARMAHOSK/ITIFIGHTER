@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class TestInstructionsActivityX extends AppCompatActivity {
-    TextView tQues, tMarks, tMin, instructionTV,examTitle;
+    TextView tQues, tMarks, tMin,examTitle;
     CheckBox insCB;
     List<Question> questions;
     List<String> quetionId;
@@ -80,10 +80,10 @@ public class TestInstructionsActivityX extends AppCompatActivity {
         tQues.setText("50");
         tMarks.setText("10");
         tMin.setText("20");
-        instructionTV = findViewById(R.id.InstructionText);
+        //instructionTV = findViewById(R.id.InstructionText);
         insCB = findViewById(R.id.InsCBX);
         examTitle.setText("ibps");
-        instructionTV.setText("Read each question carefully.\n" +
+       /* instructionTV.setText("Read each question carefully.\n" +
                 "You cannot skip a question. You must provide an answer to each question to proceed with the test.\n" +
                 "Once answered, you cannot go back to a question. You will be given an opportunity to review questions at the end of the test.\n" +
                 "If you exit the test, you will not be able to resume your place in the test. You will have to start from the beginning.\n" +
@@ -92,7 +92,7 @@ public class TestInstructionsActivityX extends AppCompatActivity {
                 "Your test will not be timed. You can take as much time as you need to complete this test. Please keep in mind, however, that the actual test that you take to gain employment with the County of Los Angeles will be timed.\n" +
                 "This practice test was designed to build upon a basic understanding of the subject area being tested. It was not intended to serve as the sole instruction method or initial exposure to the subject area. Instead, it should serve as a refresher mechanism in your examination preparation. If more in-depth training is required, visit the Local Resources section of this site to locate colleges and organizations that may provide additional training.\n" +
                 "For more detailed instructions, please visit our System Overview section.\n" +
-                "This test is only a guide. The test questions that you complete during your actual employment test may vary in format, content, and level of difficulty.\n");
+                "This test is only a guide. The test questions that you complete during your actual employment test may vary in format, content, and level of difficulty.\n");*/
     }
 
     public void BeginTest(View view) {

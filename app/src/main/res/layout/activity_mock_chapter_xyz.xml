@@ -11,10 +11,10 @@
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/thumbnail"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:background="@drawable/rounded_text"
-            android:layout_margin="15dp"
+            android:layout_margin="5dp"
             android:src="@drawable/user"
             android:contentDescription="@string/todo" />
     </LinearLayout>
@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_marginStart="@dimen/dimen_20dp"
                 android:text="New Test Model"/>
         </LinearLayout>
@@ -72,7 +73,7 @@
                 android:textColor="@color/black_overlay"
                 android:layout_marginStart="10sp"
                 android:textSize="12sp"
-                android:text="80 \u20b9"
+                android:text="FREE"
                 />
         </LinearLayout>
     </LinearLayout>

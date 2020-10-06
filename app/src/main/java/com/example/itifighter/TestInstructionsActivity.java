@@ -1,9 +1,12 @@
 package com.example.itifighter;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -13,9 +16,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.itifighterAdmin.Question;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
 import java.util.List;
@@ -30,6 +30,7 @@ public class TestInstructionsActivity extends AppCompatActivity {
     int timer;  //time in seconds
     String title;
     private View progressOverlay;
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +40,16 @@ public class TestInstructionsActivity extends AppCompatActivity {
         questions = (List<Question>) getIntent().getSerializableExtra("questions");  //= question list from prev activity
         _mpq = getIntent().getIntExtra("_mpq", 1);
         title = getIntent().getStringExtra("title");
-
-        ((WebView)findViewById(R.id.webXview)).loadUrl("https://drive.google.com/file/d/1Cv83gveEE1ZRD1X122267JpqSAYs3ybh/view?usp=sharing");
-
+        WebView webView = findViewById(R.id.webXview);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+        webView.loadUrl("https://drive.google.com/file/d/1_b3c_aaTcUCsfeJPiSHZeBphUT6WPfRk/view?usp=sharing");
+        webView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
         if(getIntent().getStringExtra("section").equals("lt")){
             timer = getIntent().getIntExtra("duration", 60);   //value comes in milliseconds for lt
         }else{
