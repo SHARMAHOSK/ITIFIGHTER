@@ -1,9 +1,11 @@
 package com.example.itifighter;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,11 +24,27 @@ public class TestAnswerSheetActivity extends AppCompatActivity {
     List<Question> questions;
     int[] sub_ans;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_answer_sheet);
         AnswerList = findViewById(R.id.AnswerSheetList);
+
+        final TextView cbt = findViewById(R.id.ContinueBTNAST);
+        cbt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= cbt.getRight() - cbt.getTotalPaddingRight()) {
+                        // your action for drawable click event
+                        finish();
+                        return true;
+                    }
+                }
+                return true;
+            }
+        });
 
         questions = (List<Question>) getIntent().getSerializableExtra("questions");
         sub_ans = getIntent().getIntArrayExtra("answer_key");

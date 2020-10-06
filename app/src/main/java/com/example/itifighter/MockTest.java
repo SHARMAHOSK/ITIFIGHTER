@@ -238,7 +238,7 @@ public class MockTest extends Fragment {
                                     myIntent.putExtra("questions", questions);
                                     myIntent.putExtra("_mpq", Integer.parseInt(MPQs.get(currentChapterPos)));
                                     myIntent.putExtra("timer", Integer.parseInt(Timers.get(currentChapterPos)));
-                                    myIntent.putExtra("title", Titles.get(currentChapterPos));
+                                    myIntent.putExtra("title", Titles.get(currentChapterPos) + " (Mock Test)");
                                     startActivity(myIntent);
                                 }
                             }else{

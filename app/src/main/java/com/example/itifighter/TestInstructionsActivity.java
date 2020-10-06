@@ -40,16 +40,6 @@ public class TestInstructionsActivity extends AppCompatActivity {
         questions = (List<Question>) getIntent().getSerializableExtra("questions");  //= question list from prev activity
         _mpq = getIntent().getIntExtra("_mpq", 1);
         title = getIntent().getStringExtra("title");
-        WebView webView = findViewById(R.id.webXview);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-        webView.loadUrl("https://drive.google.com/file/d/1_b3c_aaTcUCsfeJPiSHZeBphUT6WPfRk/view?usp=sharing");
-        webView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
         if(getIntent().getStringExtra("section").equals("lt")){
             timer = getIntent().getIntExtra("duration", 60);   //value comes in milliseconds for lt
         }else{

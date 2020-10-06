@@ -1,8 +1,10 @@
 package com.example.itifighter;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,6 +40,7 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
     String targetSection, targetSubject, targetChapter;
     String finalTCID;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +61,22 @@ public class TestLeaderBoardActivity extends AppCompatActivity {
             mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(finalTCID).collection("scoreboard");
 
         }
+
+        final TextView cbt = findViewById(R.id.ContinueBTNLBT);
+        cbt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= cbt.getRight() - cbt.getTotalPaddingRight()) {
+                        // your action for drawable click event
+                        finish();
+                        return true;
+                    }
+                }
+                return true;
+            }
+        });
+
         mDatabaseReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

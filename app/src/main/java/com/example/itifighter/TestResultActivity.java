@@ -110,8 +110,10 @@ public class TestResultActivity extends AppCompatActivity {
         Accuracy = findViewById(R.id.Accuracy);
         TimePerQuestion = findViewById(R.id.TimePerQuestion);
         int total_time_taken = 0;
+        Toast.makeText(this, "tca="+tca+"", Toast.LENGTH_SHORT).show();
 if(tca+tra > 0){
     Accuracy.setText(""+((tca/(tca+tra))*100));
+
     total_time_taken += ((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/((double)(tca+tra));
 }
 else{
@@ -149,10 +151,10 @@ else{
         }else{
             sub_ans = getIntent().getIntArrayExtra("sub_ans");
             selectedFeedbackOption = getIntent().getIntArrayExtra("selectedFeedbackOption");
-            Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
 
             for(int i=0; i< sub_ans.length; i++){
-                Toast.makeText(this, ""+questions.get(i).getAnswer(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, ""+questions.get(i).getAnswer(), Toast.LENGTH_LONG).show();
                 if(sub_ans[i] == -1){
                     tsq++;
                 }
@@ -190,13 +192,6 @@ else{
         final DocumentReference UserTestRecordDoc = userDoc.collection("scoreboard").document(""+targetSection).collection("test").document(""+finalTCID);
         final float percentageMarks = (tca * _mpq)/total_marks;
         double userRecordScore = targetSection.equals("mt") ? percentageMarks : targetSection.equals("lt") ? percentageMarks*2 : percentageMarks*1.5;
-        /*Map<String, String> userTestRecordMap = new HashMap<>();
-        userTestRecordMap.put("score", ""+userRecordScore);
-        userTestRecordMap.put("total_skipped", ""+tsq);
-        userTestRecordMap.put("total_attempted", ""+(tca+tra));
-        userTestRecordMap.put("total_correct", ""+tca);
-        userTestRecordMap.put("score", ""+userRecordScore);
-        UserTestRecordDoc.set(userTestRecordMap);*/
 
         Map<String, String> userTestRecordMap = new HashMap<>();
         userTestRecordMap.put("score", ""+userRecordScore);
@@ -230,7 +225,7 @@ else{
                     reference.set(scoreboard).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(TestResultActivity.this, "score uploaded in database for user: "+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(TestResultActivity.this, "score uploaded in database for user: "+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
                             marksUploaded = true;
                             //((TextView)findViewById(R.id.UploadingTXT)).setText("uploading feedback, please wait..");
                             //final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("common").document("post test").collection("feedback");
@@ -321,15 +316,17 @@ else{
     public void onBackPressed() {
         //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
         if(marksUploaded) finish();
-        else
-            Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+        else {
+            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void FinishExam() {
         //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
         if(marksUploaded) finish();
-        else
-            Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+        else {
+            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void CheckAnswerSheet(View view){
@@ -337,7 +334,8 @@ else{
         intent.putExtra("questions", (Serializable) questions);
         intent.putExtra("answer_key", (Serializable) sub_ans);
         if(marksUploaded) startActivity(intent);
-        else
-            Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+        else {
+            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+        }
     }
 }

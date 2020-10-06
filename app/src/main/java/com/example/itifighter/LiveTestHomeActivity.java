@@ -235,7 +235,7 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                     myIntent.putExtra("_mpq", upcomingTest.marks);
                     myIntent.putExtra("timer", (upcomingTest.sTime/*+(upcomingTest.duration*60*1000)*/));
                     myIntent.putExtra("duration", upcomingTest.duration);
-                    myIntent.putExtra("title", upcomingTest.title);
+                    myIntent.putExtra("title", upcomingTest.title + " (Live Test)");
                     myIntent.putExtra("tid", utID);
                     progressOverlay.setVisibility(View.GONE);
                     startActivity(myIntent);
