@@ -126,6 +126,11 @@
     <string name="d">D</string>
     <string name="_100_u20b9"><strike>100 ₹</strike></string>
     <string name="back">Back</string>
+    <string name="i_have_read_all_instructions">I have read all instructions</string>
+    <string name="instruction">INSTRUCTION</string>
+    <string name="minutes">Minutes</string>
+    <string name="marks">Marks</string>
+    <string name="quetions">Quetions</string>
 
 
 </resources>

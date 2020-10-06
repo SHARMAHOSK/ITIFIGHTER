@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
@@ -8,169 +8,169 @@ android:background="@drawable/bg_login"
 android:orientation="vertical"
 android:weightSum="100"
 tools:context=".TestInstructionsActivity">
-    <LinearLayout
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10sp"
+    android:orientation="horizontal"
+    android:background="@color/white"
+    android:paddingStart="10dp"
+    tools:ignore="RtlSymmetry,UseCompoundDrawables">
+    <ImageView
+        android:layout_width="20sp"
+        android:layout_height="20sp"
+        android:layout_gravity="center"
+        android:src="@drawable/checked"
+        android:contentDescription="@string/todo" />
+
+    <TextView
+        android:id="@+id/TestTitleIP"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="start"
+        android:padding="10sp"
+        app:drawableRightCompat="@drawable/cross"
+        android:textSize="20sp"/>
+
+</LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10sp"
+    android:gravity="center">
+    <LinearLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:layout_margin="10sp"
         android:orientation="vertical"
-        android:weightSum="100">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10sp"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-            <ImageView
-                android:layout_width="20sp"
-                android:layout_height="20sp"
-                android:layout_gravity="center"
-                android:src="@drawable/checked"
-                android:contentDescription="@string/todo" />
-            <TextView
-                android:id="@+id/TestTitleIP"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:gravity="start"
-                android:padding="10sp"
-                android:text="IBPS (Mock Test)"
-                android:textSize="20sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="10sp"
-            android:gravity="center">
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:gravity="center"
-                android:layout_margin="10sp"
-                android:orientation="vertical"
-                android:background="@drawable/rounded_text">
-                <TextView
-                    android:id="@+id/TQues"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="12"
-                    android:textSize="20sp"
-                    android:layout_marginTop="@dimen/dimen_15dp"
-                    android:textColor="@color/black"
-                    tools:ignore="SmallSp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Quetions"
-                    android:textSize="15sp"
-                    android:layout_marginBottom="@dimen/dimen_15dp"
-                    android:textColor="@color/black_overlay"
-                    tools:ignore="SmallSp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:gravity="center"
-                android:layout_margin="10sp"
-                android:orientation="vertical"
-                android:background="@drawable/rounded_text">
-                <TextView
-                    android:id="@+id/TMarks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="12"
-                    android:textSize="20sp"
-                    android:layout_marginTop="@dimen/dimen_15dp"
-                    android:textColor="@color/black"
-                    tools:ignore="SmallSp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Marks"
-                    android:textSize="15sp"
-                    android:layout_marginBottom="@dimen/dimen_15dp"
-                    android:textColor="@color/black_overlay"
-                    tools:ignore="SmallSp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:gravity="center"
-                android:layout_margin="10sp"
-                android:orientation="vertical"
-                android:background="@drawable/rounded_text">
-                <TextView
-                    android:id="@+id/TMin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="12"
-                    android:textSize="20sp"
-                    android:layout_marginTop="@dimen/dimen_15dp"
-                    android:textColor="@color/black"
-                    tools:ignore="SmallSp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Minutes"
-                    android:textSize="15sp"
-                    android:layout_marginBottom="@dimen/dimen_15dp"
-                    android:textColor="@color/black_overlay"
-                    tools:ignore="SmallSp"/>
-            </LinearLayout>
-        </LinearLayout>
+        android:background="@drawable/rounded_text">
         <TextView
-            android:id="@+id/examInstruction"
-            android:layout_width="match_parent"
+            android:id="@+id/TQues"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:textColor="@color/dark_blue"
-            android:textStyle="bold"
-            android:text="Instruction"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/details2" />
+            android:layout_marginTop="@dimen/dimen_15dp"
+            android:textColor="@color/black"
+            tools:ignore="SmallSp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/quetions"
+            android:textSize="15sp"
+            android:layout_marginBottom="@dimen/dimen_15dp"
+            android:textColor="@color/black_overlay"
+            tools:ignore="SmallSp"/>
+    </LinearLayout>
 
-        <WebView
-            android:id="@+id/webXview"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:padding="@dimen/dimen_20dp"
-            android:layout_marginTop="10dp"
-            android:layout_margin="5dp"
-            android:scrollbars="vertical"
-            android:isScrollContainer="true"
-            android:nestedScrollingEnabled="true"
-            android:background="@color/white"
-            />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:gravity="bottom"
-            android:orientation="vertical">
-            <CheckBox
-                android:id="@+id/InsCB"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="I have read all instructions"
-                android:textSize="14sp"/>
-            <Button
-                android:id="@+id/startExam"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="@color/startblue"
-                android:onClick="BeginTest"
-                android:text="start"
-                android:textColor="@color/white"
-                />
+    <LinearLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:layout_margin="10sp"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_text">
+        <TextView
+            android:id="@+id/TMarks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginTop="@dimen/dimen_15dp"
+            android:textColor="@color/black"
+            tools:ignore="SmallSp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/marks"
+            android:textSize="15sp"
+            android:layout_marginBottom="@dimen/dimen_15dp"
+            android:textColor="@color/black_overlay"
+            tools:ignore="SmallSp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:layout_margin="10sp"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_text">
+        <TextView
+            android:id="@+id/TMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginTop="@dimen/dimen_15dp"
+            android:textColor="@color/black"
+            tools:ignore="SmallSp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/minutes"
+            android:textSize="15sp"
+            android:layout_marginBottom="@dimen/dimen_15dp"
+            android:textColor="@color/black_overlay"
+            tools:ignore="SmallSp"/>
     </LinearLayout>
 </LinearLayout>
-    <include layout="@layout/include_progress_overlay"/>
-</RelativeLayout>
+<TextView
+    android:id="@+id/examInstruction"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+    android:background="@color/white"
+    android:padding="5dp"
+    android:gravity="center"
+    android:textColor="@color/dark_blue"
+    android:textStyle="bold"
+    android:text="@string/instruction"
+    android:textSize="20sp"/>
+
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+    android:scrollbars="vertical"
+    android:isScrollContainer="true"
+    android:nestedScrollingEnabled="true"
+    android:src="@drawable/self"
+    android:background="@color/white"
+    android:contentDescription="@string/todo" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:gravity="bottom"
+    android:orientation="vertical">
+    <CheckBox
+        android:id="@+id/InsCB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="@string/i_have_read_all_instructions"
+        android:textSize="14sp"/>
+    <Button
+        android:id="@+id/startExam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/dimen_20dp"
+        android:layout_marginEnd="@dimen/dimen_20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/startblue"
+        android:onClick="BeginTest"
+        android:text="@string/start"
+        android:textColor="@color/white"
+        />
+</LinearLayout>
+</LinearLayout>

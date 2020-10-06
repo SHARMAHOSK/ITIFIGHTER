@@ -13,7 +13,9 @@
     android:layout_height="wrap_content"
     android:layout_margin="10sp"
     android:orientation="horizontal"
-    tools:ignore="UseCompoundDrawables">
+    android:background="@color/white"
+    android:paddingStart="10dp"
+    tools:ignore="RtlSymmetry,UseCompoundDrawables">
     <ImageView
         android:layout_width="20sp"
         android:layout_height="20sp"
@@ -49,7 +51,6 @@
                 android:id="@+id/TQuesX"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12"
                 android:textSize="20sp"
                 android:layout_marginTop="@dimen/dimen_15dp"
                 android:textColor="@color/black"
@@ -57,7 +58,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quetions"
+                android:text="@string/quetions"
                 android:textSize="15sp"
                 android:layout_marginBottom="@dimen/dimen_15dp"
                 android:textColor="@color/black_overlay"
@@ -75,7 +76,6 @@
                 android:id="@+id/TMarksY"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12"
                 android:textSize="20sp"
                 android:layout_marginTop="@dimen/dimen_15dp"
                 android:textColor="@color/black"
@@ -83,7 +83,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Marks"
+                android:text="@string/marks"
                 android:textSize="15sp"
                 android:layout_marginBottom="@dimen/dimen_15dp"
                 android:textColor="@color/black_overlay"
@@ -101,7 +101,6 @@
                 android:id="@+id/TMinZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12"
                 android:textSize="20sp"
                 android:layout_marginTop="@dimen/dimen_15dp"
                 android:textColor="@color/black"
@@ -109,7 +108,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Minutes"
+                android:text="@string/minutes"
                 android:textSize="15sp"
                 android:layout_marginBottom="@dimen/dimen_15dp"
                 android:textColor="@color/black_overlay"
@@ -125,24 +124,25 @@
         android:gravity="center"
         android:textColor="@color/dark_blue"
         android:textStyle="bold"
-        android:text="Instruction"
+        android:text="@string/instruction"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/details2" />
 
-    <WebView
+    <ImageView
         android:id="@+id/webXview"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:padding="@dimen/dimen_20dp"
+        android:layout_height="300dp"
         android:layout_marginTop="10dp"
-        android:layout_margin="5dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:scrollbars="vertical"
         android:isScrollContainer="true"
         android:nestedScrollingEnabled="true"
+        android:src="@drawable/self"
         android:background="@color/white"
-        />
+        android:contentDescription="@string/todo" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -153,16 +153,20 @@
             android:id="@+id/InsCBX"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="I have read all instructions"
+            android:layout_marginStart="20dp"
+            android:text="@string/i_have_read_all_instructions"
             android:textSize="14sp"/>
         <Button
             android:id="@+id/startExam"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/dimen_20dp"
+            android:layout_marginEnd="@dimen/dimen_20dp"
+            android:layout_marginBottom="10dp"
             android:background="@color/startblue"
             android:onClick="BeginTest"
-            android:text="start"
+            android:text="@string/start"
             android:textColor="@color/white"
             />
     </LinearLayout>

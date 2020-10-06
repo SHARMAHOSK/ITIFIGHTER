@@ -4,10 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,14 +26,11 @@ public class TestInstructionsActivity extends AppCompatActivity {
     int _mpq;   //marks per question
     int timer;  //time in seconds
     String title;
-    private View progressOverlay;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_instructions);
-        progressOverlay = findViewById(R.id.progress_overlay);
-        progressOverlay.setVisibility(View.VISIBLE);
         questions = (List<Question>) getIntent().getSerializableExtra("questions");  //= question list from prev activity
         _mpq = getIntent().getIntExtra("_mpq", 1);
         title = getIntent().getStringExtra("title");
@@ -61,7 +55,6 @@ public class TestInstructionsActivity extends AppCompatActivity {
                 instructionTV.setText(""+documentSnapshot.getString("instruction"));
             }
         });*/
-        progressOverlay.setVisibility(View.GONE);
     }
 
     @Override
@@ -90,7 +83,6 @@ public class TestInstructionsActivity extends AppCompatActivity {
 
     public void BeginTest(View view) {
         if(insCB.isChecked()){
-            progressOverlay.setVisibility(View.GONE);
             Intent myIntent = new Intent(TestInstructionsActivity.this, TestQuestionsActivity.class);
             myIntent.putExtra("questions", (Serializable) questions);
             myIntent.putExtra("_mpq", _mpq);
@@ -106,7 +98,6 @@ public class TestInstructionsActivity extends AppCompatActivity {
                 myIntent.putExtra("chapter", getIntent().getStringExtra("chapter"));
                 myIntent.putExtra("timer", timer);
             }
-            progressOverlay.setVisibility(View.GONE);
             startActivity(myIntent);
         }else{
             Toast.makeText(this, "Please agree to the terms and conditions in order to proceed with test", Toast.LENGTH_SHORT).show();
