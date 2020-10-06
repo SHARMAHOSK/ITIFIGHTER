@@ -109,21 +109,12 @@ public class TestResultActivity extends AppCompatActivity {
         TSQ = findViewById(R.id.TSQ);
         Accuracy = findViewById(R.id.Accuracy);
         TimePerQuestion = findViewById(R.id.TimePerQuestion);
-        int total_time_taken = 0;
-        Toast.makeText(this, "tca="+tca+"", Toast.LENGTH_SHORT).show();
-if(tca+tra > 0){
-    Accuracy.setText(""+((tca/(tca+tra))*100));
 
-    total_time_taken += ((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/((double)(tca+tra));
-}
-else{
-    Accuracy.setText("0");
-}
-
-        TimePerQuestion.setText(""+total_time_taken);
 
         total_marks = _mpq * questions.size();
         TM.setText(""+(questions.size() * _mpq));
+
+        int total_time_taken = 0;
 
         if(getIntent().getStringExtra("is_past_result") != null && getIntent().getStringExtra("is_past_result").contains("true")){
             marksUploaded = true;
@@ -146,8 +137,7 @@ else{
             }
             accuracy = Double.parseDouble(Objects.requireNonNull(getIntent().getStringExtra("accuracy")));
             total_time_taken = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("tpq")));
-            Accuracy.setText(""+accuracy);
-            TimePerQuestion.setText(""+total_time_taken);
+
         }else{
             sub_ans = getIntent().getIntArrayExtra("sub_ans");
             selectedFeedbackOption = getIntent().getIntArrayExtra("selectedFeedbackOption");
@@ -172,14 +162,21 @@ else{
                 Accuracy.setText(""+accuracy);
                 total_time_taken = Math.toIntExact(Math.round((((getIntent().getIntExtra("timer", 60)*60*1000) - timeLeft)/(1000.0))/((double)(tca+tra))));
             }
-            else{
-                Accuracy.setText("0");
-            }
             tpq = total_time_taken;
-            TimePerQuestion.setText(""+total_time_taken);
+
             UploadData();
         }
 
+
+        int timerValue = getIntent().getIntExtra("timer", 60);
+        Toast.makeText(this, "tca="+tca+" tra="+tra+" timerValue="+timerValue+" timeLeft="+timeLeft, Toast.LENGTH_SHORT).show();
+        if(tca+tra > 0){
+            Accuracy.setText(""+accuracy);
+        }
+        else{
+            Accuracy.setText("0");
+        }
+        TimePerQuestion.setText(""+total_time_taken);
         MO.setText(""+(tca * _mpq));
         TCA.setText(""+tca+" Correct");
         TRA.setText(""+tra+" Incorrect");;
