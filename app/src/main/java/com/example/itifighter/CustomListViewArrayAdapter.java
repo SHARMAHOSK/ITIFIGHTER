@@ -3,6 +3,7 @@ package com.example.itifighter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +102,9 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
         //display trimmed excerpt for description
         String _NOQ_DUR_MRX = ""+property.getQuesCount()+" Qs  |  "+property.getDuration()+" Mins  |  "+(property.getQuesCount()*property.getMPQ())+" Marks";
         ((TextView)view.findViewById(R.id.MockChap_NOQ_DUR_MRX)).setText(_NOQ_DUR_MRX);
-        ((TextView)view.findViewById(R.id.MockChap_Price)).setText(""+property.getPrice());
+        TextView originalPrice = (TextView)view.findViewById(R.id.MockChap_Price);
+        originalPrice.setText(""+property.getPrice());
+        originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         ((TextView)view.findViewById(R.id.MockChap_FPrice)).setText(""+(property.getPrice() - property.getDiscount()));
 
         return view;
