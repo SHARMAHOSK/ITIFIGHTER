@@ -3,6 +3,7 @@ package com.example.itifighter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,16 +98,17 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
 
         Glide.with(context)
                 .load(mmFirebaseStorageRef.child(""+property.getTopicHeader()))
-                .circleCrop()
                 .into(thumbNail);
         //display trimmed excerpt for description
         String _NOQ_DUR_MRX = ""+property.getQuesCount()+" Qs  |  "+property.getDuration()+" Mins  |  "+(property.getQuesCount()*property.getMPQ())+" Marks";
         ((TextView)view.findViewById(R.id.MockChap_NOQ_DUR_MRX)).setText(_NOQ_DUR_MRX);
         TextView originalPrice = (TextView)view.findViewById(R.id.MockChap_Price);
-        originalPrice.setText(""+property.getPrice());
+        originalPrice.setText(""+property.getPrice()+" \u20b9");
         originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        ((TextView)view.findViewById(R.id.MockChap_FPrice)).setText(""+(property.getPrice() - property.getDiscount()));
-
+        double discounted = (property.getPrice() - property.getDiscount());
+        TextView _discountedTV = (TextView)view.findViewById(R.id.MockChap_FPrice);
+        _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
+        _discountedTV.setTextColor(Color.parseColor("#000099"));
         return view;
     }
 }
