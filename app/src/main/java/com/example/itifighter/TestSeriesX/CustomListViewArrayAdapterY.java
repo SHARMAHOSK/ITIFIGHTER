@@ -3,13 +3,11 @@ package com.example.itifighter.TestSeriesX;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,7 +16,6 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.example.itifighter.R;
-import com.example.itifighter.TestListSeries;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -69,8 +66,8 @@ public class CustomListViewArrayAdapterY extends ArrayAdapter<CustomListItemY> {
         final ImageView thumbNail = view.findViewById(R.id.testxy_image_view);
         final TextView test = view.findViewById(R.id.testxy_desc_text);
         final TextView topicHeader = view.findViewById(R.id.testxy_chapter_title);
-        final TextView duration = view.findViewById(R.id.testxytbatch);
-        final Button b = view.findViewById(R.id.buttonxy);
+       // final TextView duration = view.findViewById(R.id.testxytbatch);
+      //  final Button b = view.findViewById(R.id.buttonxy);
         DocumentReference reference = FirebaseFirestore.getInstance().collection("section").document("ts").collection("branch")
                 .document(currentSubject).collection("exam").document(currentChapter);
         reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -91,7 +88,7 @@ public class CustomListViewArrayAdapterY extends ArrayAdapter<CustomListItemY> {
                         }
                         if(documentSnapshot.getString("test") != null) test.setText(documentSnapshot.getString("test")+" Test");
                         else test.setText("0 Test");
-                        b.setText("Go");
+                       /* b.setText("Go");
                         b.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -104,7 +101,7 @@ public class CustomListViewArrayAdapterY extends ArrayAdapter<CustomListItemY> {
                                 context.startActivity(intent);
                             }
                         });
-                        startCounter(expiryDate,duration);
+                        startCounter(expiryDate,duration);*/
                     }
                 }
             }
