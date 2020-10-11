@@ -3,20 +3,17 @@ package com.example.itifighter.TestSeriesX;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.itifighter.R;
-import com.example.itifighter.TestInstructionsActivityX;
 
 import java.util.ArrayList;
 
@@ -56,14 +53,11 @@ public class CustomListViewArrayAdapterZ extends ArrayAdapter<CustomListItemY> {
         currentTest = property.getTestId();
         if (inflater == null) inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         @SuppressLint({"ViewHolder", "InflateParams"}) View view = inflater.inflate(R.layout.test_series_tests, null);
-        TextView Title = view.findViewById(R.id.testxyztitle),Quetion = view.findViewById(R.id.testxyzquetion),
-                Time = view.findViewById(R.id.testxyztime),Score = view.findViewById(R.id.testxyzscore);
-        Button start = view.findViewById(R.id.buttonTestStart),result = view.findViewById(R.id.buttonTestResult);
+        TextView Title = view.findViewById(R.id.testxyztitle),desc = view.findViewById(R.id.text_xy_desc);
+        //Button start = view.findViewById(R.id.buttonTestStart),result = view.findViewById(R.id.buttonTestResult);
         Title.setText(property.getTestName());
-        Quetion.setText(property.getTestQuetion()+" Quetions");
-        Time.setText(property.getTestDuration()+" Minutes");
-        Score.setText(property.getTestScore()+" Marks");
-        start.setOnClickListener(new View.OnClickListener() {
+        desc.setText(property.getTestQuetion()+" Qs | "+property.getTestDuration()+" Mins | "+property.getTestScore()+" Marks");
+       /* start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, TestInstructionsActivityX.class);
@@ -72,7 +66,7 @@ public class CustomListViewArrayAdapterZ extends ArrayAdapter<CustomListItemY> {
                 intent.putExtra("currentTest",currentTest);
                 context.startActivity(intent);
             }
-        });
+        });*/
         return view;
     }
 }

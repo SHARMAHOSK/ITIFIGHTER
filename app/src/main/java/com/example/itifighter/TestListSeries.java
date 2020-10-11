@@ -48,7 +48,7 @@ public class TestListSeries extends AppCompatActivity {
         String seriesCount = intent.getStringExtra("SeriesCount");
         TextView SeriesNameX = findViewById(R.id.testxy_chapter_title);
         TextView SeriesCountX = findViewById(R.id.testxy_desc_text);
-        TextView ExpiryDateX = findViewById(R.id.testxytbatch);
+        //TextView ExpiryDateX = findViewById(R.id.testxytbatch);
         ImageView SeriesImage = findViewById(R.id.testxy_image_view);
         StorageReference mmFirebaseStorageRef = mFirebaseStorage.getReference().child("menu/section/ts/chapter/");
         if(seriesName != null){
@@ -60,7 +60,7 @@ public class TestListSeries extends AppCompatActivity {
         }
         SeriesNameX.setText(seriesName);
         SeriesCountX.setText(seriesCount +" Test");
-        ExpiryDateX.setText(expiryDate);
+        //ExpiryDateX.setText(expiryDate);
         LoadTests();
     }
 

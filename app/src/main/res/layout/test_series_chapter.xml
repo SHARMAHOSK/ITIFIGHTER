@@ -1,106 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:background="@android:color/transparent"
-    android:layout_height="wrap_content">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+tools:context=".LiveTestXyz"
+android:orientation="vertical"
+android:baselineAligned="false">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent">
-
-        <Button
-            android:id="@+id/buttonxy"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="344dp"
-            android:layout_marginTop="18sp"
-            android:layout_marginEnd="18dp"
-            android:background="@drawable/button_gradient"
-            android:textColor="@color/white"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.972"
-            app:layout_constraintStart_toEndOf="@+id/testxy_image_view"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:ignore="SmallSp" />
-
-        <ImageView
-            android:id="@+id/testxy_image_view"
-            android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/testxy_image_view"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/rounded_text"
+                android:layout_margin="5dp"
+                android:src="@drawable/user"
+                android:contentDescription="@string/todo" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="80dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:contentDescription="@string/todo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
-
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/testxy_chapter_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_marginStart="@dimen/dimen_20dp"
+                    android:text="New Test Model"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/testxy_desc_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="12sp"
+                    android:layout_marginStart="@dimen/dimen_20dp"
+                    android:text="40 Qs  |  70 Mins  |  100 Marks"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:gravity="start">
+                <TextView
+                    android:id="@+id/Test_Price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_overlay"
+                    android:layout_marginStart="@dimen/dimen_20dp"
+                    android:textSize="12sp"
+                    android:text="@string/_100_u20b9"
+                    />
+                <TextView
+                    android:id="@+id/Test_FPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_overlay"
+                    android:layout_marginStart="10sp"
+                    android:textSize="12sp"
+                    android:text="FREE"
+                    />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="end"
+                    android:gravity="end">
+                    <TextView
+                        android:id="@+id/counterTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/dimen_20dp"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
         <TextView
-            android:id="@+id/counterTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4sp"
-            android:layout_marginEnd="10sp"
-            android:layout_marginBottom="10sp"
-            android:textColor="#005da2"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttonxy"
-            tools:ignore="SmallSp" />
-
-        <TextView
-            android:id="@+id/testxy_desc_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#005da2"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/testxy_chapter_title"
-            app:layout_constraintTop_toBottomOf="@+id/testxy_chapter_title"
-            tools:ignore="SmallSp" />
-
-        <TextView
-            android:id="@+id/testxytbatch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#005da2"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/testxy_desc_text"
-            app:layout_constraintTop_toBottomOf="@+id/testxy_desc_text"
-            tools:ignore="SmallSp" />
-
-        <TextView
-            android:id="@+id/testxytprice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#005da2"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/testxytbatch"
-            app:layout_constraintTop_toBottomOf="@+id/testxytbatch"
-            tools:ignore="SmallSp" />
-
-        <TextView
-            android:id="@+id/testxy_chapter_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="10sp"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/testxy_image_view"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_width="match_parent"
+            android:background="@color/grey"
+            android:layout_height="2dp"/>
+    </LinearLayout>
+</LinearLayout>

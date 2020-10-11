@@ -1,101 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@android:color/transparent"
-    android:layout_height="wrap_content">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_height="wrap_content"
+    tools:context=".LiveTestXyz"
+    android:orientation="vertical"
+    android:baselineAligned="false">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
-
-        <Button
-        android:id="@+id/buttonTestStart"
-        android:layout_width="60dp"
-        android:layout_height="20dp"
-        android:background="@drawable/button_gradient"
-        android:shadowColor="@color/silver"
-        android:text="@string/start"
-        android:textColor="@color/white"
-        android:textSize="10sp"
-        android:layout_marginEnd="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/testxyzscore"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/testxyzscore"
-        tools:ignore="SmallSp" />
-
-        <Button
-            android:id="@+id/buttonTestResult"
-            android:layout_width="60dp"
-            android:layout_height="20dp"
-            android:background="@drawable/button_gradient"
-            android:shadowColor="@color/silver"
-            android:text="@string/result"
-            android:textColor="@color/white"
-            android:textSize="10sp"
-            android:layout_marginEnd="10sp"
-            app:layout_constraintStart_toStartOf="@+id/buttonTestStart"
-            app:layout_constraintBottom_toTopOf="@+id/buttonTestStart"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="5sp"
-            tools:ignore="SmallSp" />
-
-
-        <TextView
-            android:id="@+id/testxyzquetion"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="#005da2"
-            android:textStyle="bold"
-            android:layout_marginBottom="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/testxyztitle"
-            app:layout_constraintTop_toBottomOf="@+id/testxyztitle"
-            tools:ignore="SmallSp" />
-
+            android:layout_gravity="center">
+            <ImageView
+                android:id="@+id/testxy_image_view"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_text"
+                android:layout_margin="5dp"
+                android:src="@drawable/exam2"
+                android:contentDescription="@string/todo" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/testxyztitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_marginStart="@dimen/dimen_20dp"
+                    android:text="New Test Model"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/text_xy_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="12sp"
+                    android:layout_marginStart="@dimen/dimen_20dp"
+                    android:text="40 Qs  |  70 Mins  |  100 Marks"/>
+            </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
         <TextView
-            android:id="@+id/testxyztime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:textSize="12sp"
-            android:textColor="#005da2"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/testxyzquetion"
-            app:layout_constraintStart_toEndOf="@+id/testxyzquetion"
-            app:layout_constraintTop_toTopOf="@+id/testxyzquetion"
-            tools:ignore="SmallSp" />
-
-        <TextView
-            android:id="@+id/testxyzscore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:textSize="12sp"
-            android:textColor="#005da2"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/testxyztime"
-            app:layout_constraintStart_toEndOf="@+id/testxyztime"
-            app:layout_constraintTop_toTopOf="@+id/testxyztime"
-            tools:ignore="SmallSp" />
-
-
-        <TextView
-            android:id="@+id/testxyztitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="5sp"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_width="match_parent"
+            android:background="@color/grey"
+            android:layout_height="2dp"/>
+    </LinearLayout>
+    </LinearLayout>
