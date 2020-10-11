@@ -30,11 +30,12 @@ public class LiveTest extends Fragment {
     private FirebaseFirestore db;
     private Context mContext;
 
-    private ArrayList<CustomListItem> Subjects;
-    ArrayList<String> SubjectID = new ArrayList<>();
+    private ArrayList<CustomListItem> Subjects, Chapters;
+    ArrayList<String> SubjectIds, CHapterIds;
     private ListView listView;
 
-    /*private int currentLayer = 0;   //0=subjects, 1=chapters*/
+    private int currentLayer = 0;
+    private int currentSubjectPos = 0, currentChapterPos = 0;
     private View progressOverlay;
 
     public LiveTest() {
@@ -62,19 +63,18 @@ public class LiveTest extends Fragment {
                 CustomBackButton(ltView);
             }
         });*/
-        CustomizeView(ltView);
+        CustomizeView();
         return ltView;
     }
 
-    /*public void CustomBackButton(View _ltView){
-        switch (currentLayer){
-            case 1:
-                LoadSubjects(_ltView);
+    public void CustomBackButton(){
+        if (currentLayer == 1) {
+            LoadSubjects();
         }
-    }*/
+    }
 
-    void LoadSubjects(final View _ltView){
-        /*currentLayer = 0;*/
+    void LoadSubjects(){
+        currentLayer = 0;
         progressOverlay.setVisibility(View.VISIBLE);
         db.collection("section").document("lt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -86,9 +86,10 @@ public class LiveTest extends Fragment {
 
                 if (task.isSuccessful()) {
                     Subjects = new ArrayList<>();
+                    SubjectIds = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*list.add(document.getString("Name"));*/
-                        SubjectID.add(document.getId());
+                        SubjectIds.add(document.getId());
                         Subjects.add(new CustomListItem(document.getString("name"),
                                 document.getString("desc"),"lt"));
                     }
@@ -102,20 +103,61 @@ public class LiveTest extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            Intent intent = new Intent(getContext(), LiveTestHomeActivity.class);
-                            intent.putExtra("sid", SubjectID.get(position));
-                            startActivity(intent);
+                            currentSubjectPos = position;
+                            LoadChapters();
                         }
                     });
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
-                    LoadSubjects(_ltView);
+                    LoadSubjects();
                 }
             }
         });
     }
 
-    private void CustomizeView(final View _ltView) {
-        LoadSubjects(_ltView);
+    void LoadChapters(){
+        currentLayer = 1;
+        db.collection("section").document("lt").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    /*examList = new ArrayList<>();*/
+                    Chapters = new ArrayList<>();
+                    CHapterIds = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                        CHapterIds.add(document.getId());
+                        Chapters.add(new CustomListItem(document.getString("name"),
+                                document.getString("desc")/*,
+                                Double.parseDouble(Objects.requireNonNull(document.getString("price"))),
+                                Double.parseDouble(Objects.requireNonNull(document.getString("discount"))),
+                                Integer.parseInt((Objects.requireNonNull(document.getString("NOQ")))), Integer.parseInt(Objects.requireNonNull(document.getString("Timer"))),
+                                Integer.parseInt(Objects.requireNonNull(document.getString("MPQ")))*/,"lt/chapter"));
+                        /*Chapters.add(document.getString("Name"));*/
+                    }
+                    //create our new array adapter
+                    ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Chapters);
+
+                    listView.setAdapter(adapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view,
+                                                int position, long id) {
+                            currentChapterPos = position;
+                            Intent myIntent = new Intent(getContext(), LiveTestHomeActivity.class);
+                            myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
+                            myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
+                            startActivity(myIntent);
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    LoadChapters();
+                }
+            }
+        });
+    }
+
+    private void CustomizeView() {
+        LoadSubjects();
     }
 }

@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
+                android:id="@+id/ltTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -35,6 +36,7 @@
                 android:layout_marginStart="@dimen/dimen_20dp"
                 android:text="New Test Model"/>
             <TextView
+                android:id="@+id/upcomingCountDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -50,6 +52,7 @@
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
             <TextView
+                android:id="@+id/ltQMM"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -63,6 +66,7 @@
             android:layout_height="wrap_content"
             android:gravity="center">
             <TextView
+                android:id="@+id/ltSTRT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
@@ -76,12 +80,14 @@
                 android:layout_marginEnd="20dp"
                 android:layout_weight="1">
                 <TextView
+                    android:id="@+id/TestIsLiveTAG"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/holo_red_dark"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:gravity="end"
+                    android:visibility="invisible"
                     android:paddingStart="8sp"
                     android:paddingEnd="8sp"
                     android:textSize="10sp"

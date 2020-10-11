@@ -6,10 +6,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +18,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -29,109 +25,191 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
 public class LiveTestHomeActivity extends AppCompatActivity {
 
-    TextView countdown;
+    TextView countdown, TestIsLiveTag;
     CollectionReference colRef;
+    boolean utAvailable = false;
+    LinearLayout ltList;
+    int ftCount = 0;
     private Context mContext;
     private View progressOverlay;
     private ArrayList<Question> questions, these_questions;
     private ArrayList<String> attemptedTestIDs; //tests that student has taken in past.
-    Button btnPrev, btnFuture;
 
-    private ListView listView, listView2;
-    ArrayList<String> prevLives, prevIDs;
+    ArrayList<LiveTestBody> testsLive;
     private LiveTestBody upcomingTest;
-    private ArrayList<String> futureTests;
     private String utID = "";
-
-    Button startTestBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_test_home);
         progressOverlay = findViewById(R.id.progress_overlay);
+        ltList = findViewById(R.id.LiveTestList);
         progressOverlay.setVisibility(View.VISIBLE);
-        colRef = FirebaseFirestore.getInstance().collection("section").document("lt").collection("tests");
-
-        listView = (ListView) findViewById(R.id.lt_prev_list);
-        listView2 = (ListView) findViewById(R.id.lt_future_list);
-        btnPrev = findViewById(R.id.BtnPrevList);
-        btnFuture = findViewById(R.id.BtnFutureList);
-        btnPrev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                findViewById(R.id.lt_prev_list).setVisibility(View.VISIBLE);
-                findViewById(R.id.lt_future_list).setVisibility(View.INVISIBLE);
-            }
-        });
-        btnFuture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                findViewById(R.id.lt_prev_list).setVisibility(View.INVISIBLE);
-                findViewById(R.id.lt_future_list).setVisibility(View.VISIBLE);
-            }
-        });
+        colRef = FirebaseFirestore.getInstance().collection("section").document("lt")
+                .collection("branch").document(""+getIntent().getStringExtra("subject"))
+                .collection("chapter").document(""+getIntent().getStringExtra("chapter"))
+                .collection("tests");
 
         mContext = getApplicationContext();
         attemptedTestIDs = new ArrayList<>();
-        FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).collection("scoreboard").document("lt").collection("test").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        FirebaseFirestore.getInstance().collection("users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).collection("scoreboard").document("lt").collection("test").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document : task.getResult()){
+                    for(QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())){
                         attemptedTestIDs.add(document.getId());
                     }
                 }
                 CustomizeView();
             }
         });
-        /*CustomizeView();*/
+    }
+
+    void FillLiveTestList(final String _id, int phase, String title, int noq, int min, int marks, long start, long result){
+        Calendar st =Calendar.getInstance();
+        st.setTimeInMillis(start);
+        String sTime = ""+st.get(Calendar.DAY_OF_MONTH)+"/"+(st.get(Calendar.MONTH)+1)+"/"+st.get(Calendar.YEAR)+" "+st.get(Calendar.HOUR)+":"+st.get(Calendar.MINUTE)+" am";
+
+        Calendar rt =Calendar.getInstance();
+        rt.setTimeInMillis(result);
+        String rTime = ""+rt.get(Calendar.DAY_OF_MONTH)+"/"+(rt.get(Calendar.MONTH)+1)+"/"+rt.get(Calendar.YEAR)+" "+rt.get(Calendar.HOUR)+":"+rt.get(Calendar.MINUTE)+" am";
+
+        View ltRow;
+        ltRow = View.inflate(this, R.layout.activity_live_test_xyz, null);
+        ((TextView)ltRow.findViewById(R.id.ltTitle)).setText(title);
+        ((TextView)ltRow.findViewById(R.id.ltQMM)).setText(""+noq+" Qs  |  "+min+" Min's  |  "+marks+" Marks");
+        ((TextView)ltRow.findViewById(R.id.ltSTRT)).setText("start: "+sTime+"   |   result: "+rTime);
+        if(phase == 0){
+            //upcoming test
+            countdown = ltRow.findViewById(R.id.upcomingCountDown);
+            TestIsLiveTag = ltRow.findViewById(R.id.TestIsLiveTAG);
+            ltList.addView(ltRow, 0);
+            utAvailable = true;
+            ltRow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(utAvailable){
+                        StartLiveTest();
+                    }
+                }
+            });
+        }else if(phase == 1){
+            //future test
+            ltList.addView(ltRow, ftCount+1);
+            ftCount++;
+        }else{
+            ltList.addView(ltRow);
+            //past test
+            ltRow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(utAvailable){
+                        LoadPastTestResult(_id);
+                    }
+                }
+            });
+        }
+    }
+
+    private void LoadPastTestResult(String _id) {
+        final String tid = _id;
+        colRef.document(""+tid).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    these_questions = new ArrayList<>();
+                    Toast.makeText(mContext, tid+" task successful: "+task.getResult().size(), Toast.LENGTH_SHORT).show();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Toast.makeText(mContext, "fetched: "+document.getId(), Toast.LENGTH_SHORT).show();
+                        these_questions.add(new Question(document.getString("question"), document.getString("option1"),
+                                document.getString("option2"), document.getString("option3"),
+                                document.getString("option4"), document.getString("answer")));
+                    }
+                    Intent intent = new Intent(mContext, TestAnswerSheetActivity.class);
+                    intent.putExtra("questions", (Serializable) these_questions);
+                    intent.putExtra("tid", tid);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(mContext, "error getting answer sheet", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "Error getting answer sheet: ", task.getException());
+                }
+            }
+        });
     }
 
     private void CustomizeView() {
-        //add list view in bottom to display previous tests list...
-
-        startTestBtn  = findViewById(R.id.startTestBtn);
-        startTestBtn.setOnClickListener(new View.OnClickListener() {
+        /*startTestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 StartLiveTest();
             }
-        });
-        startTestBtn.setVisibility(View.INVISIBLE);
+        });*/
 
-        countdown = findViewById(R.id.countdown);
         colRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
-                    prevLives = new ArrayList<>();
-                    prevIDs = new ArrayList<>();
-                    futureTests = new ArrayList<>();
-                    for(QueryDocumentSnapshot document : task.getResult()){
+                    testsLive = new ArrayList<>();
+                    attemptedTestIDs = new ArrayList<>();
+                    for(QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())){
                         if(document.getString("TestInHistory").equals("true") && attemptedTestIDs.contains(document.getId())){
-                            prevLives.add(document.getString("title"));
-                            prevIDs.add(document.getId());
+                            testsLive.add(new LiveTestBody(document.getId(), Objects.requireNonNull(document.getLong("NOQs")).intValue(),
+                                    document.getString("TestInHistory"),
+                                    Objects.requireNonNull(document.getLong("duration")).intValue(),
+                                    Objects.requireNonNull(document.getLong("marks")).intValue(),
+                                    document.getLong("rTime"),
+                                    document.getLong("sTime"),
+                                    document.getString("title")));
                         }else{
                             if(upcomingTest == null || upcomingTest.sTime > document.getLong("sTime")) {
                                 utID = document.getId();
-                                upcomingTest = new LiveTestBody(Objects.requireNonNull(document.getLong("NOQs")).intValue(),
+                                upcomingTest = new LiveTestBody(document.getId(), Objects.requireNonNull(document.getLong("NOQs")).intValue(),
                                         document.getString("TestInHistory"),
                                         Objects.requireNonNull(document.getLong("duration")).intValue(),
                                         Objects.requireNonNull(document.getLong("marks")).intValue(),
                                         document.getLong("rTime"),
                                         document.getLong("sTime"),
                                         document.getString("title"));
-                            }
-                            futureTests.add(document.getString("title"));
+                                testsLive.add((upcomingTest));
+                            }else
+                                testsLive.add(new LiveTestBody(document.getId(), Objects.requireNonNull(document.getLong("NOQs")).intValue(),
+                                        document.getString("TestInHistory"),
+                                        Objects.requireNonNull(document.getLong("duration")).intValue(),
+                                        Objects.requireNonNull(document.getLong("marks")).intValue(),
+                                        document.getLong("rTime"),
+                                        document.getLong("sTime"),
+                                        document.getString("title")));
                         }
                     }
+
+                    Collections.sort(testsLive, new Comparator<LiveTestBody>() {
+                        @Override
+                        public int compare(LiveTestBody o1, LiveTestBody o2) {
+                            Long s1 = o1.sTime;
+                            Long s2 = o2.sTime;
+                            return s1.compareTo(s2);
+                        }
+                    });
+
+                    for(LiveTestBody ltb : testsLive){
+                        if(ltb._id.equals(utID)){
+                            FillLiveTestList(ltb._id, 0, ltb.title, ltb.NOQs, ltb.duration, ltb.marks, ltb.sTime, ltb.rTime);
+                        }else if(ltb.TestInHistory == "true"){
+                            FillLiveTestList(ltb._id, 2, ltb.title, ltb.NOQs, ltb.duration, ltb.marks, ltb.sTime, ltb.rTime);
+                        }else{
+                            FillLiveTestList(ltb._id, 1, ltb.title, ltb.NOQs, ltb.duration, ltb.marks, ltb.sTime, ltb.rTime);
+                        }
+                    }
+
                     new CountDownTimer(
                             upcomingTest.sTime - Calendar.getInstance().getTimeInMillis(), 1000) {
 
@@ -139,17 +217,18 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                             long secs = millisUntilFinished / 1000;
                             long min = secs / 60;
                             secs %= 60;
-                            countdown.setText("" + (min > 9 ? min : "0"+min) + ":" + (secs > 9 ? secs : "0"+secs));
+                            countdown.setText("Test start in " + (min > 9 ? min : "0"+min) + ":" + (secs > 9 ? secs : "0"+secs));
                         }
 
                         public void onFinish() {
-                            countdown.setText("live!");
-                            startTestBtn.setVisibility(View.VISIBLE);
+                            countdown.setVisibility(View.GONE);
+                            TestIsLiveTag.setVisibility(View.VISIBLE);
                             //show start test btn...
                             if(attemptedTestIDs.contains(utID)){
                                 countdown.setText("You have successfully attempted the test. Wait for the result!");
-                                startTestBtn.setVisibility(View.INVISIBLE);
+                                //startTestBtn.setVisibility(View.INVISIBLE);
                             }else{
+                                utAvailable = true;
                                 new CountDownTimer(
                                         (upcomingTest.sTime + (upcomingTest.duration*60*1000)) - Calendar.getInstance().getTimeInMillis(), 1000) {
 
@@ -157,12 +236,14 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                                         long secs = millisUntilFinished / 1000;
                                         long min = secs / 60;
                                         secs %= 60;
-                                        countdown.setText("Test ends in: " + (min > 9 ? min : "0"+min) + ":" + (secs > 9 ? secs : "0"+secs));
+                                        countdown.setText("Test ends in " + (min > 9 ? min : "0"+min) + ":" + (secs > 9 ? secs : "0"+secs));
                                     }
                                     public void onFinish() {
-                                        countdown.setText("Test has ended!");
+                                        utAvailable = false;
+                                        countdown.setVisibility(View.GONE);
+                                        TestIsLiveTag.setVisibility(View.INVISIBLE);
                                         //hide start test btn...
-                                        startTestBtn.setVisibility(View.INVISIBLE);
+                                        //startTestBtn.setVisibility(View.INVISIBLE);
                                         //move test to history...
                                     }
                                 }.start();
@@ -170,9 +251,7 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                         }
                     }.start();
 
-                    ((TextView)findViewById(R.id.LiveTestTitle)).setText(upcomingTest.title);
-
-                    ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
+                    /*ArrayAdapter adapter = new ArrayAdapter<String>(mContext,
                             R.layout.activity__branch_list_view, prevLives);
                     listView.setAdapter(adapter);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -208,7 +287,7 @@ public class LiveTestHomeActivity extends AppCompatActivity {
 
                     ArrayAdapter adapter2 = new ArrayAdapter<String>(mContext,
                             R.layout.activity__branch_list_view, futureTests);
-                    listView2.setAdapter(adapter2);
+                    listView2.setAdapter(adapter2);*/
                     progressOverlay.setVisibility(View.GONE);
                 }
             }
@@ -249,6 +328,7 @@ public class LiveTestHomeActivity extends AppCompatActivity {
 }
 
 class LiveTestBody{
+    public String _id;
     public int NOQs;
     public String TestInHistory;
     public int duration;
@@ -257,7 +337,8 @@ class LiveTestBody{
     public long sTime;
     public String title;
 
-    public LiveTestBody(int NOQs, String testInHistory, int duration, int marks, long rTime, long sTime, String title) {
+    public LiveTestBody(String _id, int NOQs, String testInHistory, int duration, int marks, long rTime, long sTime, String title) {
+        this._id = _id;
         this.NOQs = NOQs;
         TestInHistory = testInHistory;
         this.duration = duration;
