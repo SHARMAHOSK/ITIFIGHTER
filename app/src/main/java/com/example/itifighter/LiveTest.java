@@ -29,23 +29,18 @@ public class LiveTest extends Fragment {
 
     private FirebaseFirestore db;
     private Context mContext;
-
     private ArrayList<CustomListItem> Subjects, Chapters;
     ArrayList<String> SubjectIds, CHapterIds;
     private ListView listView;
-
     private int currentLayer = 0;
     private int currentSubjectPos = 0, currentChapterPos = 0;
     private View progressOverlay;
 
-    public LiveTest() {
-        // Required empty public constructor
-    }
+    public LiveTest() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         db = FirebaseFirestore.getInstance();
         mContext = getContext();
     }

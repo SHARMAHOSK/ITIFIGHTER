@@ -66,10 +66,9 @@ public class CustomListViewArrayAdapterY extends ArrayAdapter<CustomListItemY> {
         final ImageView thumbNail = view.findViewById(R.id.testxy_image_view);
         final TextView test = view.findViewById(R.id.testxy_desc_text);
         final TextView topicHeader = view.findViewById(R.id.testxy_chapter_title);
-       // final TextView duration = view.findViewById(R.id.testxytbatch);
-      //  final Button b = view.findViewById(R.id.buttonxy);
+        final TextView duration = view.findViewById(R.id.counterTime);
         DocumentReference reference = FirebaseFirestore.getInstance().collection("section").document("ts").collection("branch")
-                .document(currentSubject).collection("exam").document(currentChapter);
+                .document(currentSubject).collection("chapter").document(currentChapter);
         reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -82,7 +81,7 @@ public class CustomListViewArrayAdapterY extends ArrayAdapter<CustomListItemY> {
                         if(documentSnapshot.getString("name") != null){
                             if(Objects.requireNonNull(documentSnapshot.getString("name")).trim().length() > 0){
                                 Glide.with(context)
-                                        .load(mmFirebaseStorageRef.child(documentSnapshot.getString("name")+".png"))
+                                        .load(mmFirebaseStorageRef.child(Objects.requireNonNull(documentSnapshot.getString("name"))))
                                         .into(thumbNail);
                             }
                         }
@@ -93,15 +92,15 @@ public class CustomListViewArrayAdapterY extends ArrayAdapter<CustomListItemY> {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(context, TestListSeries.class);
-                                intent.putExtra("currentSubject",currentSubject);
+                                intent.putExtra("currentSubject",currentSubject);   
                                 intent.putExtra("currentChapter",currentChapter);
                                 intent.putExtra("ExpiryDate",counter);
                                 intent.putExtra("SeriesName",documentSnapshot.getString("name"));
                                 intent.putExtra("SeriesCount",documentSnapshot.getString("test"));
                                 context.startActivity(intent);
                             }
-                        });
-                        startCounter(expiryDate,duration);*/
+                        });*/
+                        startCounter(expiryDate,duration);
                     }
                 }
             }

@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:name="com.example.itifighter.TestSeries"
-    tools:context=".TestSeries"
-    android:orientation="horizontal">
-
-
     <LinearLayout
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:name="com.example.itifighter.TestSeries"
+        tools:context=".TestSeries"
         android:orientation="vertical">
-        <Button
+        <ImageButton
             android:id="@+id/CustomBackButtonTS"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30sp"
+            android:layout_height="25sp"
+            android:layout_marginEnd="10sp"
+            android:background="@drawable/undox"
+            android:visibility="visible"
             android:layout_gravity="end"
-            android:text="Back"/>
+            android:contentDescription="@string/todo" />
         <ListView
             android:id="@+id/testxtRecycle"
             android:layout_width="match_parent"
@@ -25,5 +23,3 @@
             android:layout_marginTop="5dp"
             tools:listitem="@layout/test_series_chapter" />
     </LinearLayout>
-    <include layout="@layout/include_progress_overlay"/>
-</RelativeLayout>

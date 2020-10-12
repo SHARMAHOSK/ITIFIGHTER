@@ -17,6 +17,7 @@ public class CustomListItemX {
         this.discount2= discount2;
         this.discount3 = discount3;
     }
+
     public String getTopicHeader() {return topicHeader; }
     public String getTest() {return test; }
     public String getImagex(){return  imagex;}
@@ -30,4 +31,5 @@ public class CustomListItemX {
     public String getDiscount1(){return  discount1;}
     public String getDiscount2(){return  discount2;}
     public String getDiscount3(){return  discount3;}
+
 }

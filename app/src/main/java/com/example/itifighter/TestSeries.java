@@ -1,5 +1,6 @@
 package com.example.itifighter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -10,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -46,9 +49,10 @@ public class TestSeries extends Fragment {
     private FirebaseFirestore db;
     private Context mContext;
     private ArrayList<String> SubjectId,ChapterId,TestId,MPQ,Timmr,Tittl;
+    private ImageButton back;
+    private ProgressDialog dialog;
 
     private int currentLayer = 0,currentTestPos=0,currentSubjectPos=0,currentChapterPos=0;   //0=subjects, 1=chapters
-    private View progressOverlay;
     public TestSeries() { }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,13 +65,16 @@ public class TestSeries extends Fragment {
                              Bundle savedInstanceState) {
         final View mtView = inflater.inflate(R.layout.fragment_test_series, container, false);
         listView = mtView.findViewById(R.id.testxtRecycle);
-        progressOverlay = mtView.findViewById(R.id.progress_overlay);
-        mtView.findViewById(R.id.CustomBackButtonTS).setOnClickListener(new View.OnClickListener() {
+        back = mtView.findViewById(R.id.CustomBackButtonTS);
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CustomBackButton();
             }
         });
+        dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
         LoadSubjects();
         return mtView;
     }
@@ -75,14 +82,14 @@ public class TestSeries extends Fragment {
         switch (currentLayer){
             case 1:
                 LoadSubjects();
-/*            case 2:
-                LoadChapters();*/
+           case 2:
+                LoadChapters();
         }
     }
 
     void LoadSubjects(){
         currentLayer = 0;
-        progressOverlay.setVisibility(View.VISIBLE);
+        dialog.show();
         db.collection("section").document("ts")
                 .collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -98,7 +105,8 @@ public class TestSeries extends Fragment {
                     }
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
                     listView.setAdapter(adapter);
-                    progressOverlay.setVisibility(View.GONE);
+                    dialog.dismiss();
+                    back.setVisibility(View.INVISIBLE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
@@ -116,7 +124,7 @@ public class TestSeries extends Fragment {
         });
     }
     void LoadChapters(){
-        progressOverlay.setVisibility(View.VISIBLE);
+        dialog.show();
         currentLayer = 1;
         db.collection("section").document("ts")
                 .collection("branch").document(currentSubject)
@@ -135,7 +143,8 @@ public class TestSeries extends Fragment {
                             0,
                             Chapters,currentSubject,ChapterId);
                     listView.setAdapter(adapter);
-                    progressOverlay.setVisibility(View.GONE);
+                    dialog.dismiss();
+                    back.setVisibility(View.VISIBLE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
@@ -183,7 +192,7 @@ public class TestSeries extends Fragment {
     }
 
     private void LoadTest(){
-        progressOverlay.setVisibility(View.VISIBLE);
+        dialog.show();
         currentLayer = 2;
         db.collection("section").document("ts").collection("branch").document(currentSubject).collection("chapter").document(currentChapter)
                 .collection("tests").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -215,13 +224,14 @@ public class TestSeries extends Fragment {
                                 LoadExam();
                         }
                     });
-                    progressOverlay.setVisibility(View.GONE);
+                    dialog.dismiss();
+                    back.setVisibility(View.VISIBLE);
                 }
             }
         });
     }
     private void LoadExam() {
-
+        dialog.show();
         db.collection("section").document("ts").collection("branch").document(currentSubject).collection("chapter").document(currentChapter)
                 .collection("tests").document(currentTest).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -279,6 +289,7 @@ public class TestSeries extends Fragment {
                                                             myIntent.putExtra("title", Tittl.get(currentTestPos));
                                                             myIntent.putExtra("accuracy", accuracy);
                                                             myIntent.putExtra("tpq", tpq);
+                                                            dialog.dismiss();
                                                             startActivity(myIntent);
                                                     } else {
                                                         Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
@@ -289,6 +300,7 @@ public class TestSeries extends Fragment {
                                                         myIntent.putExtra("_mpq", Integer.parseInt(MPQ.get(currentChapterPos)));
                                                         myIntent.putExtra("timer", Integer.parseInt(Timmr.get(currentChapterPos)));
                                                         myIntent.putExtra("title", Tittl.get(currentChapterPos) + " (Test Series)");
+                                                        dialog.dismiss();
                                                         startActivity(myIntent);
                                                         }
                                                 }else {
@@ -300,6 +312,7 @@ public class TestSeries extends Fragment {
                                                     myIntent.putExtra("_mpq", Integer.parseInt(MPQ.get(currentChapterPos)));
                                                     myIntent.putExtra("timer", Integer.parseInt(Timmr.get(currentChapterPos)));
                                                     myIntent.putExtra("title", Tittl.get(currentChapterPos));
+                                                    dialog.dismiss();
                                                     startActivity(myIntent);
                                                 }
                                         }
@@ -308,29 +321,11 @@ public class TestSeries extends Fragment {
 
 
                 } else {
+                    Toast.makeText(mContext,"no test found",Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Error getting documents: ", task.getException());
                     LoadTest();
                 }
             }
         });
     }
-    /*private void LoadExams() {
-        Toast.makeText(mContext,"kzs,ls0",Toast.LENGTH_SHORT).show();
-        db.collection("section").document("ts").collection("branch").document(currentSubject).collection("exam").document(currentChapter).collection("tests").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    Tests = new ArrayList<>();
-                    TestId = new ArrayList<>();
-                    for(QueryDocumentSnapshot documentSnapshot: Objects.requireNonNull(task.getResult())){
-                        Tests.add(new CustomListItemY(documentSnapshot.getString("name"),documentSnapshot.getString("quetion"),documentSnapshot.getString("score"),"ts",documentSnapshot.getString("duration")));
-                        TestId.add(documentSnapshot.getId());
-                    }
-                    ArrayAdapter<CustomListItemY> adapter = new CustomListViewArrayAdapterY(mContext,0,Tests,TestId,currentSubject,currentChapter);
-                    listView.setAdapter(adapter);
-                }
-                else LoadExams();
-            }
-        });*/
     }

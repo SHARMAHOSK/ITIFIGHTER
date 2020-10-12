@@ -52,8 +52,6 @@ public class PreviousPaper extends Fragment {
 
     public void CustomBackButton(){
 
-        //Toast.makeText(getContext(), "current layer: "+currentLayer, Toast.LENGTH_LONG);
-
         switch (currentLayer){
             case 1: LoadSubjects();
             break;
@@ -80,6 +78,7 @@ public class PreviousPaper extends Fragment {
                 CustomBackButton();
             }
         });
+        back.setVisibility(View.INVISIBLE);
         CustomizeView();
         return ppView;
     }
