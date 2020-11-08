@@ -3,12 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.itifighter">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission
-        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
-        tools:ignore="ProtectedPermissions" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/final_icon"
@@ -17,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".MockChapterXyz"></activity>
+        <activity android:name=".ResultUploader"></activity>
+        <activity android:name=".MockChapterXyz" />
         <activity android:name=".LiveTestXyz" />
         <activity android:name=".InstructionXyz" />
         <activity android:name=".LeaderBoardXyz" />
@@ -118,5 +113,11 @@
             </intent-filter>
         </activity>
     </application>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
