@@ -650,7 +650,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
 
 
     public void FinalSubmission(View view){
-        Intent intent = new Intent(TestQuestionsActivity.this, TestResultActivity.class);
+        Intent intent = new Intent(TestQuestionsActivity.this, ResultUploader.class);
         intent.putExtra("sub_ans", sub_ans);
         intent.putExtra("selectedFeedbackOption", selectedFeedbackOption);
         intent.putExtra("section", getIntent().getStringExtra("section"));
@@ -664,6 +664,7 @@ public class TestQuestionsActivity extends AppCompatActivity {
         intent.putExtra("questions", (Serializable) questions);
         if(testTimer != null)
             testTimer.cancel();
+        Toast.makeText(this, "section, subject, chap, test: "+getIntent().getStringExtra("section")+","+getIntent().getStringExtra("subject")+","+getIntent().getStringExtra("chapter")+","+getIntent().getStringExtra("tid"), Toast.LENGTH_LONG).show();
         startActivity(intent);
         finish();
     }
