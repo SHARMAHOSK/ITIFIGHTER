@@ -93,6 +93,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".LiveTestHomeActivity"
+            android:noHistory="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".PaytmPayment"
