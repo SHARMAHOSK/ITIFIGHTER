@@ -175,6 +175,7 @@ public class MockTest extends Fragment {
     }
 
     private void LoadTest() {
+
         db.collection("section").document("mt").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("chapter").document(CHapterIds.get(currentChapterPos)).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

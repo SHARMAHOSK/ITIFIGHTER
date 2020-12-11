@@ -38,8 +38,9 @@ public class CustomListViewArrayAdapterX extends ArrayAdapter<CustomListItemX> {
     private ArrayList<String> ChapterId;
     private LayoutInflater inflater;
     private Handler handler;
-    private FirebaseStorage mFirebaseStorage= FirebaseStorage.getInstance();
-    private String Uid = FirebaseAuth.getInstance().getUid(),currentSubject;
+    private FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
+    private String Uid = FirebaseAuth.getInstance().getUid();
+    private String currentSubject;
 
     @Override
     public int getCount() {

@@ -136,12 +136,10 @@ public class TestSeries extends Fragment {
                     Chapters = new ArrayList<>();
                     ChapterId = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        Chapters.add(new CustomListItemX(document.getString("name"), document.getString("test"), "ts",document.getId(),document.getString("month1"),document.getString("month2"),document.getString("month3"),document.getString("price1"),document.getString("price2"),document.getString("price3"),document.getString("discount1"),document.getString("discount2"),document.getString("discount3")));
+                        Chapters.add(new CustomListItemX(document.getString("name"), String.valueOf(document.get("cc")) , "ts",document.getId(),document.getString("month1"),document.getString("month2"),document.getString("month3"),document.getString("price1"),document.getString("price2"),document.getString("price3"),document.getString("discount1"),document.getString("discount2"),document.getString("discount3")));
                         ChapterId.add(document.getId());
                     }
-                    ArrayAdapter<CustomListItemX> adapter = new CustomListViewArrayAdapterX(mContext,
-                            0,
-                            Chapters,currentSubject,ChapterId);
+                    ArrayAdapter<CustomListItemX> adapter = new CustomListViewArrayAdapterX(mContext,0,Chapters,currentSubject,ChapterId);
                     listView.setAdapter(adapter);
                     dialog.dismiss();
                     back.setVisibility(View.VISIBLE);
@@ -248,7 +246,7 @@ public class TestSeries extends Fragment {
 
                             final String uuid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
                             final DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document("" + uuid);
-                            final CollectionReference UserTestRecord = userDoc.collection("scoreboard").document("mt").collection("test");
+                            final CollectionReference UserTestRecord = userDoc.collection("scoreboard").document("ts").collection("test");
                             UserTestRecord.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -304,7 +302,7 @@ public class TestSeries extends Fragment {
                                                         startActivity(myIntent);
                                                         }
                                                 }else {
-                                                    Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
+                                                  /*  Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
                                                     myIntent.putExtra("section", "ts");
                                                     myIntent.putExtra("subject", SubjectId.get(currentSubjectPos));
                                                     myIntent.putExtra("chapter", ChapterId.get(currentChapterPos));
@@ -313,7 +311,7 @@ public class TestSeries extends Fragment {
                                                     myIntent.putExtra("timer", Integer.parseInt(Timmr.get(currentChapterPos)));
                                                     myIntent.putExtra("title", Tittl.get(currentChapterPos));
                                                     dialog.dismiss();
-                                                    startActivity(myIntent);
+                                                    startActivity(myIntent);*/
                                                 }
                                         }
                             });

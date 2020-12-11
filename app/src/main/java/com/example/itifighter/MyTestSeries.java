@@ -170,7 +170,7 @@ public class MyTestSeries extends Fragment {
                     }
                     final String uuid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
                     final DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document("" + uuid);
-                    final CollectionReference UserTestRecord = userDoc.collection("scoreboard").document("mt").collection("test");
+                    final CollectionReference UserTestRecord = userDoc.collection("scoreboard").document("ts").collection("test");
                     UserTestRecord.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
