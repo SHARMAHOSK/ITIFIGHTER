@@ -1,49 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".LiveTestXyz"
-    android:orientation="horizontal"
-    android:baselineAligned="false">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/testxy_chapter_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginStart="@dimen/dimen_20dp"
-            android:text="New Test Model"/>
-    </LinearLayout>
-    <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_marginTop="5dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dimen_10dp"
-                android:gravity="end">
-                <TextView
-                    android:id="@+id/Test_Pricepdf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black_overlay"
-                    android:layout_marginStart="@dimen/dimen_20dp"
-                    android:textSize="12sp"
-                    android:text="@string/_100_u20b9"
-                    />
-                <TextView
-                    android:id="@+id/Test_FPricepdf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black_overlay"
-                    android:layout_marginStart="10sp"
-                    android:textSize="12sp"
-                    android:text="FREE"
-                    />
-    </LinearLayout>
-</LinearLayout>
+<!--  Single List Item Design -->
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="10dip"
+    android:textSize="16sp"
+    android:textStyle="bold" >
+</TextView>

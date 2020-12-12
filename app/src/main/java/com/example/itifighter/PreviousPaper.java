@@ -52,13 +52,11 @@ public class PreviousPaper extends Fragment {
 
     public void CustomBackButton(){
 
-        //Toast.makeText(getContext(), "current layer: "+currentLayer, Toast.LENGTH_LONG);
-
         switch (currentLayer){
             case 1: LoadSubjects();
-                break;
+            break;
             case 2: LoadExams();
-                break;
+            break;
         }
 
     }
@@ -80,6 +78,7 @@ public class PreviousPaper extends Fragment {
                 CustomBackButton();
             }
         });
+        back.setVisibility(View.INVISIBLE);
         CustomizeView();
         return ppView;
     }
@@ -97,7 +96,7 @@ public class PreviousPaper extends Fragment {
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         SubjectIds.add(document.getId());
                         Subjects.add(new CustomListItem(document.getString(/*"Name"*/"name"),
-                                document.getString(/*"description"*/"desc"), "pp"));
+                                        document.getString(/*"description"*/"desc"), "pp"));
                     }
 
                     //create our new array adapter
@@ -107,11 +106,11 @@ public class PreviousPaper extends Fragment {
                     dialog.dismiss();
                     back.setVisibility(View.INVISIBLE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {@Override
-                    public void onItemClick(AdapterView<?> parent, View view,
-                                            int position, long id) {
-                        currentSubjectPos = position;
-                        LoadExams();
-                    }
+                        public void onItemClick(AdapterView<?> parent, View view,
+                                                int position, long id) {
+                            currentSubjectPos = position;
+                            LoadExams();
+                        }
                     });
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
@@ -134,8 +133,8 @@ public class PreviousPaper extends Fragment {
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         /*examList.add(document.getString("Name"));*/
                         ExamIds.add(document.getId());
-                        Exams.add(new CustomListItem(document.getString("name"),
-                                document.getString("desc"), "pp/chapter"));
+                                            Exams.add(new CustomListItem(document.getString("name"),
+                                        document.getString("desc"), "pp/chapter"));
                     }
                     //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);
@@ -194,7 +193,7 @@ public class PreviousPaper extends Fragment {
     }
 
 
-    private void CustomizeView() {
+   private void CustomizeView() {
         LoadSubjects();
     }
 
