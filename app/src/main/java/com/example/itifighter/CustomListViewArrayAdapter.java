@@ -48,7 +48,7 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
 
         //get the property we are displaying
         CustomListItem property = Subjects.get(position);
-        return property.getType() == 1 ? getType1(property) : getType0(property);
+        return property.getType() == 1 ? getType1(property) : property.getType() == 2 ? getType2(property) : getType0(property);
     }
 
     private View getType0(CustomListItem property) {
@@ -107,6 +107,26 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
         originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         double discounted = (property.getPrice() - property.getDiscount());
         TextView _discountedTV = (TextView)view.findViewById(R.id.MockChap_FPrice);
+        _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
+        _discountedTV.setTextColor(Color.parseColor("#000099"));
+        return view;
+    }
+
+    private View getType2(CustomListItem property) {
+        //get the inflater and inflate the XML layout for each item
+        if (inflater == null)
+            inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        @SuppressLint({"ViewHolder", "InflateParams"}) View view = inflater.inflate(R.layout.activity__branch_list_view2, null);
+
+        TextView topicHeader = view.findViewById(R.id.titlePPP);
+
+        topicHeader.setText(property.getTopicHeader());
+
+        TextView originalPrice = (TextView)view.findViewById(R.id.originalPrice);
+        originalPrice.setText(""+property.getPrice()+" \u20b9");
+        originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        double discounted = (property.getPrice() - property.getDiscount());
+        TextView _discountedTV = (TextView)view.findViewById(R.id.discountedPrice);
         _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
         _discountedTV.setTextColor(Color.parseColor("#000099"));
         return view;

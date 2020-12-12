@@ -9,6 +9,14 @@ class CustomListItem {
     private int MPQ;
     private int type;
     private String imagex;
+
+    public CustomListItem(String topicHeader, double price, double discount){
+        this.topicHeader = topicHeader;
+        this.price = price;
+        this.discount = discount;
+        type = 2;
+    }
+
     public CustomListItem(String topicHeader, String description, double price, double discount, int quesCount, int duration, int MPQ,String imagex){
         this.topicHeader = topicHeader;
         this.description = description;

@@ -35,6 +35,7 @@ public class PreviousPaper extends Fragment {
     private ArrayList<CustomListItem> Subjects, Exams;
     private ListView listView;
     private ArrayList<String> PdfS, pdfFile, SubjectIds, ExamIds;
+    private ArrayList<CustomListItem> PdfS_CL;
     private FirebaseFirestore db;
     private ProgressDialog dialog;
     private Context mContext;
@@ -165,13 +166,17 @@ public class PreviousPaper extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     PdfS = new ArrayList<>();
+                    PdfS_CL = new ArrayList<>();
                     pdfFile = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         PdfS.add(document.getId());
+                        PdfS_CL.add(new CustomListItem(document.getId(), Double.parseDouble(Objects.requireNonNull(document.getString("price"))),
+                                Double.parseDouble(Objects.requireNonNull(document.getString("discount")))));
                         pdfFile.add(""+document.getString("Name"));
                     }
-                    adapter = new ArrayAdapter<>(mContext,
-                            R.layout.activity__branch_list_view, PdfS);
+                    adapter = new CustomListViewArrayAdapter(mContext, 0, PdfS_CL);
+                    /*adapter = new ArrayAdapter<>(mContext,
+                            R.layout.activity__branch_list_view, PdfS);*/
                     listView.setAdapter(adapter);
                     dialog.dismiss();
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

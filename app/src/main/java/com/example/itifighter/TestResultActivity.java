@@ -416,7 +416,7 @@ public class TestResultActivity extends AppCompatActivity {
 
 
         final TextView cbt = findViewById(R.id.ContinueBTNRT);
-        cbt.setVisibility(View.INVISIBLE);
+        //cbt.setVisibility(View.INVISIBLE);
         cbt.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
