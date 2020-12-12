@@ -2,6 +2,7 @@ package com.example.itifighter;
 
 class CustomListItem {
     private String topicHeader;
+    private String months;
     private String description;
     private double price, discount;
     private int quesCount;
@@ -36,6 +37,16 @@ class CustomListItem {
         this.imagex = imagex;
     }
 
+    public CustomListItem(String topicHeader, String description, String months, double price, double discount, String imagex) {
+        this.topicHeader = topicHeader;
+        this.months = months;
+        this.description = description;
+        this.price = price;
+        type = 3;
+        this.discount = discount;
+        this.imagex = imagex;
+    }
+
     public int getType() {
         return type;
     }
@@ -53,6 +64,7 @@ class CustomListItem {
     }
 
     public String getTopicHeader() {return topicHeader; }
+    public String getMonths() {return months; }
     public String getDescription() {return description; }
     public String getImagex(){return  imagex;}
 

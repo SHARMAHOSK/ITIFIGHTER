@@ -121,12 +121,17 @@ public class LiveTest extends Fragment {
                     CHapterIds = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         CHapterIds.add(document.getId());
-                        Chapters.add(new CustomListItem(document.getString("name"),
-                                document.getString("desc")/*,
+                        /*Chapters.add(new CustomListItem(document.getString("name"),
+                                document.getString("desc")*//*,
                                 Double.parseDouble(Objects.requireNonNull(document.getString("price"))),
                                 Double.parseDouble(Objects.requireNonNull(document.getString("discount"))),
                                 Integer.parseInt((Objects.requireNonNull(document.getString("NOQ")))), Integer.parseInt(Objects.requireNonNull(document.getString("Timer"))),
-                                Integer.parseInt(Objects.requireNonNull(document.getString("MPQ")))*/,"lt/chapter"));
+                                Integer.parseInt(Objects.requireNonNull(document.getString("MPQ")))*//*,"lt/chapter"));*/
+                        Chapters.add(new CustomListItem(document.getString("name"),
+                                document.getString("desc"),
+                                document.getString("month1"),
+                                Double.parseDouble(Objects.requireNonNull(document.getString("price1"))),
+                                Double.parseDouble(Objects.requireNonNull(document.getString("discount1"))), "lt/chapter"));
                         /*Chapters.add(document.getString("Name"));*/
                     }
                     //create our new array adapter

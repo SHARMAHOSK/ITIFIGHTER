@@ -48,7 +48,23 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
 
         //get the property we are displaying
         CustomListItem property = Subjects.get(position);
-        return property.getType() == 1 ? getType1(property) : property.getType() == 2 ? getType2(property) : getType0(property);
+        View vv;
+        switch (property.getType()){
+            case 1:
+                vv = getType1(property);
+                break;
+            case 2:
+                vv = getType2(property);
+                break;
+            case 3:
+                vv = getType3(property);
+                break;
+            default:
+                vv = getType0(property);
+                break;
+        }
+        return vv;
+        //return property.getType() == 1 ? getType1(property) : property.getType() == 2 ? getType2(property) : getType0(property);
     }
 
     private View getType0(CustomListItem property) {
@@ -127,6 +143,35 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
         originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         double discounted = (property.getPrice() - property.getDiscount());
         TextView _discountedTV = (TextView)view.findViewById(R.id.discountedPrice);
+        _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
+        _discountedTV.setTextColor(Color.parseColor("#000099"));
+        return view;
+    }
+
+    private View getType3(CustomListItem property) {
+        //get the inflater and inflate the XML layout for each item
+        if (inflater == null)
+            inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        @SuppressLint({"ViewHolder", "InflateParams"}) View view = inflater.inflate(R.layout.activity_mock_chapter_xyz, null);
+
+        ImageView thumbNail = view
+                .findViewById(R.id.thumbnail);
+        TextView topicHeader = view.findViewById(R.id.title);
+
+        topicHeader.setText(property.getTopicHeader());
+        mmFirebaseStorageRef=mFirebaseStorage.getReference().child("menu/section/"+property.getImagex()+"/");
+
+        Glide.with(context)
+                .load(mmFirebaseStorageRef.child(""+property.getTopicHeader()))
+                .into(thumbNail);
+        //display trimmed excerpt for description
+        String _NOQ_DUR_MRX = ""+property.getMonths()+" Months";
+        ((TextView)view.findViewById(R.id.MockChap_NOQ_DUR_MRX)).setText(_NOQ_DUR_MRX);
+        TextView originalPrice = (TextView)view.findViewById(R.id.MockChap_Price);
+        originalPrice.setText(""+property.getPrice()+" \u20b9");
+        originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        double discounted = (property.getPrice() - property.getDiscount());
+        TextView _discountedTV = (TextView)view.findViewById(R.id.MockChap_FPrice);
         _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
         _discountedTV.setTextColor(Color.parseColor("#000099"));
         return view;
