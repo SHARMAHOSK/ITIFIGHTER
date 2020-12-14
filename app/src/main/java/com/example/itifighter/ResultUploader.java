@@ -151,8 +151,8 @@ public class ResultUploader extends AppCompatActivity {
                             marksUploaded = true;
                             Toast.makeText(getApplicationContext(), "ru: 6", Toast.LENGTH_SHORT).show();
                             //((TextView)findViewById(R.id.UploadingTXT)).setText("uploading feedback, please wait..");
-                            //final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("common").document("post test").collection("feedback");
-                            final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("users").document("" + uuid).collection("feedback");
+                            final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("common").document("post test").collection("feedback");
+                            //final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("users").document("" + uuid).collection("feedback");
                             feedbackBasePath.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -167,12 +167,11 @@ public class ResultUploader extends AppCompatActivity {
                                                 _fb.put("issue", feedbackOptions[selectedFeedbackOption[i]]);
                                                 _fb.put("section", targetSection);
                                                 _fb.put("subject", targetSubject);
-                                                /*_fb.put("student", studentName);*/
-                                                /*_fb.put("date", ""+Calendar.getInstance().getTimeInMillis());*/
+                                                _fb.put("chapter", targetChapter);
+                                                _fb.put("student", studentName);
+                                                _fb.put("date", ""+Calendar.getInstance().getTimeInMillis());
                                                 if (targetSection.equals("lt")) {
                                                     _fb.put("testID", getIntent().getStringExtra("tid"));
-                                                } else {
-                                                    _fb.put("chapter", targetChapter);
                                                 }
                                                 //DocumentReference nycRef = feedbackBasePath.document("Feedback_" + (++count));
                                                 DocumentReference nycRef = feedbackBasePath.document("Feedback_" + Calendar.getInstance().getTimeInMillis());

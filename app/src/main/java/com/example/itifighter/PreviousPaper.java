@@ -164,6 +164,8 @@ public class PreviousPaper extends Fragment {
         });
     }
 
+    String finalPrice, price, discount;
+
     void LoadPdfS(){
         dialog.show();
         currentLayer = 2;
@@ -175,7 +177,10 @@ public class PreviousPaper extends Fragment {
                     PdfS_CL = new ArrayList<>();
                     pdfFile = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        PdfS.add(document.getId());
+                        String showName = document.getString("title");
+                        if(showName == null)
+                            showName = document.getId();
+                        PdfS.add(showName);
                         PdfS_CL.add(new CustomListItem(document.getId(), Double.parseDouble(Objects.requireNonNull(document.getString("price"))),
                                 Double.parseDouble(Objects.requireNonNull(document.getString("discount")))));
                         pdfFile.add(""+document.getString("Name"));
@@ -187,12 +192,12 @@ public class PreviousPaper extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            String price = String.valueOf(PdfS_CL.get(position).getPrice());
-                            String discount = String.valueOf(PdfS_CL.get(position).getDiscount());
-                            String finalPrice = getFinalPrice(price,discount);
+                            price = String.valueOf(PdfS_CL.get(position).getPrice());
+                            discount = String.valueOf(PdfS_CL.get(position).getDiscount());
+                            finalPrice = getFinalPrice(price,discount);
                             currentPdf = PdfS.get(position);
-                            setPaymentNotRequiredDetails();
-                            if(paymentNotRequired(finalPrice)){
+                            setPaymentNotRequiredDetails(position);
+                            /*if(paymentNotRequired(finalPrice)){
                                 OpenPdf(position);
                             }
                             else{
@@ -204,12 +209,7 @@ public class PreviousPaper extends Fragment {
                                 intent.putExtra("currentSubject",curruntSubject);
                                 intent.putExtra("currentChapter",curruntChapter);
                                 startActivity(intent);
-                            }
-                        }
-
-                        private boolean paymentNotRequired(String finalPrice) {
-                            if(Double.parseDouble(finalPrice)<1) return true;
-                            else return (status.equals("1") && currentChapterPdf.equals(curruntChapter) && curruntSubjectPdf.equals(curruntSubject));
+                            }*/
                         }
 
                         private String getFinalPrice(String price, String discount) {
@@ -226,25 +226,53 @@ public class PreviousPaper extends Fragment {
         });
     }
 
-    private void setPaymentNotRequiredDetails() {
+    private boolean paymentNotRequired(String finalPrice) {
+        if(Double.parseDouble(finalPrice.trim())<1) return true;
+        else return (status.equals("1") && currentChapterPdf.equals(curruntChapter) && curruntSubjectPdf.equals(curruntSubject));
+    }
+
+    private void setPaymentNotRequiredDetails(int pos) {
+        final int position = pos;
+        Toast.makeText(mContext, "inside setPaymentNotRequiredDetails", Toast.LENGTH_SHORT).show();
         String Uid = FirebaseAuth.getInstance().getUid();
         assert Uid != null;
         try{
+            Toast.makeText(mContext, "1", Toast.LENGTH_SHORT).show();
             FirebaseFirestore.getInstance().collection("users").document(Uid).collection("Products")
                         .document("pp").collection("ProductId").document(currentPdf)
                         .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Toast.makeText(mContext, "2: "+documentSnapshot.exists(), Toast.LENGTH_SHORT).show();
                     if(documentSnapshot!=null && documentSnapshot.exists()){
+                        Toast.makeText(mContext, "inside success call", Toast.LENGTH_SHORT).show();
                         status = documentSnapshot.getString("status");
                         curruntSubjectPdf = documentSnapshot.getString("currentSubject");
                         currentChapterPdf = documentSnapshot.getString("currentChapter");
+
+                        if(paymentNotRequired(finalPrice)){
+                                OpenPdf(position);
+                            }
+                            else{
+                                Intent intent = new Intent(getContext(), PaytmPaymentpp.class);
+                                intent.putExtra("price",price);
+                                intent.putExtra("discount",discount);
+                                intent.putExtra("titleName",pdfFile.get(position));
+                                intent.putExtra("curruntPdf",currentPdf);
+                                intent.putExtra("currentSubject",curruntSubject);
+                                intent.putExtra("currentChapter",curruntChapter);
+                                startActivity(intent);
+                            }
+                    }else{
+                        Intent intent = new Intent(getContext(), PaytmPaymentpp.class);
+                        intent.putExtra("price",price);
+                        intent.putExtra("discount",discount);
+                        intent.putExtra("titleName",pdfFile.get(position));
+                        intent.putExtra("curruntPdf",currentPdf);
+                        intent.putExtra("currentSubject",curruntSubject);
+                        intent.putExtra("currentChapter",curruntChapter);
+                        startActivity(intent);
                     }
-                }
-            }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    Toast.makeText(getContext(),"completed",Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
