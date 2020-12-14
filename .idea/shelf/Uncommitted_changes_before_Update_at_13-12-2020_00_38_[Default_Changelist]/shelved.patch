@@ -1,0 +1,592 @@
+Index: app/src/main/java/com/example/itifighter/TestResultActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\r\npackage com.example.itifighter;\r\n\r\nimport android.annotation.SuppressLint;\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.view.MotionEvent;\r\nimport android.view.View;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport com.example.itifighterAdmin.Question;\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.OnSuccessListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.firestore.CollectionReference;\r\nimport com.google.firebase.firestore.DocumentReference;\r\nimport com.google.firebase.firestore.DocumentSnapshot;\r\nimport com.google.firebase.firestore.EventListener;\r\nimport com.google.firebase.firestore.FirebaseFirestore;\r\nimport com.google.firebase.firestore.FirebaseFirestoreException;\r\nimport com.google.firebase.firestore.QuerySnapshot;\r\nimport com.google.firebase.firestore.WriteBatch;\r\n\r\nimport java.io.Serializable;\r\nimport java.math.BigDecimal;\r\nimport java.math.RoundingMode;\r\nimport java.util.ArrayList;\r\nimport java.util.Arrays;\r\nimport java.util.Calendar;\r\nimport java.util.Collections;\r\nimport java.util.HashMap;\r\nimport java.util.List;\r\nimport java.util.Map;\r\nimport java.util.Objects;\r\n\r\npublic class TestResultActivity extends AppCompatActivity {\r\n\r\n    List<Question> questions;\r\n    int[] sub_ans, selectedFeedbackOption;\r\n    int total_marks = 0;\r\n    long timeLeft;\r\n    double accuracy = 0.0;\r\n    int tpq = 0;\r\n    int marks_obtained = 0;\r\n    int _mpq = 1;\r\n    boolean pastResultLT = false;\r\n    String[] feedbackOptions = {\"Wrong Question\", \"Wrong Options\", \"Incomplete Question\", \"Incorrect Grammar\", \"Question out of syllabus\",\r\n            \"Question on old pattern\", \"Repeated Question\"};\r\n    boolean marksUploaded = false;\r\n\r\n    int tca = 0, tra = 0, tsq = 0;\r\n    TextView MO, TM, TCA, TRA, TSQ, Accuracy, TimePerQuestion;\r\n    String targetSection, targetSubject, targetChapter;\r\n    String finalTCID;\r\n\r\n    CollectionReference mDatabaseReference;\r\n\r\n    @SuppressLint({\"WrongViewCast\", \"ClickableViewAccessibility\"})\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_result_xyz);\r\n\r\n\r\n        findViewById(R.id.ResultLL).setVisibility(View.INVISIBLE);\r\n        findViewById(R.id.UploadingTXT).setVisibility(View.VISIBLE);\r\n\r\n        final TextView cbt = findViewById(R.id.ContinueBTNRT);\r\n        cbt.setVisibility(View.INVISIBLE);\r\n        cbt.setOnTouchListener(new View.OnTouchListener() {\r\n            @Override\r\n            public boolean onTouch(View v, MotionEvent event) {\r\n                if (event.getAction() == MotionEvent.ACTION_UP) {\r\n                    if (event.getRawX() >= cbt.getRight() - cbt.getTotalPaddingRight()) {\r\n                        // your action for drawable click event\r\n                        FinishExam();\r\n                        return true;\r\n                    }\r\n                }\r\n                return true;\r\n            }\r\n        });\r\n\r\n        targetSection = getIntent().getStringExtra(\"section\");\r\n        targetSubject = getIntent().getStringExtra(\"subject\");\r\n        targetChapter = getIntent().getStringExtra(\"chapter\");\r\n        timeLeft = getIntent().getLongExtra(\"timeLeft\", 0);\r\n        questions = (List<Question>) getIntent().getSerializableExtra(\"questions\");\r\n        _mpq = getIntent().getIntExtra(\"_mpq\", 1);\r\n\r\n        finalTCID = targetSection.equals(\"lt\") ? getIntent().getStringExtra(\"tid\") : targetChapter;\r\n\r\n        if (targetSection.equals(\"lt\")) {\r\n            mDatabaseReference = FirebaseFirestore.getInstance().collection(\"section\").document(targetSection).collection(\"branch\").document(targetSubject).collection(\"chapter\").document(targetChapter).collection(\"tests\").document(finalTCID).collection(\"scoreboard\");\r\n        } else {\r\n            mDatabaseReference = FirebaseFirestore.getInstance().collection(\"section\").document(targetSection).collection(\"branch\").document(targetSubject).collection(\"chapter\").document(finalTCID).collection(\"scoreboard\");\r\n        }\r\n\r\n        MO = findViewById(R.id.marksObtained);\r\n        TM = findViewById(R.id.totalMarks);\r\n        TCA = findViewById(R.id.TCA);\r\n        TRA = findViewById(R.id.TRA);\r\n        TSQ = findViewById(R.id.TSQ);\r\n        Accuracy = findViewById(R.id.Accuracy);\r\n        TimePerQuestion = findViewById(R.id.TimePerQuestion);\r\n\r\n\r\n        total_marks = _mpq * questions.size();\r\n        TM.setText(\"\" + (questions.size() * _mpq));\r\n\r\n        int total_time_taken = 0;\r\n\r\n        if (getIntent().getStringExtra(\"is_past_result\") != null && getIntent().getStringExtra(\"is_past_result\").contains(\"true\")) {\r\n            marksUploaded = true;\r\n            pastResultLT = true;\r\n            tsq = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra(\"total_skipped\")));\r\n            tca = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra(\"total_correct\")));\r\n            tra = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra(\"total_attempted\"))) - tca;\r\n            String sub_list = Objects.requireNonNull(getIntent().getStringExtra(\"answer_key\"));\r\n            _mpq = getIntent().getIntExtra(\"_mpq\", 1);\r\n            String[] str_ans = sub_list.split(\"_\");\r\n            sub_ans = new int[str_ans.length];\r\n            for (int i = 0; i < str_ans.length; i++)\r\n                sub_ans[i] = Integer.parseInt(str_ans[i]);\r\n            findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);\r\n            findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);\r\n\r\n            if (targetSection == \"lt\") {\r\n\r\n            } else {\r\n                findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);\r\n                findViewById(R.id.ResultLTHider).setVisibility(View.INVISIBLE);\r\n            }\r\n            accuracy = Double.parseDouble(Objects.requireNonNull(getIntent().getStringExtra(\"accuracy\")));\r\n            total_time_taken = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra(\"tpq\")));\r\n\r\n        } else {\r\n            findViewById(R.id.ResultLL).setVisibility(View.GONE);\r\n            sub_ans = getIntent().getIntArrayExtra(\"sub_ans\");\r\n            selectedFeedbackOption = getIntent().getIntArrayExtra(\"selectedFeedbackOption\");\r\n            //Toast.makeText(this, \"total ques: total ans: \"+questions.size()+\" : \"+sub_ans.length, Toast.LENGTH_LONG).show();\r\n\r\n            for (int i = 0; i < sub_ans.length; i++) {\r\n                //Toast.makeText(this, \"\"+questions.get(i).getAnswer(), Toast.LENGTH_LONG).show();\r\n                if (sub_ans[i] == -1) {\r\n                    tsq++;\r\n                } else if (sub_ans[i] == Integer.parseInt(questions.get(i).getAnswer())) {\r\n                    marks_obtained += _mpq;\r\n                    tca++;\r\n                } else {\r\n                    tra++;\r\n                }\r\n            }\r\n            total_time_taken = 0;\r\n            accuracy = ((((double) tca) / (tca + tra)) * 100.0);\r\n            accuracy = new BigDecimal(accuracy).setScale(2, RoundingMode.HALF_UP).doubleValue();\r\n            if (tca + tra > 0) {\r\n                Accuracy.setText(\"\" + accuracy);\r\n                total_time_taken = Math.toIntExact(Math.round((((getIntent().getIntExtra(\"timer\", 60) * 60 * 1000) - timeLeft) / (1000.0)) / ((double) (tca + tra))));\r\n            }\r\n            tpq = total_time_taken;\r\n\r\n            UploadData();\r\n        }\r\n\r\n\r\n        int timerValue = getIntent().getIntExtra(\"timer\", 60);\r\n        Toast.makeText(this, \"tca=\" + tca + \" tra=\" + tra + \" timerValue=\" + timerValue + \" timeLeft=\" + timeLeft, Toast.LENGTH_SHORT).show();\r\n        if (tca + tra > 0) {\r\n            Accuracy.setText(\"\" + accuracy);\r\n        } else {\r\n            Accuracy.setText(\"0\");\r\n        }\r\n        TimePerQuestion.setText(\"\" + total_time_taken);\r\n        MO.setText(\"\" + (tca * _mpq));\r\n        TCA.setText(\"\" + tca + \" Correct\");\r\n        TRA.setText(\"\" + tra + \" Incorrect\");\r\n        ;\r\n        TSQ.setText(\"\" + tsq + \" Skipped\");\r\n    }\r\n\r\n    void UploadData() {\r\n        final String uuid = FirebaseAuth.getInstance().getCurrentUser().getUid();\r\n        final DocumentReference userDoc = FirebaseFirestore.getInstance().collection(\"users\").document(\"\" + uuid);\r\n        final DocumentReference UserTestRecordDoc = userDoc.collection(\"scoreboard\").document(\"\" + targetSection).collection(\"test\").document(\"\" + finalTCID);\r\n        final float percentageMarks = (tca * _mpq) / total_marks;\r\n        double userRecordScore = targetSection.equals(\"mt\") ? percentageMarks : targetSection.equals(\"lt\") ? percentageMarks * 2 : percentageMarks * 1.5;\r\n\r\n        Map<String, String> userTestRecordMap = new HashMap<>();\r\n        userTestRecordMap.put(\"score\", \"\" + userRecordScore);\r\n        userTestRecordMap.put(\"total_skipped\", \"\" + tsq);\r\n        userTestRecordMap.put(\"total_attempted\", \"\" + (tca + tra));\r\n        userTestRecordMap.put(\"total_correct\", \"\" + tca);\r\n        userTestRecordMap.put(\"_mpq\", \"\" + _mpq);\r\n        userTestRecordMap.put(\"accuracy\", \"\" + accuracy);\r\n        userTestRecordMap.put(\"tpq\", \"\" + tpq);\r\n        String answerString = \"\";\r\n        for (int n : sub_ans)\r\n            answerString += n + \"_\";\r\n        userTestRecordMap.put(\"answer_key\", answerString.substring(0, answerString.length() - 1));\r\n\r\n        UserTestRecordDoc.set(userTestRecordMap);\r\n\r\n        userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {\r\n            @Override\r\n            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {\r\n                if (e != null) {\r\n                    //Log.w(TAG, \"Listen failed.\", e);\r\n                    return;\r\n                }\r\n                if (snapshot != null && snapshot.exists()) {\r\n                    final String studentName = snapshot.getString(\"Name\");\r\n                    //Log.d(TAG, \"Current data: \" + snapshot.getData());\r\n                    Map<String, String> scoreboard = new HashMap<>();\r\n                    scoreboard.put(\"Score\", \"\" + (tca * _mpq));\r\n                    scoreboard.put(\"name\", \"\" + studentName);\r\n                    DocumentReference reference = mDatabaseReference.document(\"\" + uuid);\r\n                    reference.set(scoreboard).addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                        @Override\r\n                        public void onSuccess(Void aVoid) {\r\n                            //Toast.makeText(TestResultActivity.this, \"score uploaded in database for user: \"+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();\r\n                            marksUploaded = true;\r\n                            //((TextView)findViewById(R.id.UploadingTXT)).setText(\"uploading feedback, please wait..\");\r\n                            //final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection(\"common\").document(\"post test\").collection(\"feedback\");\r\n                            final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection(\"users\").document(\"\" + uuid).collection(\"feedback\");\r\n                            feedbackBasePath.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {\r\n                                @Override\r\n                                public void onComplete(@NonNull Task<QuerySnapshot> task) {\r\n                                    if (task.isSuccessful()) {\r\n                                        int count = task.getResult().size();\r\n                                        WriteBatch batch = FirebaseFirestore.getInstance().batch();\r\n                                        for (int i = 0; i < selectedFeedbackOption.length; i++) {\r\n                                            if (selectedFeedbackOption[i] > -1) {\r\n                                                Map<String, String> _fb = new HashMap<>();\r\n                                                _fb.put(\"question\", questions.get(i).getQuestion());\r\n                                                _fb.put(\"issue\", feedbackOptions[selectedFeedbackOption[i]]);\r\n                                                _fb.put(\"section\", targetSection);\r\n                                                _fb.put(\"subject\", targetSubject);\r\n                                                */\r\n/*_fb.put(\"student\", studentName);*//*\r\n\r\n */\r\n/*_fb.put(\"date\", \"\"+Calendar.getInstance().getTimeInMillis());*//*\r\n\r\n                                                if (targetSection == \"lt\") {\r\n                                                    _fb.put(\"testID\", getIntent().getStringExtra(\"tid\"));\r\n                                                } else {\r\n                                                    _fb.put(\"chapter\", targetChapter);\r\n                                                }\r\n                                                //DocumentReference nycRef = feedbackBasePath.document(\"Feedback_\" + (++count));\r\n                                                DocumentReference nycRef = feedbackBasePath.document(\"Feedback_\" + Calendar.getInstance().getTimeInMillis());\r\n                                                batch.set(nycRef, _fb);\r\n                                            }\r\n                                        }\r\n                                        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {\r\n                                            @Override\r\n                                            public void onComplete(@NonNull Task<Void> task) {\r\n                                                findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);\r\n                                                findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);\r\n\r\n                                                if (targetSection == \"lt\") {\r\n                                                    (findViewById(R.id.RetakeExam)).setVisibility(View.GONE);\r\n                                                    if(!pastResultLT){\r\n                                                        findViewById(R.id.ResultLL).setVisibility(View.GONE);\r\n                                                    }else{\r\n                                                        findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);\r\n                                                        findViewById(R.id.ResultLTHider).setVisibility(View.INVISIBLE);\r\n                                                    }\r\n                                                } else {\r\n                                                    findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);\r\n                                                    findViewById(R.id.ResultLTHider).setVisibility(View.INVISIBLE);\r\n                                                }\r\n                                            }\r\n                                        });\r\n                                    } else {\r\n                                        findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);\r\n                                        findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);\r\n\r\n                                        if (targetSection == \"lt\") {\r\n                                            (findViewById(R.id.RetakeExam)).setVisibility(View.GONE);\r\n                                            if(!pastResultLT){\r\n                                                findViewById(R.id.ResultLL).setVisibility(View.GONE);\r\n                                            }else{\r\n                                                findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);\r\n                                                findViewById(R.id.ResultLTHider).setVisibility(View.INVISIBLE);\r\n                                            }\r\n                                        } else {\r\n                                            findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);\r\n                                            findViewById(R.id.ResultLTHider).setVisibility(View.INVISIBLE);\r\n                                        }\r\n                                    }\r\n                                }\r\n                            });\r\n                        }\r\n                    });\r\n                }\r\n            }\r\n        });\r\n    }\r\n\r\n    public void CheckLeaderBoard(View view) {\r\n        Intent intent = new Intent(this, TestLeaderBoardActivity.class);\r\n        intent.putExtra(\"section\", targetSection);\r\n        intent.putExtra(\"subject\", targetSubject);\r\n        intent.putExtra(\"chapter\", targetChapter);\r\n        intent.putExtra(\"tid\", finalTCID);\r\n        startActivity(intent);\r\n    }\r\n\r\n    public void TakeARetest(View view) {\r\n        if (targetSection.contains(\"lt\"))\r\n            return;\r\n        Intent myIntent = new Intent(this, TestInstructionsActivity.class);\r\n        //clears all other activities from stack and makes the new one the root of stack\r\n        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);\r\n        myIntent.putExtra(\"section\", targetSection);\r\n        myIntent.putExtra(\"subject\", targetSubject);\r\n        myIntent.putExtra(\"chapter\", targetChapter);\r\n        myIntent.putExtra(\"questions\", (Serializable) questions);\r\n        myIntent.putExtra(\"_mpq\", _mpq);\r\n        myIntent.putExtra(\"timer\", getIntent().getIntExtra(\"timer\", 60));\r\n        myIntent.putExtra(\"title\", getIntent().getStringExtra(\"title\"));\r\n        startActivity(myIntent);\r\n    }\r\n\r\n    @Override\r\n    public void onBackPressed() {\r\n        //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));\r\n        if (marksUploaded) finish();\r\n        else {\r\n            //Toast.makeText(this, \"uploading marks, please wait...\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n\r\n    public void FinishExam() {\r\n        //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));\r\n        if (marksUploaded) finish();\r\n        else {\r\n            //Toast.makeText(this, \"uploading marks, please wait...\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n\r\n    public void FinishExam2(View view) {\r\n        //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));\r\n        if (marksUploaded) finish();\r\n        else {\r\n            //Toast.makeText(this, \"uploading marks, please wait...\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n\r\n    public void CheckAnswerSheet(View view) {\r\n        Intent intent = new Intent(this, TestAnswerSheetActivity.class);\r\n        intent.putExtra(\"questions\", (Serializable) questions);\r\n        intent.putExtra(\"answer_key\", (Serializable) sub_ans);\r\n        if (marksUploaded) startActivity(intent);\r\n        else {\r\n            //Toast.makeText(this, \"uploading marks, please wait...\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n}*/\r\n\r\n\r\npackage com.example.itifighter;\r\n\r\nimport android.annotation.SuppressLint;\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.view.MotionEvent;\r\nimport android.view.View;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport com.example.itifighterAdmin.Question;\r\nimport com.google.firebase.firestore.CollectionReference;\r\nimport com.google.firebase.firestore.FirebaseFirestore;\r\n\r\nimport java.io.Serializable;\r\nimport java.util.List;\r\nimport java.util.Objects;\r\n\r\npublic class TestResultActivity extends AppCompatActivity {\r\n\r\n    List<Question> questions;\r\n    int[] sub_ans, selectedFeedbackOption;\r\n    int total_marks = 0;\r\n    long timeLeft;\r\n    double accuracy = 0.0;\r\n    int tpq = 0;\r\n    int marks_obtained = 0;\r\n    int _mpq = 1;\r\n    boolean pastResultLT = false;\r\n    String[] feedbackOptions = {\"Wrong Question\", \"Wrong Options\", \"Incomplete Question\", \"Incorrect Grammar\", \"Question out of syllabus\",\r\n            \"Question on old pattern\", \"Repeated Question\"};\r\n    boolean marksUploaded = false;\r\n\r\n    int tca = 0, tra = 0, tsq = 0;\r\n    TextView MO, TM, TCA, TRA, TSQ, Accuracy, TimePerQuestion;\r\n    String targetSection, targetSubject, targetChapter;\r\n    String finalTCID;\r\n\r\n    CollectionReference mDatabaseReference;\r\n\r\n    @SuppressLint({\"WrongViewCast\", \"ClickableViewAccessibility\"})\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_result_xyz);\r\n\r\n\r\n        final TextView cbt = findViewById(R.id.ContinueBTNRT);\r\n        cbt.setVisibility(View.INVISIBLE);\r\n        cbt.setOnTouchListener(new View.OnTouchListener() {\r\n            @Override\r\n            public boolean onTouch(View v, MotionEvent event) {\r\n                if (event.getAction() == MotionEvent.ACTION_UP) {\r\n                    if (event.getRawX() >= cbt.getRight() - cbt.getTotalPaddingRight()) {\r\n                        // your action for drawable click event\r\n                        FinishExam();\r\n                        return true;\r\n                    }\r\n                }\r\n                return true;\r\n            }\r\n        });\r\n\r\n        targetSection = getIntent().getStringExtra(\"section\");\r\n        targetSubject = getIntent().getStringExtra(\"subject\");\r\n        targetChapter = getIntent().getStringExtra(\"chapter\");\r\n        timeLeft = getIntent().getLongExtra(\"timeLeft\", 0);\r\n        questions = (List<Question>) getIntent().getSerializableExtra(\"questions\");\r\n        _mpq = getIntent().getIntExtra(\"_mpq\", 1);\r\n\r\n        finalTCID = targetSection.equals(\"lt\") ? getIntent().getStringExtra(\"tid\") : targetChapter;\r\n\r\n        if (targetSection.equals(\"lt\")) {\r\n            mDatabaseReference = FirebaseFirestore.getInstance().collection(\"section\").document(targetSection).collection(\"branch\").document(targetSubject).collection(\"chapter\").document(targetChapter).collection(\"tests\").document(finalTCID).collection(\"scoreboard\");\r\n        } else {\r\n            mDatabaseReference = FirebaseFirestore.getInstance().collection(\"section\").document(targetSection).collection(\"branch\").document(targetSubject).collection(\"chapter\").document(finalTCID).collection(\"scoreboard\");\r\n        }\r\n\r\n        MO = findViewById(R.id.marksObtained);\r\n        TM = findViewById(R.id.totalMarks);\r\n        TCA = findViewById(R.id.TCA);\r\n        TRA = findViewById(R.id.TRA);\r\n        TSQ = findViewById(R.id.TSQ);\r\n        Accuracy = findViewById(R.id.Accuracy);\r\n        TimePerQuestion = findViewById(R.id.TimePerQuestion);\r\n\r\n\r\n        total_marks = _mpq * questions.size();\r\n        TM.setText(\"\" + (questions.size() * _mpq));\r\n\r\n        int total_time_taken = 0;\r\n\r\n        marksUploaded = true;\r\n        pastResultLT = true;\r\n        tsq = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra(\"total_skipped\")));\r\n        tca = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra(\"total_correct\")));\r\n        tra = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra(\"total_attempted\"))) - tca;\r\n        String sub_list = Objects.requireNonNull(getIntent().getStringExtra(\"answer_key\"));\r\n        _mpq = getIntent().getIntExtra(\"_mpq\", 1);\r\n        String[] str_ans = sub_list.split(\"_\");\r\n        sub_ans = new int[str_ans.length];\r\n        for (int i = 0; i < str_ans.length; i++)\r\n            sub_ans[i] = Integer.parseInt(str_ans[i]);\r\n\r\n        accuracy = Double.parseDouble(Objects.requireNonNull(getIntent().getStringExtra(\"accuracy\")));\r\n        total_time_taken = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra(\"tpq\")));\r\n\r\n\r\n        int timerValue = getIntent().getIntExtra(\"timer\", 60);\r\n        Toast.makeText(this, \"tca=\" + tca + \" tra=\" + tra + \" timerValue=\" + timerValue + \" timeLeft=\" + timeLeft, Toast.LENGTH_SHORT).show();\r\n        if (tca + tra > 0) {\r\n            Accuracy.setText(\"\" + accuracy);\r\n        } else {\r\n            Accuracy.setText(\"0\");\r\n        }\r\n        TimePerQuestion.setText(\"\" + total_time_taken);\r\n        MO.setText(\"\" + (tca * _mpq));\r\n        TCA.setText(\"\" + tca + \" Correct\");\r\n        TRA.setText(\"\" + tra + \" Incorrect\");\r\n\r\n        TSQ.setText(\"\" + tsq + \" Skipped\");\r\n    }\r\n\r\n    public void CheckLeaderBoard(View view) {\r\n        Intent intent = new Intent(this, TestLeaderBoardActivity.class);\r\n        intent.putExtra(\"section\", targetSection);\r\n        intent.putExtra(\"subject\", targetSubject);\r\n        intent.putExtra(\"chapter\", targetChapter);\r\n        intent.putExtra(\"tid\", finalTCID);\r\n        startActivity(intent);\r\n    }\r\n\r\n    public void TakeARetest(View view) {\r\n        if (targetSection.contains(\"lt\"))\r\n            return;\r\n        Intent myIntent = new Intent(this, TestInstructionsActivity.class);\r\n        //clears all other activities from stack and makes the new one the root of stack\r\n        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);\r\n        myIntent.putExtra(\"section\", targetSection);\r\n        myIntent.putExtra(\"subject\", targetSubject);\r\n        myIntent.putExtra(\"chapter\", targetChapter);\r\n        myIntent.putExtra(\"questions\", (Serializable) questions);\r\n        myIntent.putExtra(\"_mpq\", _mpq);\r\n        myIntent.putExtra(\"timer\", getIntent().getIntExtra(\"timer\", 60));\r\n        myIntent.putExtra(\"title\", getIntent().getStringExtra(\"title\"));\r\n        startActivity(myIntent);\r\n    }\r\n\r\n    @Override\r\n    public void onBackPressed() {\r\n        //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));\r\n        if (marksUploaded) finish();\r\n        else {\r\n            //Toast.makeText(this, \"uploading marks, please wait...\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n\r\n    public void FinishExam() {\r\n        //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));\r\n        if (marksUploaded) finish();\r\n        else {\r\n            //Toast.makeText(this, \"uploading marks, please wait...\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n\r\n    public void FinishExam2(View view) {\r\n        //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));\r\n        if (marksUploaded) finish();\r\n        else {\r\n            //Toast.makeText(this, \"uploading marks, please wait...\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n\r\n    public void CheckAnswerSheet(View view) {\r\n        Intent intent = new Intent(this, TestAnswerSheetActivity.class);\r\n        intent.putExtra(\"questions\", (Serializable) questions);\r\n        intent.putExtra(\"answer_key\", (Serializable) sub_ans);\r\n        if (marksUploaded) startActivity(intent);\r\n        else {\r\n            //Toast.makeText(this, \"uploading marks, please wait...\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/itifighter/TestResultActivity.java	(revision 1de29cbe87c7b180fa42f3be2356fca4e0761ea5)
++++ app/src/main/java/com/example/itifighter/TestResultActivity.java	(date 1607794690038)
+@@ -1,4 +1,3 @@
+-/*
+ package com.example.itifighter;
+ 
+ import android.annotation.SuppressLint;
+@@ -9,34 +8,14 @@
+ import android.widget.TextView;
+ import android.widget.Toast;
+ 
+-import androidx.annotation.NonNull;
+-import androidx.annotation.Nullable;
+ import androidx.appcompat.app.AppCompatActivity;
+ 
+ import com.example.itifighterAdmin.Question;
+-import com.google.android.gms.tasks.OnCompleteListener;
+-import com.google.android.gms.tasks.OnSuccessListener;
+-import com.google.android.gms.tasks.Task;
+-import com.google.firebase.auth.FirebaseAuth;
+ import com.google.firebase.firestore.CollectionReference;
+-import com.google.firebase.firestore.DocumentReference;
+-import com.google.firebase.firestore.DocumentSnapshot;
+-import com.google.firebase.firestore.EventListener;
+ import com.google.firebase.firestore.FirebaseFirestore;
+-import com.google.firebase.firestore.FirebaseFirestoreException;
+-import com.google.firebase.firestore.QuerySnapshot;
+-import com.google.firebase.firestore.WriteBatch;
+ 
+ import java.io.Serializable;
+-import java.math.BigDecimal;
+-import java.math.RoundingMode;
+-import java.util.ArrayList;
+-import java.util.Arrays;
+-import java.util.Calendar;
+-import java.util.Collections;
+-import java.util.HashMap;
+ import java.util.List;
+-import java.util.Map;
+ import java.util.Objects;
+ 
+ public class TestResultActivity extends AppCompatActivity {
+@@ -68,355 +47,8 @@
+         setContentView(R.layout.activity_result_xyz);
+ 
+ 
+-        findViewById(R.id.ResultLL).setVisibility(View.INVISIBLE);
+-        findViewById(R.id.UploadingTXT).setVisibility(View.VISIBLE);
+-
+         final TextView cbt = findViewById(R.id.ContinueBTNRT);
+-        cbt.setVisibility(View.INVISIBLE);
+-        cbt.setOnTouchListener(new View.OnTouchListener() {
+-            @Override
+-            public boolean onTouch(View v, MotionEvent event) {
+-                if (event.getAction() == MotionEvent.ACTION_UP) {
+-                    if (event.getRawX() >= cbt.getRight() - cbt.getTotalPaddingRight()) {
+-                        // your action for drawable click event
+-                        FinishExam();
+-                        return true;
+-                    }
+-                }
+-                return true;
+-            }
+-        });
+-
+-        targetSection = getIntent().getStringExtra("section");
+-        targetSubject = getIntent().getStringExtra("subject");
+-        targetChapter = getIntent().getStringExtra("chapter");
+-        timeLeft = getIntent().getLongExtra("timeLeft", 0);
+-        questions = (List<Question>) getIntent().getSerializableExtra("questions");
+-        _mpq = getIntent().getIntExtra("_mpq", 1);
+-
+-        finalTCID = targetSection.equals("lt") ? getIntent().getStringExtra("tid") : targetChapter;
+-
+-        if (targetSection.equals("lt")) {
+-            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(targetChapter).collection("tests").document(finalTCID).collection("scoreboard");
+-        } else {
+-            mDatabaseReference = FirebaseFirestore.getInstance().collection("section").document(targetSection).collection("branch").document(targetSubject).collection("chapter").document(finalTCID).collection("scoreboard");
+-        }
+-
+-        MO = findViewById(R.id.marksObtained);
+-        TM = findViewById(R.id.totalMarks);
+-        TCA = findViewById(R.id.TCA);
+-        TRA = findViewById(R.id.TRA);
+-        TSQ = findViewById(R.id.TSQ);
+-        Accuracy = findViewById(R.id.Accuracy);
+-        TimePerQuestion = findViewById(R.id.TimePerQuestion);
+-
+-
+-        total_marks = _mpq * questions.size();
+-        TM.setText("" + (questions.size() * _mpq));
+-
+-        int total_time_taken = 0;
+-
+-        if (getIntent().getStringExtra("is_past_result") != null && getIntent().getStringExtra("is_past_result").contains("true")) {
+-            marksUploaded = true;
+-            pastResultLT = true;
+-            tsq = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_skipped")));
+-            tca = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_correct")));
+-            tra = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("total_attempted"))) - tca;
+-            String sub_list = Objects.requireNonNull(getIntent().getStringExtra("answer_key"));
+-            _mpq = getIntent().getIntExtra("_mpq", 1);
+-            String[] str_ans = sub_list.split("_");
+-            sub_ans = new int[str_ans.length];
+-            for (int i = 0; i < str_ans.length; i++)
+-                sub_ans[i] = Integer.parseInt(str_ans[i]);
+-            findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);
+-            findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);
+-
+-            if (targetSection == "lt") {
+-
+-            } else {
+-                findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);
+-                findViewById(R.id.ResultLTHider).setVisibility(View.INVISIBLE);
+-            }
+-            accuracy = Double.parseDouble(Objects.requireNonNull(getIntent().getStringExtra("accuracy")));
+-            total_time_taken = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("tpq")));
+-
+-        } else {
+-            findViewById(R.id.ResultLL).setVisibility(View.GONE);
+-            sub_ans = getIntent().getIntArrayExtra("sub_ans");
+-            selectedFeedbackOption = getIntent().getIntArrayExtra("selectedFeedbackOption");
+-            //Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
+-
+-            for (int i = 0; i < sub_ans.length; i++) {
+-                //Toast.makeText(this, ""+questions.get(i).getAnswer(), Toast.LENGTH_LONG).show();
+-                if (sub_ans[i] == -1) {
+-                    tsq++;
+-                } else if (sub_ans[i] == Integer.parseInt(questions.get(i).getAnswer())) {
+-                    marks_obtained += _mpq;
+-                    tca++;
+-                } else {
+-                    tra++;
+-                }
+-            }
+-            total_time_taken = 0;
+-            accuracy = ((((double) tca) / (tca + tra)) * 100.0);
+-            accuracy = new BigDecimal(accuracy).setScale(2, RoundingMode.HALF_UP).doubleValue();
+-            if (tca + tra > 0) {
+-                Accuracy.setText("" + accuracy);
+-                total_time_taken = Math.toIntExact(Math.round((((getIntent().getIntExtra("timer", 60) * 60 * 1000) - timeLeft) / (1000.0)) / ((double) (tca + tra))));
+-            }
+-            tpq = total_time_taken;
+-
+-            UploadData();
+-        }
+-
+-
+-        int timerValue = getIntent().getIntExtra("timer", 60);
+-        Toast.makeText(this, "tca=" + tca + " tra=" + tra + " timerValue=" + timerValue + " timeLeft=" + timeLeft, Toast.LENGTH_SHORT).show();
+-        if (tca + tra > 0) {
+-            Accuracy.setText("" + accuracy);
+-        } else {
+-            Accuracy.setText("0");
+-        }
+-        TimePerQuestion.setText("" + total_time_taken);
+-        MO.setText("" + (tca * _mpq));
+-        TCA.setText("" + tca + " Correct");
+-        TRA.setText("" + tra + " Incorrect");
+-        ;
+-        TSQ.setText("" + tsq + " Skipped");
+-    }
+-
+-    void UploadData() {
+-        final String uuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+-        final DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document("" + uuid);
+-        final DocumentReference UserTestRecordDoc = userDoc.collection("scoreboard").document("" + targetSection).collection("test").document("" + finalTCID);
+-        final float percentageMarks = (tca * _mpq) / total_marks;
+-        double userRecordScore = targetSection.equals("mt") ? percentageMarks : targetSection.equals("lt") ? percentageMarks * 2 : percentageMarks * 1.5;
+-
+-        Map<String, String> userTestRecordMap = new HashMap<>();
+-        userTestRecordMap.put("score", "" + userRecordScore);
+-        userTestRecordMap.put("total_skipped", "" + tsq);
+-        userTestRecordMap.put("total_attempted", "" + (tca + tra));
+-        userTestRecordMap.put("total_correct", "" + tca);
+-        userTestRecordMap.put("_mpq", "" + _mpq);
+-        userTestRecordMap.put("accuracy", "" + accuracy);
+-        userTestRecordMap.put("tpq", "" + tpq);
+-        String answerString = "";
+-        for (int n : sub_ans)
+-            answerString += n + "_";
+-        userTestRecordMap.put("answer_key", answerString.substring(0, answerString.length() - 1));
+-
+-        UserTestRecordDoc.set(userTestRecordMap);
+-
+-        userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+-            @Override
+-            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+-                if (e != null) {
+-                    //Log.w(TAG, "Listen failed.", e);
+-                    return;
+-                }
+-                if (snapshot != null && snapshot.exists()) {
+-                    final String studentName = snapshot.getString("Name");
+-                    //Log.d(TAG, "Current data: " + snapshot.getData());
+-                    Map<String, String> scoreboard = new HashMap<>();
+-                    scoreboard.put("Score", "" + (tca * _mpq));
+-                    scoreboard.put("name", "" + studentName);
+-                    DocumentReference reference = mDatabaseReference.document("" + uuid);
+-                    reference.set(scoreboard).addOnSuccessListener(new OnSuccessListener<Void>() {
+-                        @Override
+-                        public void onSuccess(Void aVoid) {
+-                            //Toast.makeText(TestResultActivity.this, "score uploaded in database for user: "+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+-                            marksUploaded = true;
+-                            //((TextView)findViewById(R.id.UploadingTXT)).setText("uploading feedback, please wait..");
+-                            //final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("common").document("post test").collection("feedback");
+-                            final CollectionReference feedbackBasePath = FirebaseFirestore.getInstance().collection("users").document("" + uuid).collection("feedback");
+-                            feedbackBasePath.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+-                                @Override
+-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+-                                    if (task.isSuccessful()) {
+-                                        int count = task.getResult().size();
+-                                        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+-                                        for (int i = 0; i < selectedFeedbackOption.length; i++) {
+-                                            if (selectedFeedbackOption[i] > -1) {
+-                                                Map<String, String> _fb = new HashMap<>();
+-                                                _fb.put("question", questions.get(i).getQuestion());
+-                                                _fb.put("issue", feedbackOptions[selectedFeedbackOption[i]]);
+-                                                _fb.put("section", targetSection);
+-                                                _fb.put("subject", targetSubject);
+-                                                */
+-/*_fb.put("student", studentName);*//*
+-
+- */
+-/*_fb.put("date", ""+Calendar.getInstance().getTimeInMillis());*//*
+-
+-                                                if (targetSection == "lt") {
+-                                                    _fb.put("testID", getIntent().getStringExtra("tid"));
+-                                                } else {
+-                                                    _fb.put("chapter", targetChapter);
+-                                                }
+-                                                //DocumentReference nycRef = feedbackBasePath.document("Feedback_" + (++count));
+-                                                DocumentReference nycRef = feedbackBasePath.document("Feedback_" + Calendar.getInstance().getTimeInMillis());
+-                                                batch.set(nycRef, _fb);
+-                                            }
+-                                        }
+-                                        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+-                                            @Override
+-                                            public void onComplete(@NonNull Task<Void> task) {
+-                                                findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);
+-                                                findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);
+-
+-                                                if (targetSection == "lt") {
+-                                                    (findViewById(R.id.RetakeExam)).setVisibility(View.GONE);
+-                                                    if(!pastResultLT){
+-                                                        findViewById(R.id.ResultLL).setVisibility(View.GONE);
+-                                                    }else{
+-                                                        findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);
+-                                                        findViewById(R.id.ResultLTHider).setVisibility(View.INVISIBLE);
+-                                                    }
+-                                                } else {
+-                                                    findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);
+-                                                    findViewById(R.id.ResultLTHider).setVisibility(View.INVISIBLE);
+-                                                }
+-                                            }
+-                                        });
+-                                    } else {
+-                                        findViewById(R.id.UploadingTXT).setVisibility(View.INVISIBLE);
+-                                        findViewById(R.id.ContinueBTNRT).setVisibility(View.VISIBLE);
+-
+-                                        if (targetSection == "lt") {
+-                                            (findViewById(R.id.RetakeExam)).setVisibility(View.GONE);
+-                                            if(!pastResultLT){
+-                                                findViewById(R.id.ResultLL).setVisibility(View.GONE);
+-                                            }else{
+-                                                findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);
+-                                                findViewById(R.id.ResultLTHider).setVisibility(View.INVISIBLE);
+-                                            }
+-                                        } else {
+-                                            findViewById(R.id.ResultLL).setVisibility(View.VISIBLE);
+-                                            findViewById(R.id.ResultLTHider).setVisibility(View.INVISIBLE);
+-                                        }
+-                                    }
+-                                }
+-                            });
+-                        }
+-                    });
+-                }
+-            }
+-        });
+-    }
+-
+-    public void CheckLeaderBoard(View view) {
+-        Intent intent = new Intent(this, TestLeaderBoardActivity.class);
+-        intent.putExtra("section", targetSection);
+-        intent.putExtra("subject", targetSubject);
+-        intent.putExtra("chapter", targetChapter);
+-        intent.putExtra("tid", finalTCID);
+-        startActivity(intent);
+-    }
+-
+-    public void TakeARetest(View view) {
+-        if (targetSection.contains("lt"))
+-            return;
+-        Intent myIntent = new Intent(this, TestInstructionsActivity.class);
+-        //clears all other activities from stack and makes the new one the root of stack
+-        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+-        myIntent.putExtra("section", targetSection);
+-        myIntent.putExtra("subject", targetSubject);
+-        myIntent.putExtra("chapter", targetChapter);
+-        myIntent.putExtra("questions", (Serializable) questions);
+-        myIntent.putExtra("_mpq", _mpq);
+-        myIntent.putExtra("timer", getIntent().getIntExtra("timer", 60));
+-        myIntent.putExtra("title", getIntent().getStringExtra("title"));
+-        startActivity(myIntent);
+-    }
+-
+-    @Override
+-    public void onBackPressed() {
+-        //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
+-        if (marksUploaded) finish();
+-        else {
+-            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+-        }
+-    }
+-
+-    public void FinishExam() {
+-        //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
+-        if (marksUploaded) finish();
+-        else {
+-            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+-        }
+-    }
+-
+-    public void FinishExam2(View view) {
+-        //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
+-        if (marksUploaded) finish();
+-        else {
+-            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+-        }
+-    }
+-
+-    public void CheckAnswerSheet(View view) {
+-        Intent intent = new Intent(this, TestAnswerSheetActivity.class);
+-        intent.putExtra("questions", (Serializable) questions);
+-        intent.putExtra("answer_key", (Serializable) sub_ans);
+-        if (marksUploaded) startActivity(intent);
+-        else {
+-            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
+-        }
+-    }
+-}*/
+-
+-
+-package com.example.itifighter;
+-
+-import android.annotation.SuppressLint;
+-import android.content.Intent;
+-import android.os.Bundle;
+-import android.view.MotionEvent;
+-import android.view.View;
+-import android.widget.TextView;
+-import android.widget.Toast;
+-
+-import androidx.appcompat.app.AppCompatActivity;
+-
+-import com.example.itifighterAdmin.Question;
+-import com.google.firebase.firestore.CollectionReference;
+-import com.google.firebase.firestore.FirebaseFirestore;
+-
+-import java.io.Serializable;
+-import java.util.List;
+-import java.util.Objects;
+-
+-public class TestResultActivity extends AppCompatActivity {
+-
+-    List<Question> questions;
+-    int[] sub_ans, selectedFeedbackOption;
+-    int total_marks = 0;
+-    long timeLeft;
+-    double accuracy = 0.0;
+-    int tpq = 0;
+-    int marks_obtained = 0;
+-    int _mpq = 1;
+-    boolean pastResultLT = false;
+-    String[] feedbackOptions = {"Wrong Question", "Wrong Options", "Incomplete Question", "Incorrect Grammar", "Question out of syllabus",
+-            "Question on old pattern", "Repeated Question"};
+-    boolean marksUploaded = false;
+-
+-    int tca = 0, tra = 0, tsq = 0;
+-    TextView MO, TM, TCA, TRA, TSQ, Accuracy, TimePerQuestion;
+-    String targetSection, targetSubject, targetChapter;
+-    String finalTCID;
+-
+-    CollectionReference mDatabaseReference;
+-
+-    @SuppressLint({"WrongViewCast", "ClickableViewAccessibility"})
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        setContentView(R.layout.activity_result_xyz);
+-
+-
+-        final TextView cbt = findViewById(R.id.ContinueBTNRT);
+-        cbt.setVisibility(View.INVISIBLE);
++       // cbt.setVisibility(View.INVISIBLE);
+         cbt.setOnTouchListener(new View.OnTouchListener() {
+             @Override
+             public boolean onTouch(View v, MotionEvent event) {
+Index: app/src/main/res/layout/activity_live_test_home.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:orientation=\"vertical\"\r\n    tools:context=\".LiveTestHomeActivity\">\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"\r\n        android:orientation=\"vertical\"\r\n        android:weightSum=\"100\">\r\n        <ScrollView\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"0dp\"\r\n            android:layout_weight=\"100\">\r\n            <LinearLayout\r\n                android:id=\"@+id/LiveTestList\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:layout_width=\"match_parent\"\r\n                android:orientation=\"vertical\"/>\r\n        </ScrollView>\r\n    </LinearLayout>\r\n\r\n    <include layout=\"@layout/include_progress_overlay\"/>\r\n</RelativeLayout>\r\n\r\n<!--\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:orientation=\"vertical\"\r\n    tools:context=\".LiveTestHomeActivity\">\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"\r\n        android:orientation=\"vertical\"\r\n        android:weightSum=\"110\">\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:orientation=\"vertical\"\r\n            android:layout_weight=\"35\"\r\n            android:layout_height=\"0dp\">\r\n            <TextView\r\n                android:id=\"@+id/LiveTestTitle\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:text=\"Live Test Begins At:\"\r\n                android:paddingVertical=\"35dp\"\r\n                android:layout_gravity=\"center\"\r\n                android:gravity=\"center\"\r\n                android:textSize=\"25sp\"/>\r\n            <TextView\r\n                android:id=\"@+id/countdown\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:textSize=\"35sp\"\r\n                android:layout_gravity=\"center\"\r\n                android:gravity=\"center\"\r\n                android:text=\"00:00:00\"/>\r\n        </LinearLayout>\r\n\r\n        <Button\r\n            android:id=\"@+id/startTestBtn\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_gravity=\"center\"\r\n            android:layout_height=\"0dp\"\r\n            android:layout_marginVertical=\"15dp\"\r\n            android:visibility=\"invisible\"\r\n            android:paddingHorizontal=\"65sp\"\r\n            android:textSize=\"25sp\"\r\n            android:layout_weight=\"10\"\r\n            android:text=\"Start Test\" />\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"0dp\"\r\n            android:layout_weight=\"10\"\r\n            android:weightSum=\"2\"\r\n            android:orientation=\"horizontal\">\r\n            <Button\r\n                android:id=\"@+id/BtnPrevList\"\r\n                android:layout_width=\"0dp\"\r\n                android:gravity=\"center\"\r\n                android:layout_height=\"match_parent\"\r\n                android:layout_weight=\"1\"\r\n                android:text=\"Previous Tests\"/>\r\n            <Button\r\n                android:id=\"@+id/BtnFutureList\"\r\n                android:layout_width=\"0dp\"\r\n                android:gravity=\"center\"\r\n                android:layout_height=\"match_parent\"\r\n                android:layout_weight=\"1\"\r\n                android:text=\"Upcoming Tests\"/>\r\n        </LinearLayout>\r\n\r\n        <RelativeLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"0dp\"\r\n            android:orientation=\"horizontal\"\r\n            android:layout_weight=\"55\">\r\n            <ListView\r\n                android:id=\"@+id/lt_prev_list\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"match_parent\"\r\n                android:divider=\"@color/list_divider\"\r\n                android:visibility=\"invisible\"\r\n                android:dividerHeight=\"1dp\"\r\n                android:listSelector=\"@drawable/list_row_selector\">\r\n            </ListView>\r\n            <ListView\r\n                android:id=\"@+id/lt_future_list\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"match_parent\"\r\n                android:divider=\"@color/list_divider\"\r\n                android:dividerHeight=\"1dp\"\r\n                android:listSelector=\"@drawable/list_row_selector\">\r\n            </ListView>\r\n        </RelativeLayout>\r\n    </LinearLayout>\r\n    <include layout=\"@layout/include_progress_overlay\"/>\r\n</RelativeLayout>-->
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_live_test_home.xml	(revision 1de29cbe87c7b180fa42f3be2356fca4e0761ea5)
++++ app/src/main/res/layout/activity_live_test_home.xml	(date 1607791663351)
+@@ -1,126 +1,45 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    android:orientation="vertical"
+-    tools:context=".LiveTestHomeActivity">
+-
+-    <LinearLayout
+-        android:layout_width="match_parent"
+-        android:layout_height="match_parent"
+-        android:orientation="vertical"
+-        android:weightSum="100">
+-        <ScrollView
+-            android:layout_width="match_parent"
+-            android:layout_height="0dp"
+-            android:layout_weight="100">
+-            <LinearLayout
+-                android:id="@+id/LiveTestList"
+-                android:layout_height="wrap_content"
+-                android:layout_width="match_parent"
+-                android:orientation="vertical"/>
+-        </ScrollView>
+-    </LinearLayout>
+-
+-    <include layout="@layout/include_progress_overlay"/>
+-</RelativeLayout>
+-
+-<!--
+-<?xml version="1.0" encoding="utf-8"?>
+-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:background="@drawable/bg_login"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+-    xmlns:tools="http://schemas.android.com/tools"
+-    android:layout_width="match_parent"
+-    android:layout_height="match_parent"
+     android:orientation="vertical"
+     tools:context=".LiveTestHomeActivity">
+ 
+     <LinearLayout
+         android:layout_width="match_parent"
+-        android:layout_height="match_parent"
+-        android:orientation="vertical"
+-        android:weightSum="110">
+-        <LinearLayout
+-            android:layout_width="match_parent"
+-            android:orientation="vertical"
+-            android:layout_weight="35"
+-            android:layout_height="0dp">
+-            <TextView
+-                android:id="@+id/LiveTestTitle"
+-                android:layout_width="match_parent"
+-                android:layout_height="wrap_content"
+-                android:text="Live Test Begins At:"
+-                android:paddingVertical="35dp"
+-                android:layout_gravity="center"
+-                android:gravity="center"
+-                android:textSize="25sp"/>
+-            <TextView
+-                android:id="@+id/countdown"
+-                android:layout_width="match_parent"
+-                android:layout_height="wrap_content"
+-                android:textSize="35sp"
+-                android:layout_gravity="center"
+-                android:gravity="center"
+-                android:text="00:00:00"/>
+-        </LinearLayout>
+-
+-        <Button
+-            android:id="@+id/startTestBtn"
+-            android:layout_width="wrap_content"
+-            android:layout_gravity="center"
+-            android:layout_height="0dp"
+-            android:layout_marginVertical="15dp"
+-            android:visibility="invisible"
+-            android:paddingHorizontal="65sp"
+-            android:textSize="25sp"
+-            android:layout_weight="10"
+-            android:text="Start Test" />
+-        <LinearLayout
+-            android:layout_width="match_parent"
+-            android:layout_height="0dp"
+-            android:layout_weight="10"
+-            android:weightSum="2"
+-            android:orientation="horizontal">
+-            <Button
+-                android:id="@+id/BtnPrevList"
+-                android:layout_width="0dp"
+-                android:gravity="center"
+-                android:layout_height="match_parent"
+-                android:layout_weight="1"
+-                android:text="Previous Tests"/>
+-            <Button
+-                android:id="@+id/BtnFutureList"
+-                android:layout_width="0dp"
+-                android:gravity="center"
+-                android:layout_height="match_parent"
+-                android:layout_weight="1"
+-                android:text="Upcoming Tests"/>
+-        </LinearLayout>
+-
+-        <RelativeLayout
++        android:layout_height="wrap_content"
++        android:layout_margin="10sp">
++        <TextView
++            android:id="@+id/ContinueBTNLBT"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:textColor="@color/black"
++            android:textStyle="bold"
++            android:textSize="15sp"
++            android:gravity="center"
++            android:background="@color/white"
++            android:padding="10sp"
++            android:text="@string/Live_Test"
++            app:drawableRightCompat="@drawable/cross"/>
++    </LinearLayout>
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:orientation="vertical">
++        <ScrollView
+             android:layout_width="match_parent"
+             android:layout_height="0dp"
+-            android:orientation="horizontal"
+-            android:layout_weight="55">
+-            <ListView
+-                android:id="@+id/lt_prev_list"
++            android:layout_weight="100">
++            <LinearLayout
++                android:id="@+id/LiveTestList"
++                android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+-                android:layout_height="match_parent"
+-                android:divider="@color/list_divider"
+-                android:visibility="invisible"
+-                android:dividerHeight="1dp"
+-                android:listSelector="@drawable/list_row_selector">
+-            </ListView>
+-            <ListView
+-                android:id="@+id/lt_future_list"
+-                android:layout_width="match_parent"
+-                android:layout_height="match_parent"
+-                android:divider="@color/list_divider"
+-                android:dividerHeight="1dp"
+-                android:listSelector="@drawable/list_row_selector">
+-            </ListView>
+-        </RelativeLayout>
++                android:orientation="vertical"/>
++        </ScrollView>
+     </LinearLayout>
++
+     <include layout="@layout/include_progress_overlay"/>
+-</RelativeLayout>-->
+\ No newline at end of file
++</LinearLayout>
+\ No newline at end of file
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources xmlns:tools=\"http://schemas.android.com/tools\">\r\n    <string name=\"app_name\">ITIFighter</string>\r\n    <string name=\"sign_in\">Sign In</string>\r\n    <string name=\"email\">Email</string>\r\n    <string name=\"login_to_continue_your_account\">Login to continue your account</string>\r\n    <string name=\"password\">Password</string>\r\n    <string name=\"login\">Login</string>\r\n    <string name=\"don_t_have_an_account\">Don\\'t have an account</string>\r\n    <string name=\"register\">Register</string>\r\n    <string name=\"already_have_an_account\">Already have an account</string>\r\n    <string name=\"name\">Name</string>\r\n    <string name=\"mobile\">Mobile</string>\r\n    <string name=\"state\">State</string>\r\n    <string name=\"trade\">Trade</string>\r\n    <string name=\"menu_home\">Home</string>\r\n    <string name=\"menu_Profile\">My Profile</string>\r\n    <string name=\"menu_chat\">Discussion</string>\r\n    <string name=\"share\">Share</string>\r\n    <string name=\"rating\">Rating</string>\r\n    <string name=\"change\">Change Password</string>\r\n    <string name=\"logout\">Logout</string>\r\n    <string name=\"username\">ITIFighter</string>\r\n    <string name=\"menu_groups\">Groups</string>\r\n    <!-- TODO: Remove or change this placeholder text -->\r\n    <string name=\"hello_blank_fragment\">Hello blank fragment</string>\r\n    <string name=\"todo\">TODO</string>\r\n    <string name=\"user_email\">Wiliam@gmail.com</string>\r\n    <string name=\"stateX\">Uttar Pradesh</string>\r\n    <string name=\"TradeX\">Fitter</string>\r\n    <string name=\"designed_by_n_sharmask_amp_aj\"><![CDATA[Designed & Devloped by \\n Sharmask & AJ]]></string>\r\n    <string name=\"phone\">phone</string>\r\n    <string name=\"rate_our_app\">Rate our app</string>\r\n    <string name=\"rate_our_previous_paper\">Rate our previous Paper</string>\r\n    <string name=\"rate_our_mock_test\">Rate our mock test</string>\r\n    <string name=\"rate_our_test_series\">Rate our Tets series</string>\r\n    <string name=\"rate_our_daily_live_test\">Rate our daily live test</string>\r\n    <string name=\"submit\">submit</string>\r\n    <string name=\"oldpassword\">Old Password</string>\r\n    <string name=\"newpassword\">New Password</string>\r\n    <string name=\"confirmpassword\">Confirm Password</string>\r\n    <!-- TODO: Remove or change this placeholder text -->\r\n\r\n    <string name=\"joey_tribbiani\">Joey Tribbiani</string>\r\n    <string name=\"new_york_usa\">new york, usa</string>\r\n    <string name=\"_453k\">453K</string>\r\n    <string name=\"_873\">873</string>\r\n    <string name=\"_1_202_555_0157\" tools:ignore=\"TypographyDashes\">+1–202–555-0157</string>\r\n    <string name=\"MyScore\">My Score</string>\r\n    <string name=\"MyRank\">My Rank</string>\r\n    <string name=\"discription\">Discription</string>\r\n    <string name=\"title\">title</string>\r\n    <string name=\"new_message\">new message…</string>\r\n\r\n    <string name=\"placeholder_message\">Placeholder message</string>\r\n    <string name=\"rose\">Rose</string>\r\n    <string name=\"how_are_you_doing_this_is_a_long_message_that_should_probably_wrap\">How are you doing? This is a long message that should probably wrap.</string>\r\n\r\n    <!-- Strings related to login -->\r\n\r\n    <!-- Firestore Strings -->\r\n    <string name=\"collection_chatrooms\">Chatrooms</string>\r\n    <string name=\"collection_chat_messages\">Chat Messages</string>\r\n    <string name=\"collection_chatroom_user_list\">User List</string>\r\n\r\n    <!-- Intent extras -->\r\n\r\n    <!-- Fragments Names -->\r\n\r\n    <!-- Other Strings -->\r\n    <string name=\"payment_gateway\">Payment Gateway</string>\r\n    <string name=\"www_google_com\">www.noobworm.xyz</string>\r\n    <string name=\"paytm_integrations\">Payment integration</string>\r\n    <string name=\"order_id\">order id</string>\r\n    <string name=\"customer_id\">customer_id</string>\r\n    <string name=\"price\">price</string>\r\n    <string name=\"start_payment\">start payment</string>\r\n    <string name=\"choose_subscription_plan\">Choose Subscription</string>\r\n    <string name=\"start\">Start</string>\r\n    <string name=\"result\">Result</string>\r\n    <string name=\"title_here\">TITLE HERE</string>\r\n    <string name=\"submit_feedback\">Submit Feedback</string>\r\n    <string name=\"cancel\">Cancel</string>\r\n    <string name=\"_1\">+1</string>\r\n    <string name=\"dummy_question\">dummy_question</string>\r\n    <string name=\"something_wrong_with_this_question\">Something wrong with this question?</string>\r\n    <string name=\"give_feedback\">Give feedback!</string>\r\n    <string name=\"skip\">Skip</string>\r\n    <string name=\"next\">Next</string>\r\n    <string name=\"live\">LIVE</string>\r\n    <string name=\"ques_num\">Ques Num</string>\r\n    <string name=\"time_left\">Time left</string>\r\n    <string name=\"total_pending_quetion\">total pending quetion:</string>\r\n    <string name=\"total_skipped_quetion\">total skipped quetion:</string>\r\n    <string name=\"total_attempted_quetion\">total attempted quetion:</string>\r\n    <string name=\"total_available_quetion\">total available quetion:</string>\r\n    <string name=\"_10\">10</string>\r\n    <string name=\"score\">Score</string>\r\n    <string name=\"title_activity_view_solution_xyz\">ViewSolutionXyz</string>\r\n    <!-- Strings used for fragments for navigation -->\r\n    <string name=\"first_fragment_label\">First Fragment</string>\r\n    <string name=\"second_fragment_label\">Second Fragment</string>\r\n    <string name=\"previous\">Previous</string>\r\n\r\n    <string name=\"hello_first_fragment\">Hello first fragment</string>\r\n    <string name=\"hello_second_fragment\">Hello second fragment. Arg: %1$s</string>\r\n    <string name=\"prev\">PREV</string>\r\n    <string name=\"leaderboard\">LEADERBOARD</string>\r\n    <string name=\"student_name\">Student Name</string>\r\n    <string name=\"rank\">Rank</string>\r\n    <string name=\"percentage\">Percentage</string>\r\n    <string name=\"points\">Points</string>\r\n    <string name=\"resultX\">RESULT</string>\r\n    <string name=\"analysis\">Analysis</string>\r\n    <string name=\"percent\">Percent</string>\r\n    <string name=\"second\">Second</string>\r\n    <string name=\"accuracy\">Accuracy</string>\r\n    <string name=\"time_quetion\">Time / Quetion</string>\r\n    <string name=\"view_solution\">View Solution</string>\r\n    <string name=\"view_leader_board\">View Leader Board</string>\r\n    <string name=\"re_take_exam\">Re-Take Exam</string>\r\n    <string name=\"close\">CLOSE</string>\r\n    <string name=\"solution\">SOLUTION</string>\r\n    <string name=\"a\">A</string>\r\n    <string name=\"b\">B</string>\r\n    <string name=\"c\">C</string>\r\n    <string name=\"d\">D</string>\r\n    <string name=\"_100_u20b9\"><strike>100 ₹</strike></string>\r\n    <string name=\"back\">Back</string>\r\n    <string name=\"i_have_read_all_instructions\">I have read all instructions</string>\r\n    <string name=\"instruction\">INSTRUCTION</string>\r\n    <string name=\"minutes\">Minutes</string>\r\n    <string name=\"marks\">Marks</string>\r\n    <string name=\"quetions\">Quetions</string>\r\n\r\n\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(revision 1de29cbe87c7b180fa42f3be2356fca4e0761ea5)
++++ app/src/main/res/values/strings.xml	(date 1607791663344)
+@@ -131,6 +131,7 @@
+     <string name="minutes">Minutes</string>
+     <string name="marks">Marks</string>
+     <string name="quetions">Quetions</string>
++    <string name="Live_Test">Live Test</string>
+ 
+ 
+ </resources>
+\ No newline at end of file

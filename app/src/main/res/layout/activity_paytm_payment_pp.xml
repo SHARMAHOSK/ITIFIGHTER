@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:background="@drawable/bg_login"
+    tools:context="com.example.itifighter.PaytmPaymentpp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent">
+            <ImageView
+                android:id="@+id/testxy_image_viewx"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/pdficon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@drawable/pdficon" />
+
+            <TextView
+                android:id="@+id/pdfTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/title"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/testxy_image_viewx"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/pdfPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@+id/pdfTitle"
+                app:layout_constraintTop_toBottomOf="@+id/pdfTitle"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/sub_deatilsx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Bill Details"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/sub_itemx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Exam Price"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sub_deatilsx"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/sub_pdfPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\u20B9 500"
+                app:layout_constraintBottom_toBottomOf="@+id/sub_itemx"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/finalpricex"
+                app:layout_constraintTop_toTopOf="@+id/sub_itemx" />
+
+            <TextView
+                android:id="@+id/sub_taxx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Taxes &amp; Charges"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sub_itemx"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/sub_pdfTaxPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+ \u20B9 0.0"
+                android:textColor="@color/holo_red_dark"
+                app:layout_constraintBottom_toBottomOf="@+id/sub_taxx"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/finalpricex"
+                app:layout_constraintTop_toTopOf="@+id/sub_taxx" />
+
+            <TextView
+                android:id="@+id/sub_discountx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Total Discount"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sub_taxx"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/sub_pdfDiscountPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/green1"
+                android:text="- \u20B9 250"
+                app:layout_constraintBottom_toBottomOf="@+id/sub_discountx"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/finalpricex"
+                app:layout_constraintTop_toTopOf="@+id/sub_discountx"
+                tools:ignore="UnknownIdInLayout" />
+
+            <TextView
+                android:id="@+id/sub_finalx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black"
+                android:text="You have to pay only "
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sub_discountx"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/finalpdfPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\u20B9 250"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sub_finalx" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+
+            <Button
+                android:id="@+id/cancelx"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/startblue"
+                android:textColor="#ffffff"
+                android:text="Cancel"
+                android:layout_weight="1"
+                tools:ignore="ButtonStyle,HardcodedText" />
+
+            <Button
+                android:id="@+id/payButtonpp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/startblue"
+                android:layout_marginStart="8dp"
+                android:textColor="#ffffff"
+                android:text="Pay"
+                android:layout_weight="1"
+                tools:ignore="ButtonStyle,HardcodedText" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
