@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".ResultUploader"></activity>
+        <activity android:name=".ResultUploader" />
         <activity android:name=".MockChapterXyz" />
         <activity android:name=".LiveTestXyz" />
         <activity android:name=".InstructionXyz" />
@@ -99,6 +99,9 @@
             android:name=".PaytmPayment"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".PaytmPaymentpp"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".RegisterActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -114,7 +117,8 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"
+        tools:ignore="ManifestOrder" />
     <uses-permission
         android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />

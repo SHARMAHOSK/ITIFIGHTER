@@ -20,7 +20,6 @@ android:baselineAligned="false">
                 android:layout_height="70dp"
                 android:background="@drawable/rounded_text"
                 android:layout_margin="5dp"
-                android:src="@drawable/user"
                 android:contentDescription="@string/todo" />
         </LinearLayout>
         <LinearLayout
@@ -40,8 +39,7 @@ android:baselineAligned="false">
                     android:layout_weight="1"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:layout_marginStart="@dimen/dimen_20dp"
-                    android:text="New Test Model"/>
+                    android:layout_marginStart="@dimen/dimen_20dp"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,8 +52,7 @@ android:baselineAligned="false">
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textSize="12sp"
-                    android:layout_marginStart="@dimen/dimen_20dp"
-                    android:text="40 Qs  |  70 Mins  |  100 Marks"/>
+                    android:layout_marginStart="@dimen/dimen_20dp"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,7 +75,6 @@ android:baselineAligned="false">
                     android:textColor="@color/black_overlay"
                     android:layout_marginStart="10sp"
                     android:textSize="12sp"
-                    android:text="FREE"
                     />
                 <LinearLayout
                     android:layout_width="0dp"

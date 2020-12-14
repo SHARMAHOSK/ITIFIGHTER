@@ -12,12 +12,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -31,7 +37,8 @@ public class PreviousPaper extends Fragment {
 
 
     private int currentLayer = 0;
-    private int currentSubjectPos = 0, currentExamPos = 0;  //records which item was clicked in previous list
+    private String currentPdf = "";
+    //private int currentSubjectPos = 0, currentExamPos = 0;  //records which item was clicked in previous list
     private ArrayList<CustomListItem> Subjects, Exams;
     private ListView listView;
     private ArrayList<String> PdfS, pdfFile, SubjectIds, ExamIds;
@@ -41,6 +48,7 @@ public class PreviousPaper extends Fragment {
     private Context mContext;
     private ImageButton back;
     private ArrayAdapter adapter;
+    private String status="",curruntSubjectPdf="",currentChapterPdf="",curruntSubject="",curruntChapter="";
 
     public PreviousPaper() {}
 
@@ -109,7 +117,7 @@ public class PreviousPaper extends Fragment {
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {@Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            currentSubjectPos = position;
+                            curruntSubject = SubjectIds.get(position);
                             LoadExams();
                         }
                     });
@@ -124,18 +132,16 @@ public class PreviousPaper extends Fragment {
     void LoadExams(){
         dialog.show();
         currentLayer = 1;
-        db.collection("section").document("pp").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("pp").collection("branch").document(curruntSubject).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    /*examList = new ArrayList<>();*/
                     Exams = new ArrayList<>();
                     ExamIds = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        /*examList.add(document.getString("Name"));*/
                         ExamIds.add(document.getId());
-                                            Exams.add(new CustomListItem(document.getString("name"),
-                                        document.getString("desc"), "pp/chapter"));
+                        Exams.add(new CustomListItem(document.getString("name"),
+                                document.getString("desc"), "pp/chapter"));
                     }
                     //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);
@@ -146,7 +152,7 @@ public class PreviousPaper extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            currentExamPos = position;
+                            curruntChapter = ExamIds.get(position);
                             LoadPdfS();
                         }
                     });
@@ -161,7 +167,7 @@ public class PreviousPaper extends Fragment {
     void LoadPdfS(){
         dialog.show();
         currentLayer = 2;
-        db.collection("section").document("pp").collection("branch/"+SubjectIds.get(currentSubjectPos)+"/exam").document(/*"00"+(currentExamPos+1)*/ExamIds.get(currentExamPos)).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("pp").collection("branch/"+curruntSubject+"/exam").document(curruntChapter).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -175,17 +181,40 @@ public class PreviousPaper extends Fragment {
                         pdfFile.add(""+document.getString("Name"));
                     }
                     adapter = new CustomListViewArrayAdapter(mContext, 0, PdfS_CL);
-                    /*adapter = new ArrayAdapter<>(mContext,
-                            R.layout.activity__branch_list_view, PdfS);*/
                     listView.setAdapter(adapter);
                     dialog.dismiss();
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            Intent intent = new Intent(mContext, LoadPdf.class);
-                            intent.putExtra("pdf", pdfFile.get(position));
-                            startActivity(intent);
+                            String price = String.valueOf(PdfS_CL.get(position).getPrice());
+                            String discount = String.valueOf(PdfS_CL.get(position).getDiscount());
+                            String finalPrice = getFinalPrice(price,discount);
+                            currentPdf = PdfS.get(position);
+                            setPaymentNotRequiredDetails();
+                            if(paymentNotRequired(finalPrice)){
+                                OpenPdf(position);
+                            }
+                            else{
+                                Intent intent = new Intent(getContext(), PaytmPaymentpp.class);
+                                intent.putExtra("price",price);
+                                intent.putExtra("discount",discount);
+                                intent.putExtra("titleName",pdfFile.get(position));
+                                intent.putExtra("curruntPdf",currentPdf);
+                                intent.putExtra("currentSubject",curruntSubject);
+                                intent.putExtra("currentChapter",curruntChapter);
+                                startActivity(intent);
+                            }
+                        }
+
+                        private boolean paymentNotRequired(String finalPrice) {
+                            if(Double.parseDouble(finalPrice)<1) return true;
+                            else return (status.equals("1") && currentChapterPdf.equals(curruntChapter) && curruntSubjectPdf.equals(curruntSubject));
+                        }
+
+                        private String getFinalPrice(String price, String discount) {
+                            double price1 = Double.parseDouble(price),discount1 = Double.parseDouble(discount);
+                            return  String.valueOf((price1)-((price1*discount1)/100));
                         }
 
                     });
@@ -197,8 +226,50 @@ public class PreviousPaper extends Fragment {
         });
     }
 
+    private void setPaymentNotRequiredDetails() {
+        String Uid = FirebaseAuth.getInstance().getUid();
+        assert Uid != null;
+        try{
+            FirebaseFirestore.getInstance().collection("users").document(Uid).collection("Products")
+                        .document("pp").collection("ProductId").document(currentPdf)
+                        .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if(documentSnapshot!=null && documentSnapshot.exists()){
+                        status = documentSnapshot.getString("status");
+                        curruntSubjectPdf = documentSnapshot.getString("currentSubject");
+                        currentChapterPdf = documentSnapshot.getString("currentChapter");
+                    }
+                }
+            }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    Toast.makeText(getContext(),"completed",Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getContext(),"failed",Toast.LENGTH_SHORT).show();
+                }
+            }).addOnCanceledListener(new OnCanceledListener() {
+                @Override
+                public void onCanceled() {
+                    Toast.makeText(getContext(),"Canciled",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+    }
 
-   private void CustomizeView() {
+    private void OpenPdf(int position) {
+        Intent intent = new Intent(mContext, LoadPdf.class);
+        intent.putExtra("pdf", pdfFile.get(position));
+        startActivity(intent);
+    }
+
+
+    private void CustomizeView() {
         LoadSubjects();
     }
 

@@ -219,7 +219,7 @@ public class TestSeries extends Fragment {
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 currentTest = TestId.get(i);
                                 currentTestPos = i;
-                                LoadExam();
+                                 LoadExam();
                         }
                     });
                     dialog.dismiss();

@@ -131,6 +131,7 @@
     <string name="minutes">Minutes</string>
     <string name="marks">Marks</string>
     <string name="quetions">Quetions</string>
+    <string name="Live_Test">Live Test</string>
 
 
 </resources>

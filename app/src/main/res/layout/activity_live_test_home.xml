@@ -1,16 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_login"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".LiveTestHomeActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp">
+        <TextView
+            android:id="@+id/ContinueBTNLBT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:background="@color/white"
+            android:padding="10sp"
+            android:text="@string/Live_Test"
+            app:drawableRightCompat="@drawable/cross"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="100">
+        android:orientation="vertical">
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -24,103 +42,4 @@
     </LinearLayout>
 
     <include layout="@layout/include_progress_overlay"/>
-</RelativeLayout>
-
-<!--
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".LiveTestHomeActivity">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="110">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="35"
-            android:layout_height="0dp">
-            <TextView
-                android:id="@+id/LiveTestTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Live Test Begins At:"
-                android:paddingVertical="35dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textSize="25sp"/>
-            <TextView
-                android:id="@+id/countdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="35sp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="00:00:00"/>
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/startTestBtn"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_height="0dp"
-            android:layout_marginVertical="15dp"
-            android:visibility="invisible"
-            android:paddingHorizontal="65sp"
-            android:textSize="25sp"
-            android:layout_weight="10"
-            android:text="Start Test" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:weightSum="2"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/BtnPrevList"
-                android:layout_width="0dp"
-                android:gravity="center"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Previous Tests"/>
-            <Button
-                android:id="@+id/BtnFutureList"
-                android:layout_width="0dp"
-                android:gravity="center"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Upcoming Tests"/>
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="55">
-            <ListView
-                android:id="@+id/lt_prev_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@color/list_divider"
-                android:visibility="invisible"
-                android:dividerHeight="1dp"
-                android:listSelector="@drawable/list_row_selector">
-            </ListView>
-            <ListView
-                android:id="@+id/lt_future_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@color/list_divider"
-                android:dividerHeight="1dp"
-                android:listSelector="@drawable/list_row_selector">
-            </ListView>
-        </RelativeLayout>
-    </LinearLayout>
-    <include layout="@layout/include_progress_overlay"/>
-</RelativeLayout>-->
+</LinearLayout>
