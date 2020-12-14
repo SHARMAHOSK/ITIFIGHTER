@@ -121,11 +121,15 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
         TextView originalPrice = (TextView)view.findViewById(R.id.MockChap_Price);
         originalPrice.setText(""+property.getPrice()+" \u20b9");
         originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        double discounted = (property.getPrice() - property.getDiscount());
+        double discounted = (getFinalPrice(property.getPrice(), property.getDiscount()));
         TextView _discountedTV = (TextView)view.findViewById(R.id.MockChap_FPrice);
         _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
         _discountedTV.setTextColor(Color.parseColor("#000099"));
         return view;
+    }
+
+    private double getFinalPrice(double price, double discount) {
+        return  (price)-((price*discount)/100);
     }
 
     private View getType2(CustomListItem property) {
@@ -141,7 +145,7 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
         TextView originalPrice = (TextView)view.findViewById(R.id.originalPrice);
         originalPrice.setText(""+property.getPrice()+" \u20b9");
         originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        double discounted = (property.getPrice() - property.getDiscount());
+        double discounted = (getFinalPrice(property.getPrice(), property.getDiscount()));
         TextView _discountedTV = (TextView)view.findViewById(R.id.discountedPrice);
         _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
         _discountedTV.setTextColor(Color.parseColor("#000099"));
@@ -170,7 +174,7 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
         TextView originalPrice = (TextView)view.findViewById(R.id.MockChap_Price);
         originalPrice.setText(""+property.getPrice()+" \u20b9");
         originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        double discounted = (property.getPrice() - property.getDiscount());
+        double discounted = (getFinalPrice(property.getPrice(), property.getDiscount()));
         TextView _discountedTV = (TextView)view.findViewById(R.id.MockChap_FPrice);
         _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
         _discountedTV.setTextColor(Color.parseColor("#000099"));
