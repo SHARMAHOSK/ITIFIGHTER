@@ -1,5 +1,6 @@
 package com.example.itifighter;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +35,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
@@ -51,8 +55,8 @@ public class TestSeries extends Fragment {
     private ArrayList<String> SubjectId,ChapterId,TestId,MPQ,Timmr,Tittl;
     private ImageButton back;
     private ProgressDialog dialog;
-
     private int currentLayer = 0,currentTestPos=0,currentSubjectPos=0,currentChapterPos=0;   //0=subjects, 1=chapters
+
     public TestSeries() { }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,8 +65,7 @@ public class TestSeries extends Fragment {
         mContext = getContext();
     }
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View mtView = inflater.inflate(R.layout.fragment_test_series, container, false);
         listView = mtView.findViewById(R.id.testxtRecycle);
         back = mtView.findViewById(R.id.CustomBackButtonTS);
@@ -129,7 +132,7 @@ public class TestSeries extends Fragment {
         db.collection("section").document("ts")
                 .collection("branch").document(currentSubject)
                 .collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
+                    @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -148,45 +151,73 @@ public class TestSeries extends Fragment {
                         public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
                             String Uid = FirebaseAuth.getInstance().getUid();
                             assert Uid != null;
-                            FirebaseFirestore.getInstance().collection("users").document(Uid).collection("Products")
-                                    .document("ts").collection("ProductId").document(ChapterId.get(i))
-                                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if(task.isSuccessful()){
-                                                DocumentSnapshot documentSnapshot = task.getResult();
-                                                if(documentSnapshot!=null && documentSnapshot.exists()){
-                                                    currentChapter = ChapterId.get(i);
-                                                    currentChapterPos = i;
-                                                    LoadTest();
-                                                }
-                                                else{
-                                                    Intent intent = new Intent(getContext(), PaytmPayment.class);
-                                                    intent.putExtra("ProductId",Chapters.get(i).getId());
-                                                    intent.putExtra("month1",Chapters.get(i).getMonth1());
-                                                    intent.putExtra("month2",Chapters.get(i).getMonth2());
-                                                    intent.putExtra("month3",Chapters.get(i).getMonth3());
-                                                    intent.putExtra("price1",Chapters.get(i).getPrice1());
-                                                    intent.putExtra("price2",Chapters.get(i).getPrice2());
-                                                    intent.putExtra("price3",Chapters.get(i).getPrice3());
-                                                    intent.putExtra("discount1",Chapters.get(i).getDiscount1());
-                                                    intent.putExtra("discount2",Chapters.get(i).getDiscount2());
-                                                    intent.putExtra("discount3",Chapters.get(i).getDiscount3());
-                                                    intent.putExtra("currentSection",Chapters.get(i).getImagex());
-                                                    intent.putExtra("titleName",Chapters.get(i).getTopicHeader());
-                                                    intent.putExtra("countTest",Chapters.get(i).getTest());
-                                                    intent.putExtra("currentSubject",currentSubject);
-                                                    intent.putExtra("currentChapter",ChapterId.get(i));
-                                                    mContext.startActivity(intent);
-                                                }
-                                            }
+                            currentChapter = ChapterId.get(i);
+                            currentChapterPos = i;
+                            final String price = String.valueOf(Chapters.get(i).getPrice1()),
+                                    discount = String.valueOf(Chapters.get(i).getDiscount1()),
+                                    finalPrice = getFinalPrice(price,discount);
+                            if(Double.parseDouble(finalPrice)<1){ LoadTest(); }
+                            else{
+                                FirebaseFirestore.getInstance().collection("users").document(Uid).collection("Products")
+                                        .document("ts").collection("ProductId").document(currentChapter)
+                                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            DocumentSnapshot documentSnapshot = task.getResult();
+                                            if(documentSnapshot!=null && documentSnapshot.exists()){
+                                                String status = documentSnapshot.getString("status");
+                                                String curruntSubjectTest = documentSnapshot.getString("currentSubject");
+                                                String currentChapterTest = documentSnapshot.getString("currentChapter");
+                                                String expiryDate = documentSnapshot.getString("ExpiryDate");
+                                                if(status.equals("1") && currentChapterTest.equals(currentChapter) &&
+                                                        curruntSubjectTest.equals(currentSubject) && isNotExpired(expiryDate))  LoadTest();
+                                                else paytmPaymentGateway(i);
+                                            }else paytmPaymentGateway(i);
                                         }
-                                    });
+                                    }
+                                });
+                            }
                         }
                     });
                 }
             }
         });
+    }
+
+    private boolean isNotExpired(String expiryDate) {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.0");
+        try {
+            Date d = sdf.parse(expiryDate);
+            return d.after(new Date());
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    private void paytmPaymentGateway(int i) {
+        Intent intent = new Intent(getContext(), PaytmPayment.class);
+        intent.putExtra("ProductId",Chapters.get(i).getId());
+        intent.putExtra("month1",Chapters.get(i).getMonth1());
+        intent.putExtra("month2",Chapters.get(i).getMonth2());
+        intent.putExtra("month3",Chapters.get(i).getMonth3());
+        intent.putExtra("price1",Chapters.get(i).getPrice1());
+        intent.putExtra("price2",Chapters.get(i).getPrice2());
+        intent.putExtra("price3",Chapters.get(i).getPrice3());
+        intent.putExtra("discount1",Chapters.get(i).getDiscount1());
+        intent.putExtra("discount2",Chapters.get(i).getDiscount2());
+        intent.putExtra("discount3",Chapters.get(i).getDiscount3());
+        intent.putExtra("currentSection",Chapters.get(i).getImagex());
+        intent.putExtra("titleName",Chapters.get(i).getTopicHeader());
+        intent.putExtra("countTest",Chapters.get(i).getTest());
+        intent.putExtra("currentSubject",currentSubject);
+        intent.putExtra("currentChapter",currentChapter);
+        mContext.startActivity(intent);
+    }
+
+    private String getFinalPrice(String price, String discount) {
+        double price1 = Double.parseDouble(price),discount1 = Double.parseDouble(discount);
+        return  String.valueOf((price1)-((price1*discount1)/100));
     }
 
     private void LoadTest(){
@@ -301,18 +332,7 @@ public class TestSeries extends Fragment {
                                                         dialog.dismiss();
                                                         startActivity(myIntent);
                                                         }
-                                                }else {
-                                                  /*  Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
-                                                    myIntent.putExtra("section", "ts");
-                                                    myIntent.putExtra("subject", SubjectId.get(currentSubjectPos));
-                                                    myIntent.putExtra("chapter", ChapterId.get(currentChapterPos));
-                                                    myIntent.putExtra("questions", questions);
-                                                    myIntent.putExtra("_mpq", Integer.parseInt(MPQ.get(currentChapterPos)));
-                                                    myIntent.putExtra("timer", Integer.parseInt(Timmr.get(currentChapterPos)));
-                                                    myIntent.putExtra("title", Tittl.get(currentChapterPos));
-                                                    dialog.dismiss();
-                                                    startActivity(myIntent);*/
-                                                }
+                                                }else { }
                                         }
                             });
 

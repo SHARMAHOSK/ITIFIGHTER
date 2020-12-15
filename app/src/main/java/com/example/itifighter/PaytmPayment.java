@@ -111,16 +111,16 @@ public class PaytmPayment extends AppCompatActivity {
 		//set Discounted Final price in option
 		TextView priceX01 = findViewById(R.id.priceX01), priceX11 = findViewById(R.id.priceX11), priceX21 = findViewById(R.id.priceX21);
 		assert price1 != null && Disc01 != null;
-        final double  Discount1= (Integer.parseInt(price1) * Integer.parseInt(Disc01) * 0.01);
-		final String FinalPrice1 = String.valueOf(Integer.parseInt(price1) - Discount1);
+        final double  Discount1= (Double.parseDouble(price1) * Double.parseDouble(Disc01) * 0.01);
+		final String FinalPrice1 = String.valueOf(Double.parseDouble(price1) - Discount1);
 		priceX01.setText("\u20B9 " + FinalPrice1);
 		assert price2 != null && Disc02 != null;
-		final double  Discount2= (Integer.parseInt(price2) * Integer.parseInt(Disc02) * 0.01);
-		final String FinalPrice2 = String.valueOf(Integer.parseInt(price2) - Discount2);
+		final double  Discount2= (Double.parseDouble(price2) * Double.parseDouble(Disc02) * 0.01);
+		final String FinalPrice2 = String.valueOf(Double.parseDouble(price2) - Discount2);
 		priceX11.setText("\u20B9 " + FinalPrice2);
 		assert price3 != null && Disc03 != null;
-		final double  Discount3= (Integer.parseInt(price3) * Integer.parseInt(Disc03) * 0.01);
-		final String FinalPrice3 = String.valueOf(Integer.parseInt(price3) - Discount3);
+		final double  Discount3= (Double.parseDouble(price3) * Double.parseDouble(Disc03) * 0.01);
+		final String FinalPrice3 = String.valueOf(Double.parseDouble(price3) - Discount3);
 		priceX21.setText("\u20B9 " + FinalPrice3);
 
 		final TextView sub_itempricex = findViewById(R.id.sub_itempricex), sub_taxpricex = findViewById(R.id.sub_taxpricex),                                    sub_discountpricex = findViewById(R.id.sub_discountpricex), finalpricex = findViewById(R.id.finalpricex);
@@ -230,6 +230,7 @@ public class PaytmPayment extends AppCompatActivity {
                 });
 
         // Set Image in main view
+        try{
 		StorageReference mmFirebaseStorageRef = FirebaseStorage.getInstance().getReference()
                 .child("menu/section/"+currentSection + "/chapter/");
 		                        if (title0 != null) {
@@ -239,6 +240,9 @@ public class PaytmPayment extends AppCompatActivity {
                                                 .into((ImageView) findViewById(R.id.testxy_image_viewx));
 		                            }
 		                        }
+        }catch (Exception e){
+            Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
 	}
 
     private void getToken() {
@@ -395,6 +399,8 @@ public class PaytmPayment extends AppCompatActivity {
                     if(oldDate!=null && getDateAfter(oldDate,TXNDATE)) map.put("ExpiryDate",getExpiryDate(oldDate));
                     else { map.put("ExpiryDate",getExpiryDate(TXNDATE)); }
                     map.put("currentSubject",currentSubject);
+                    map.put("currentChapter",currentChapter);
+                    map.put("status","1");
                     reference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -437,6 +443,7 @@ public class PaytmPayment extends AppCompatActivity {
 	private String getExpiryDate(String txndate) {
 		try {
 			Calendar c = Calendar.getInstance();
+			//yyyy-MM-dd hh:mm:ss.0
 			@SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.0");
 			c.setTime(Objects.requireNonNull(sdf.parse(txndate)));
 			c.add(Calendar.DAY_OF_MONTH, Integer.parseInt(FinalMonth) * 30);
