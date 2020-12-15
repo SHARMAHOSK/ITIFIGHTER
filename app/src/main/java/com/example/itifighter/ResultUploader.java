@@ -139,6 +139,7 @@ public class ResultUploader extends AppCompatActivity {
                 if (snapshot != null && snapshot.exists()) {
                     Toast.makeText(getApplicationContext(), "ru: 5", Toast.LENGTH_SHORT).show();
                     final String studentName = snapshot.getString("Name");
+                    final String smail = snapshot.getString("Email");
                     //Log.d(TAG, "Current data: " + snapshot.getData());
                     Map<String, String> scoreboard = new HashMap<>();
                     scoreboard.put("Score", "" + (tca * _mpq));
@@ -169,6 +170,7 @@ public class ResultUploader extends AppCompatActivity {
                                                 _fb.put("subject", targetSubject);
                                                 _fb.put("chapter", targetChapter);
                                                 _fb.put("student", studentName);
+                                                _fb.put("smail", smail);
                                                 _fb.put("date", ""+Calendar.getInstance().getTimeInMillis());
                                                 if (targetSection.equals("lt")) {
                                                     _fb.put("testID", getIntent().getStringExtra("tid"));
