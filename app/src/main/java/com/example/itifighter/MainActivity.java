@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
     Animation header, icon, footer, devs;
     ImageView headerHook, footerHook, croppedHook;
-    TextView developers;
+    TextView developers, director;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
         footerHook = findViewById(R.id.footerTEXT);
         croppedHook = findViewById(R.id.croppedICON);
         developers = findViewById(R.id.developers);
+        director = findViewById(R.id.director);
 
         croppedHook.setPivotX(croppedHook.getWidth()/2.0f);
         croppedHook.setPivotY(croppedHook.getHeight()/2.0f);
@@ -210,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         developers.setAnimation(devs);
+        director.setAnimation(devs);
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override

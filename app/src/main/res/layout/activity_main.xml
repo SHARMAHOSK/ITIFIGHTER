@@ -62,6 +62,19 @@
             android:layout_marginTop="75dp"
             android:max="100" />
         <TextView
+            android:id="@+id/director"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="70dp"
+            android:fontFamily="cursive"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="Directed by: Mr. Abhishek Singh"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+        <TextView
             android:id="@+id/developers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
