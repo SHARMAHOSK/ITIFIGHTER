@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,7 @@ public class PreviousPaper extends Fragment {
     private ImageButton back;
     private ArrayAdapter adapter;
     private String curruntSubject="",curruntChapter="";
+    TextView emptyListMessage;
 
     public PreviousPaper() {}
 
@@ -79,6 +81,7 @@ public class PreviousPaper extends Fragment {
         dialog.setMessage("Loading...");
         dialog.setCancelable(false);
         listView = ppView.findViewById(R.id.branch_list);
+        emptyListMessage = ppView.findViewById(R.id.emptyListMessage);
         back = ppView.findViewById(R.id.CustomBackButtonPP);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +109,7 @@ public class PreviousPaper extends Fragment {
                         Subjects.add(new CustomListItem(document.getString(/*"Name"*/"name"),
                                         document.getString(/*"description"*/"desc"), "pp"));
                     }
-
+                    emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);
                     //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
                     /*listView = (ListView) _ppView.findViewById(R.id.branch_list);*/

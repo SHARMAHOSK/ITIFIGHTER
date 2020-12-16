@@ -17,13 +17,28 @@
             android:layout_gravity="end"
             android:contentDescription="@string/todo" />
 
-        <ListView
-            android:id="@+id/branch_list"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@color/list_divider"
-            android:dividerHeight="1dp"
-            android:listSelector="@drawable/list_row_selector">
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/emptyListMessage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:visibility="invisible"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textSize="25dp"
+                android:text="Oops, no data available!"/>
 
-        </ListView>
+            <ListView
+                android:id="@+id/branch_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@color/list_divider"
+                android:dividerHeight="1dp"
+                android:listSelector="@drawable/list_row_selector">
+
+            </ListView>
+        </RelativeLayout>
     </LinearLayout>
