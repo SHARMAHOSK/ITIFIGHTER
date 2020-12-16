@@ -134,17 +134,21 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                 });
             } else {
                 ((TextView) ltRow.findViewById(R.id.upcomingCountDown)).setText("attempted...");
+                ltRow.findViewById(R.id.upcomingCountDown).setBackgroundResource(R.color.green);
             }
             ltList.addView(ltRow, 0);
         } else if (phase == 1) {
             //future test
             ((TextView) ltRow.findViewById(R.id.upcomingCountDown)).setText("coming soon...");
+            ltRow.findViewById(R.id.upcomingCountDown).setBackgroundResource(R.color.yellow);
+            ((TextView) ltRow.findViewById(R.id.upcomingCountDown)).setTextColor(getResources().getColor(R.color.black));
             ltList.addView(ltRow, ftCount + 1);
             ftCount++;
         } else {
             //past test
             if (result <= Calendar.getInstance().getTimeInMillis()) {
                 ((TextView) ltRow.findViewById(R.id.upcomingCountDown)).setText("expired...");
+                ltRow.findViewById(R.id.upcomingCountDown).setBackgroundResource(R.color.red);
                 ltRow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -154,6 +158,8 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                 });
             } else {
                 ((TextView) ltRow.findViewById(R.id.upcomingCountDown)).setText("pending result...");
+                ltRow.findViewById(R.id.upcomingCountDown).setBackgroundResource(R.color.yellow);
+                ((TextView) ltRow.findViewById(R.id.upcomingCountDown)).setTextColor(getResources().getColor(R.color.black));
             }
             ltList.addView(ltRow);
         }
@@ -352,6 +358,8 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                                         long min = secs / 60;
                                         secs %= 60;
                                         countdown.setText("Test ends in " + (min > 9 ? min : "0" + min) + ":" + (secs > 9 ? secs : "0" + secs));
+                                        countdown.setBackgroundResource(R.color.green);
+                                        countdown.setTextColor(getResources().getColor(R.color.white));
                                     }
 
                                     public void onFinish() {

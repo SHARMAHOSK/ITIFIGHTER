@@ -21,6 +21,9 @@
     <color name="holo_red_dark">#ffcc0000</color>
     <!-- A Holo shade of purple. Equivalent to #ffaa66cc -->
     <color name="holo_purple">#ffaa66cc</color>
+    <color name="red">#ff0000</color>
+    <color name="yellow">#ffff00</color>
+    <color name="green">#008000</color>
 
 
     <color name="circleBorder">#50FFFFFF</color>
