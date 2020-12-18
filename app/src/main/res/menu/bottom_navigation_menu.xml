@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/page_pp"
+        android:enabled="true"
+        android:icon="@drawable/pp_icon"
+        android:title="Previous Paper"/>
+    <item
+        android:id="@+id/page_mt"
+        android:enabled="true"
+        android:icon="@drawable/pp_icon"
+
+        android:title="Mock Test"/>
+    <item
+        android:id="@+id/page_lt"
+        android:enabled="true"
+        android:icon="@drawable/lt_icon"
+        android:title="@string/Live_Test"/>
+    <item
+        android:id="@+id/page_ts"
+        android:enabled="true"
+        android:icon="@drawable/pp_icon"
+        android:title="Test Series"/>
+    <item
+        android:id="@+id/page_mts"
+        android:enabled="true"
+        android:icon="@drawable/pp_icon"
+        android:title="My Test Series"/>
+</menu>
