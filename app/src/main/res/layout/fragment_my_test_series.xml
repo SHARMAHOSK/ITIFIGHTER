@@ -19,10 +19,26 @@
             android:visibility="visible"
             android:layout_gravity="end"
             android:contentDescription="@string/todo" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/emptyListMessagemts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:text="@string/oops_no_data_available"/>
+
         <ListView
             android:id="@+id/testmtRecycle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
             tools:listitem="@layout/test_series_tests" />
+    </RelativeLayout>
     </LinearLayout>

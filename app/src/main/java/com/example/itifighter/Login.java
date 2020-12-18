@@ -18,23 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.itifighterAdmin.admin_section_list;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-
-import java.util.Objects;
 
 
 public class Login extends AppCompatActivity {
@@ -59,7 +52,7 @@ public class Login extends AppCompatActivity {
         showMessage = findViewById(R.id.ShowMessage);
         showMessage.setVisibility(View.INVISIBLE);
         progressBar.setProgressTintList(ColorStateList.valueOf(Color.BLUE));
-        final String Did = getDeviceId();
+        //final String Did = getDeviceId();
         if(getIntent()!=null && getIntent().getStringExtra("MsgRegVer")!=null){
             showMessage.setText(getIntent().getStringExtra("MsgRegVer"));
             showMessage.setVisibility(View.VISIBLE);
@@ -96,12 +89,13 @@ public class Login extends AppCompatActivity {
                                 setAct(true);
                             }
                             else{
-                                db.collection("users").document(Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                startActivity(new Intent(Login.this,MainDashboard.class));
+                               /* db.collection("users").document(Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                     @Override
                                     public void onEvent(@Nullable DocumentSnapshot snapshot,
                                                         @Nullable FirebaseFirestoreException e) {
                                         if(snapshot != null && snapshot.exists() && snapshot.getString("Did")!=null && Objects.equals(snapshot.getString("Did"), Did)){
-                                            startActivity(new Intent(Login.this, Objects.requireNonNull(snapshot.get("Role")).toString().contains("admin") ? admin_section_list.class : MainDashboard.class));
+                                            startActivity(new Intent(Login.this,MainDashboard.class));
                                         }
                                         else{
                                             FirebaseAuth.getInstance().signOut();
@@ -111,7 +105,7 @@ public class Login extends AppCompatActivity {
                                             setAct(true);
                                         }
                                     }
-                                }); //startActivity(new Intent(Login.this, MainDashboard.class));
+                                }); //startActivity(new Intent(Login.this, MainDashboard.class));*/
                             }
                         }
                     });

@@ -24,14 +24,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.itifighterAdmin.admin_section_list;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-
-import java.util.Objects;
 
 /*
 public class MainActivity extends AppCompatActivity {
@@ -163,10 +160,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar mProgressBar;
     private int progressStatus = 0;
-    private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private Intent intent;
     private boolean doubleBackToExitPressedOnce = false;
 
@@ -203,9 +200,12 @@ public class MainActivity extends AppCompatActivity {
 
         devs.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {GrantPermission();}
+            public void onAnimationStart(Animation animation) {/* GrantPermission(); */}
             @Override
-            public void onAnimationEnd(Animation animation){mProgressBar.setVisibility(View.VISIBLE); startloading();}
+            public void onAnimationEnd(Animation animation){
+                mProgressBar.setVisibility(View.VISIBLE);
+                startloading();
+            }
             @Override
             public void onAnimationRepeat(Animation animation){}
         });
@@ -216,11 +216,11 @@ public class MainActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if( mFirebaseAuth.getCurrentUser() != null ){
+                if(mFirebaseAuth.getCurrentUser() != null ){
                     db.collection("users").document(mFirebaseAuth.getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                         @Override
                         public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e){
-                            if (snapshot != null && snapshot.exists()) intent = new Intent(MainActivity.this, Objects.requireNonNull(snapshot.get("Role")).toString().contains("admin") ? admin_section_list.class : MainDashboard.class);
+                            if (snapshot != null && snapshot.exists()) intent = new Intent(MainActivity.this, MainDashboard.class);
                         }
                     });
                 }

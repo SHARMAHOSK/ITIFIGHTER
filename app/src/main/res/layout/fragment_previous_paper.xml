@@ -21,15 +21,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
-                android:id="@+id/emptyListMessage"
+                android:id="@+id/emptyListMessagepp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:visibility="invisible"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAlignment="center"
-                android:textSize="25dp"
-                android:text="Oops, no data available!"/>
+                android:textSize="20sp"
+                android:text="@string/oops_no_data_available"/>
 
             <ListView
                 android:id="@+id/branch_list"

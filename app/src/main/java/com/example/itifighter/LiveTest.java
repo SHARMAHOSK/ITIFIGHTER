@@ -1,6 +1,7 @@
 package com.example.itifighter;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +29,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +46,10 @@ public class LiveTest extends Fragment {
     private int currentLayer = 0;
     private int currentSubjectPos = 0, currentChapterPos = 0;
    // private View progressOverlay;
+    private ProgressDialog dialog;
+    private ImageButton back;
     private String currentSubject,currentChapter;
+    private TextView emptyListMessage;
 
     public LiveTest() { }
 
@@ -52,33 +57,34 @@ public class LiveTest extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
+        dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
         mContext = getContext();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         final View ltView = inflater.inflate(R.layout.fragment_live_test, container, false);
         listView = ltView.findViewById(R.id.lt_branch_list);
+        emptyListMessage = ltView.findViewById(R.id.emptyListMessagetslt);
+        back = ltView.findViewById(R.id.CustomBackButtonLT);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { if (currentLayer == 1) LoadSubjects(); }
+        });
+        back.setVisibility(View.INVISIBLE);
         CustomizeView();
         return ltView;
     }
 
-    public void CustomBackButton(){
-        if (currentLayer == 1) {
-            LoadSubjects();
-        }
-    }
-
     void LoadSubjects(){
+        dialog.show();
         currentLayer = 0;
-        //progressOverlay.setVisibility(View.VISIBLE);
         db.collection("section").document("lt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-
                 if (task.isSuccessful()) {
                     Subjects = new ArrayList<>();
                     SubjectIds = new ArrayList<>();
@@ -87,12 +93,12 @@ public class LiveTest extends Fragment {
                         Subjects.add(new CustomListItem(document.getString("name"),
                                 document.getString("desc"),"lt"));
                     }
-
                     //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
-
                     listView.setAdapter(adapter);
-                    //progressOverlay.setVisibility(View.GONE);
+                    dialog.dismiss();
+                    back.setVisibility(View.INVISIBLE);
+                    emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
@@ -112,6 +118,7 @@ public class LiveTest extends Fragment {
 
     void LoadChapters(){
         currentLayer = 1;
+        dialog.show();
         db.collection("section").document("lt").collection("branch").document(currentSubject).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -119,7 +126,6 @@ public class LiveTest extends Fragment {
                     Chapters = new ArrayList<>();
                     CHapterIds = new ArrayList<>();
                     Chapters2 = new ArrayList<>();
-
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         CHapterIds.add(document.getId());
                         Chapters.add(new CustomListItem(document.getString("name"),
@@ -134,22 +140,23 @@ public class LiveTest extends Fragment {
                                 document.getString("couponCODE"),document.getString("couponACTIVE"),document.getString("NOQ")
                         ));
                     }
-                    //create our new array adapter
+                    emptyListMessage.setVisibility(CHapterIds.size() <= 0 ? View.VISIBLE : View.GONE);
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Chapters);
-
                     listView.setAdapter(adapter);
+                    dialog.dismiss();
+                    back.setVisibility(View.VISIBLE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 final int position, long id) {
+                            dialog.show();
                             currentChapterPos = position;
                             currentChapter = CHapterIds.get(currentChapterPos);
                             final String price = String.valueOf(Chapters.get(position).getPrice()),
                                     discount = String.valueOf(Chapters.get(position).getDiscount()),
                                     finalPrice = getFinalPrice(price,discount);
-                            if(Double.parseDouble(finalPrice)<1){ openTestHomeActivity(); }
-                            else{
-                                String Uid = FirebaseAuth.getInstance().getUid();
+                            if(Double.parseDouble(finalPrice)<1) openTestHomeActivity();
+                            else{ String Uid = FirebaseAuth.getInstance().getUid();
                                 if(Uid!=null){ try{
                                     db.collection("users").document(Uid).collection("Products")
                                             .document("lt").collection("ProductId").document(currentChapter)
@@ -162,8 +169,8 @@ public class LiveTest extends Fragment {
                                                 String curruntSubjectTest = documentSnapshot.getString("currentSubject");
                                                 String currentChapterTest = documentSnapshot.getString("currentChapter");
                                                 String expiryDate = documentSnapshot.getString("ExpiryDate");
-                                                if(status.equals("1") && currentChapterTest.equals(currentChapter) &&
-                                                        curruntSubjectTest.equals(currentSubject) && isNotExpired(expiryDate))  openTestHomeActivity();
+                                                if(Objects.equals(status, "1") && Objects.equals(currentChapterTest, currentChapter) &&
+                                                        Objects.equals(curruntSubjectTest, currentSubject) && isNotExpired(expiryDate))  openTestHomeActivity();
                                                 else openPaytmPaymentGateway(position);
                                             }else openPaytmPaymentGateway(position);
                                         }
@@ -197,8 +204,8 @@ public class LiveTest extends Fragment {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.0");
         try {
             Date d = sdf.parse(expiryDate);
-            return d.after(new Date());
-        } catch (ParseException e) {
+            return Objects.requireNonNull(d).after(new Date());
+        } catch (Exception e) {
             return false;
         }
     }
@@ -224,12 +231,14 @@ public class LiveTest extends Fragment {
         intent.putExtra("currentChapter",currentChapter);
         intent.putExtra("currentSection","lt");
         intent.putExtra("countTest",Chapters2.get(position).getNOQ());
+        dialog.dismiss();
         startActivity(intent);
     }
     private void openTestHomeActivity() {
         Intent myIntent = new Intent(getContext(), LiveTestHomeActivity.class);
         myIntent.putExtra("subject", SubjectIds.get(currentSubjectPos));
         myIntent.putExtra("chapter", CHapterIds.get(currentChapterPos));
+        dialog.dismiss();
         startActivity(myIntent);
     }
 

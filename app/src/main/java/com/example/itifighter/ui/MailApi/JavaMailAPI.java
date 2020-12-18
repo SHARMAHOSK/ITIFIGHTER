@@ -18,9 +18,9 @@ public class JavaMailAPI extends AsyncTask<Void,Void,Void>  {
 
     //Need INTERNET permission
 
-    private String mEmail;
-    private String mSubject;
-    private String mMessage;
+    private final String mEmail;
+    private final String mSubject;
+    private final String mMessage;
 
     //private ProgressDialog mProgressDialog;
 

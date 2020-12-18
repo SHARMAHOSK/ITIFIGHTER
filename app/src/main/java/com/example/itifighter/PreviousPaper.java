@@ -81,7 +81,7 @@ public class PreviousPaper extends Fragment {
         dialog.setMessage("Loading...");
         dialog.setCancelable(false);
         listView = ppView.findViewById(R.id.branch_list);
-        emptyListMessage = ppView.findViewById(R.id.emptyListMessage);
+        emptyListMessage = ppView.findViewById(R.id.emptyListMessagepp);
         back = ppView.findViewById(R.id.CustomBackButtonPP);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +145,7 @@ public class PreviousPaper extends Fragment {
                         Exams.add(new CustomListItem(document.getString("name"),
                                 document.getString("desc"), "pp/chapter"));
                     }
+                    emptyListMessage.setVisibility(ExamIds.size() <= 0 ? View.VISIBLE : View.GONE);
                     //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);
                     listView.setAdapter(adapter);
@@ -182,6 +183,7 @@ public class PreviousPaper extends Fragment {
                                 Double.parseDouble(Objects.requireNonNull(document.getString("discount")))));
                         pdfFile.add(""+document.getString("Name"));
                     }
+                    emptyListMessage.setVisibility(PdfS.size() <= 0 ? View.VISIBLE : View.GONE);
                     adapter = new CustomListViewArrayAdapter(mContext, 0, PdfS_CL);
                     listView.setAdapter(adapter);
                     dialog.dismiss();
