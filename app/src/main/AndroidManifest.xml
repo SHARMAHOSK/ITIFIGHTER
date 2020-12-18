@@ -18,16 +18,7 @@
         <activity android:name=".LeaderBoardXyz" />
         <activity android:name=".ViewSolutionXyz" />
         <activity android:name=".ResultXyz" />
-        <activity android:name="com.example.itifighterAdmin.admin_feedbackDetails" />
-        <activity android:name="com.example.itifighterAdmin.admin_testFeedback_list" />
-        <activity
-            android:name="com.example.itifighterAdmin.admin_edit_TestInstruction"
-            android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name="com.example.itifighterAdmin.admin_other_details" />
         <activity android:name=".TestListSeries" />
-        <activity android:name="com.example.itifighterAdmin.admin_add_lt" />
-        <activity android:name="com.example.itifighterAdmin.admin_edit_lt_details" />
-        <activity android:name="com.example.itifighterAdmin.admin_live_test" />
         <activity
             android:name=".TestInstructionsActivity"
             android:noHistory="true"
@@ -55,38 +46,9 @@
             android:name=".TestQuestionsActivity"
             android:alwaysRetainTaskState="true"
             android:theme="@style/CustomFullScreenStyle" />
-        <activity android:name="com.example.itifighterAdmin.admin_upload_excel" />
-        <activity android:name="com.example.itifighterAdmin.admin_mockChapQoes_list" />
-        <activity android:name="com.example.itifighterAdmin.admin_add_chapter" />
-        <activity android:name="com.example.itifighterAdmin.admin_chapter_list" />
-        <activity
-            android:name="com.example.itifighterAdmin.admin_item_options"
-            android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity
-            android:name="com.example.itifighterAdmin.admin_edit_subject"
-            android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity
-            android:name="com.example.itifighterAdmin.pp.admin_add_exam"
-            android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity
-            android:name="com.example.itifighterAdmin.admin_add_subject"
-            android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity
-            android:name="com.example.itifighterAdmin.pp.admin_pdf_list"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.example.itifighterAdmin.admin_subject_list"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.example.itifighterAdmin.pp.admin_pp_list"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.example.itifighterAdmin.admin_section_list"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".LoadPdf"
             android:screenOrientation="portrait" />
-        <activity android:name="com.example.itifighterAdmin.pp.AdminUpdatePpPdfs" />
         <activity
             android:name=".MainDashboard"
             android:alwaysRetainTaskState="true"
