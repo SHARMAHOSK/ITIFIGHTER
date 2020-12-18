@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,7 @@ public class MyTestSeries extends Fragment {
     private ProgressDialog dialog;
     private int currentLayer = 0,currentChapterPos=0,currentSubjectPos=0,currentTestPos=0;   //0=subjects, 1=chapters
     private ImageButton back;
+    private TextView emptyListMessage;
 
 
     public MyTestSeries() {}
@@ -61,6 +63,7 @@ public class MyTestSeries extends Fragment {
         View mtView = inflater.inflate(R.layout.fragment_my_test_series, container, false);
         listView = mtView.findViewById(R.id.testmtRecycle);
         back = mtView.findViewById(R.id.CustomBackButtonMTS);
+        emptyListMessage = mtView.findViewById(R.id.emptyListMessagemts);
         dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
         dialog.setMessage("Loading...");
         dialog.setCancelable(false);
@@ -98,6 +101,7 @@ public class MyTestSeries extends Fragment {
                         SubjectId.add(queryDocumentSnapshot.getString("currentSubject"));
                         ChapterId.add(queryDocumentSnapshot.getId());
                     }
+                    emptyListMessage.setVisibility(SubjectId.size() <= 0 ? View.VISIBLE : View.GONE);
                     listView.setAdapter( new CustomListViewArrayAdapterY(mContext,0,ProductData));
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -139,6 +143,7 @@ public class MyTestSeries extends Fragment {
                         Timmr.add(String.valueOf(duration));
                         Tittl.add(document.getString("title"));
                     }
+                    emptyListMessage.setVisibility(TestId.size() <= 0 ? View.VISIBLE : View.GONE);
                     listView.setAdapter(new CustomListViewArrayAdapterZ(mContext,0,Tests,currentSubject,currentChapter));
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override

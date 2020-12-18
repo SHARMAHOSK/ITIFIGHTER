@@ -71,6 +71,7 @@ public class LiveTestHomeActivity extends AppCompatActivity {
         final TextView cbt = findViewById(R.id.ContinueBTNLBT);
         //cbt.setVisibility(View.INVISIBLE);
         cbt.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {

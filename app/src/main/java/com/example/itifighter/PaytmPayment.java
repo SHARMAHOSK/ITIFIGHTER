@@ -1,6 +1,8 @@
+
 package com.example.itifighter;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -52,13 +54,16 @@ import retrofit2.Response;
 
 public class PaytmPayment extends AppCompatActivity {
 	private String Mid = "ahKvVJ36172797507439", Uid = FirebaseAuth.getInstance().getUid(), OrderId, Mobile, Email, txnAmount, firstName, FinalMonth, currentSubject, currentChapter, TAG = "PaytmPayment", currentSection;
-
+    private ProgressDialog dialog;
 	@SuppressLint("SetTextI18n")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_paytm_payment);
 		Intent intent = getIntent();
+        dialog = new ProgressDialog(this,R.style.AppCompatAlertDialogStyle);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
 		// get Data from intent
 		final String Month1 = intent.getStringExtra("month1");
 		final String Month2 = intent.getStringExtra("month2");
@@ -137,6 +142,7 @@ public class PaytmPayment extends AppCompatActivity {
                payx.setOnClickListener(new View.OnClickListener() {
                    @Override
                    public void onClick(View view) {
+                       dialog.show();
                        if (txnAmount.equals("")) {
                            Toast.makeText(PaytmPayment.this,"Amount is mandatory",Toast.LENGTH_SHORT).show();
                        } else getToken();
@@ -276,6 +282,7 @@ public class PaytmPayment extends AppCompatActivity {
     }
 
     private void startPaytmPayment(String txnToken) {
+        dialog.dismiss();
         // for test mode use it
         String host = "https://securegw-stage.paytm.in/";
         // for production mode use it //  String host = "https://securegw.paytm.in/";
@@ -285,41 +292,48 @@ public class PaytmPayment extends AppCompatActivity {
 
             @Override
             public void onTransactionResponse(Bundle bundle) {
+                dialog.show();
                 setTransactionDetails(bundle);
             }
 
             @Override
             public void networkNotAvailable() {
+                dialog.dismiss();
                 Log.e(TAG, "network not available ");
                 Toast.makeText(PaytmPayment.this,"network not available",Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void clientAuthenticationFailed(String s) {
+                dialog.dismiss();
                 Log.e(TAG, "Clientauth " + s);
                 Toast.makeText(PaytmPayment.this,"Clientauth " + s,Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void someUIErrorOccurred(String s) {
+                dialog.dismiss();
                 Log.e(TAG, " UI error " + s);
                 Toast.makeText(PaytmPayment.this," UI error " + s,Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onErrorLoadingWebPage(int i, String s, String s1) {
+                dialog.dismiss();
                 Log.e(TAG, " error loading web " + s + "--" + s1);
                 Toast.makeText(PaytmPayment.this," error loading web " + s + "--" + s1,Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onBackPressedCancelTransaction() {
+                dialog.dismiss();
                 Log.e(TAG, "backPress ");
                 Toast.makeText(PaytmPayment.this,"backPress ",Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onTransactionCancel(String s, Bundle bundle) {
+                dialog.dismiss();
                 Log.e(TAG, " transaction cancel " + s);
                 Toast.makeText(PaytmPayment.this," transaction cancel " + s,Toast.LENGTH_SHORT).show();
             }
@@ -404,6 +418,7 @@ public class PaytmPayment extends AppCompatActivity {
                     reference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            dialog.dismiss();
                             Toast.makeText(PaytmPayment.this,"Transaction successfully done",Toast.LENGTH_SHORT).show();
                             finish();
                         }

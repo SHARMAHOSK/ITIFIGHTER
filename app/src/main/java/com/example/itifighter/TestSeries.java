@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -55,6 +56,7 @@ public class TestSeries extends Fragment {
     private ArrayList<String> SubjectId,ChapterId,TestId,MPQ,Timmr,Tittl;
     private ImageButton back;
     private ProgressDialog dialog;
+    private TextView emptyListMessage;
     private int currentLayer = 0,currentTestPos=0,currentSubjectPos=0,currentChapterPos=0;   //0=subjects, 1=chapters
 
     public TestSeries() { }
@@ -68,6 +70,7 @@ public class TestSeries extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View mtView = inflater.inflate(R.layout.fragment_test_series, container, false);
         listView = mtView.findViewById(R.id.testxtRecycle);
+        emptyListMessage = mtView.findViewById(R.id.emptyListMessagets);
         back = mtView.findViewById(R.id.CustomBackButtonTS);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +109,7 @@ public class TestSeries extends Fragment {
                                 "ts"));
                         SubjectId.add(document.getId());
                     }
+                    emptyListMessage.setVisibility(SubjectId.size() <= 0 ? View.VISIBLE : View.GONE);
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
                     listView.setAdapter(adapter);
                     dialog.dismiss();
@@ -142,6 +146,7 @@ public class TestSeries extends Fragment {
                         Chapters.add(new CustomListItemX(document.getString("name"), String.valueOf(document.get("cc")) , "ts",document.getId(),document.getString("month1"),document.getString("month2"),document.getString("month3"),document.getString("price1"),document.getString("price2"),document.getString("price3"),document.getString("discount1"),document.getString("discount2"),document.getString("discount3")));
                         ChapterId.add(document.getId());
                     }
+                    emptyListMessage.setVisibility(ChapterId.size() <= 0 ? View.VISIBLE : View.GONE);
                     ArrayAdapter<CustomListItemX> adapter = new CustomListViewArrayAdapterX(mContext,0,Chapters,currentSubject,ChapterId);
                     listView.setAdapter(adapter);
                     dialog.dismiss();
@@ -244,6 +249,7 @@ public class TestSeries extends Fragment {
                         Timmr.add(String.valueOf(duration));
                         Tittl.add(document.getString("title"));
                     }
+                    emptyListMessage.setVisibility(TestId.size() <= 0 ? View.VISIBLE : View.GONE);
                     listView.setAdapter(new CustomListViewArrayAdapterZ(mContext,0,Tests,currentSubject,currentChapter));
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override

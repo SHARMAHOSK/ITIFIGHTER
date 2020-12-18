@@ -63,8 +63,8 @@ public class RegisterActivity extends AppCompatActivity{
         etTrade = findViewById(R.id.etTrade);
         mFirebaseAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        final String Did  = getDeviceId();
-        verifyDevice(Did);
+        //final String Did  = getDeviceId();
+        //verifyDevice(Did);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity{
                                 branch.put("State",state);
                                 branch.put("Trade",trade);
                                 branch.put("Role",role);
-                                branch.put("Did",Did);
+                                //branch.put("Did",Did);
                                 reference.set(branch).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -110,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity{
                                         progressBar.setVisibility(View.INVISIBLE);
                                         sendMessage(name,email,pass);
                                         showPopup(email);
-                                        setRegisterDevice(Did,UserId,email);
+                                       // setRegisterDevice(Did,UserId,email);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -211,7 +211,7 @@ public class RegisterActivity extends AppCompatActivity{
                             "Email id: "+email+"\n"+
                             "Password: "+pass+"\n"+
                             "Please Login and start a long journy with us\n\n"+
-                            "Thanks & Regards\nTeam ITIFighter\nContact:9651324939";
+                            "Thanks & Regards\nTeam ITIFighter\nContact:9936272249";
         JavaMailAPI api = new JavaMailAPI(email,"Registration Successful: ITIFighter",message);
         api.execute();
     }

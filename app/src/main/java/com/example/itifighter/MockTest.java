@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -43,6 +44,7 @@ public class MockTest extends Fragment {
     private ArrayList<Question> questions;
     private ListView listView;
     private ImageButton back;
+    private TextView emptyListMessage;
 
     //private View progressOverlay;
     private FirebaseFirestore db;
@@ -66,6 +68,7 @@ public class MockTest extends Fragment {
         dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
         dialog.setMessage("Loading...");
         dialog.setCancelable(false);
+        emptyListMessage = mtView.findViewById(R.id.emptyListMessagetsmt);
         back = mtView.findViewById(R.id.CustomBackButtonMT);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,9 +93,6 @@ public class MockTest extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                //loadingFinished = true;
-                //HIDE LOADING IT HAS FINISHED
-                //spinner.setVisibility(View.GONE);
 
                 if (task.isSuccessful()) {
                     Subjects = new ArrayList<>();
@@ -103,6 +103,7 @@ public class MockTest extends Fragment {
                         Subjects.add(new CustomListItem(document.getString("name"),
                                 document.getString("desc"),"mt"));
                     }
+                    emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);
                     //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
 
@@ -148,10 +149,12 @@ public class MockTest extends Fragment {
                                 Integer.parseInt((Objects.requireNonNull(document.getString("NOQ")))), Integer.parseInt(Objects.requireNonNull(document.getString("Timer"))),
                                 Integer.parseInt(Objects.requireNonNull(document.getString("MPQ"))),"mt/chapter"));
                         /*Chapters.add(document.getString("Name"));*/
+
                         MPQs.add(document.getString("MPQ"));
                         Timers.add(document.getString("Timer"));
                         Titles.add(document.getString("name"));
                     }
+                    emptyListMessage.setVisibility(CHapterIds.size() <= 0 ? View.VISIBLE : View.GONE);
                     //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Chapters);
 
