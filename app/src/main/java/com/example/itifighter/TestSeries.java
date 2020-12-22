@@ -25,7 +25,6 @@ import com.example.itifighter.TestSeriesX.CustomListItemX;
 import com.example.itifighter.TestSeriesX.CustomListItemY;
 import com.example.itifighter.TestSeriesX.CustomListViewArrayAdapterX;
 import com.example.itifighter.TestSeriesX.CustomListViewArrayAdapterZ;
-import com.example.itifighterAdmin.Question;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +45,7 @@ import static android.content.ContentValues.TAG;
 
 public class TestSeries extends Fragment {
 
+    public static TestSeries instance;
     private String currentSubject,currentChapter,currentTest;
     private ArrayList<CustomListItem> Subjects;
     private ArrayList<CustomListItemX> Chapters;
@@ -65,6 +65,7 @@ public class TestSeries extends Fragment {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
         mContext = getContext();
+        instance = this;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,6 +95,7 @@ public class TestSeries extends Fragment {
     }
 
     void LoadSubjects(){
+        CustomStackManager.GetInstance().SetPageState(0);
         currentLayer = 0;
         dialog.show();
         db.collection("section").document("ts")
@@ -131,6 +133,7 @@ public class TestSeries extends Fragment {
         });
     }
     void LoadChapters(){
+        CustomStackManager.GetInstance().SetPageState(1);
         dialog.show();
         currentLayer = 1;
         db.collection("section").document("ts")

@@ -177,6 +177,10 @@ public class MainDashboard extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if(CustomStackManager.GetInstance().GetPageState() > 0){
+            CustomStackManager.GetInstance().GoBack();
+            return;
+        }
         if (doubleBackToExitPressedOnce) {
             finishAffinity();
             finish();

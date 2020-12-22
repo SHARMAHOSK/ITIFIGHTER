@@ -37,6 +37,7 @@ public class PreviousPaper extends Fragment {
 
 
     private int currentLayer = 0;
+    public static PreviousPaper instance;
     private String currentPdf = "";
     //private int currentSubjectPos = 0, currentExamPos = 0;  //records which item was clicked in previous list
     private ArrayList<CustomListItem> Subjects, Exams;
@@ -58,6 +59,7 @@ public class PreviousPaper extends Fragment {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
         mContext = getContext();
+        instance = this;
     }
 
     public void CustomBackButton(){
@@ -95,7 +97,8 @@ public class PreviousPaper extends Fragment {
     }
 
 
-    void LoadSubjects(){
+    public void LoadSubjects(){
+        CustomStackManager.GetInstance().SetPageState(0);
         currentLayer = 0;
         dialog.show();
         db.collection("section").document("pp").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -131,7 +134,8 @@ public class PreviousPaper extends Fragment {
         });
     }
 
-    void LoadExams(){
+    public void LoadExams(){
+        CustomStackManager.GetInstance().SetPageState(1);
         dialog.show();
         currentLayer = 1;
         db.collection("section").document("pp").collection("branch").document(curruntSubject).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -168,6 +172,7 @@ public class PreviousPaper extends Fragment {
     }
 
     void LoadPdfS(){
+        CustomStackManager.GetInstance().SetPageState(2);
         dialog.show();
         currentLayer = 2;
         db.collection("section").document("pp").collection("branch/"+curruntSubject+"/exam").document(curruntChapter).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

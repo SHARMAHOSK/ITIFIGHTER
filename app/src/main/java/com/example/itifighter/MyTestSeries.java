@@ -20,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import com.example.itifighter.TestSeriesX.CustomListItemY;
 import com.example.itifighter.TestSeriesX.CustomListViewArrayAdapterY;
 import com.example.itifighter.TestSeriesX.CustomListViewArrayAdapterZ;
-import com.example.itifighterAdmin.Question;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +37,7 @@ import static android.content.ContentValues.TAG;
 public class MyTestSeries extends Fragment {
     private ListView listView;
     private FirebaseFirestore db;
+    public static MyTestSeries instance;
     private Context mContext;
     private String Uid = FirebaseAuth.getInstance().getUid();
     private ArrayList<CustomListItemY> ProductData,Tests;
@@ -56,6 +56,7 @@ public class MyTestSeries extends Fragment {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
         mContext = getContext();
+        instance = this;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,6 +84,7 @@ public class MyTestSeries extends Fragment {
     }
 
     void LoadChapters(){
+        CustomStackManager.GetInstance().SetPageState(0);
         currentLayer = 0;
         dialog.show();
         db.collection("users").document(Uid)
@@ -120,6 +122,7 @@ public class MyTestSeries extends Fragment {
     }
 
     private void LoadTest(){
+        CustomStackManager.GetInstance().SetPageState(1);
         dialog.show();
         currentLayer = 1;
         db.collection("section").document("ts").collection("branch").document(currentSubject).collection("chapter").document(currentChapter)

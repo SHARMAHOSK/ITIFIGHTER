@@ -38,6 +38,7 @@ import static android.content.ContentValues.TAG;
 
 public class LiveTest extends Fragment {
 
+    public static LiveTest instance;
     private FirebaseFirestore db;
     private Context mContext;
     private ArrayList<CustomListItem> Subjects, Chapters,Chapters2;
@@ -61,6 +62,7 @@ public class LiveTest extends Fragment {
         dialog.setMessage("Loading...");
         dialog.setCancelable(false);
         mContext = getContext();
+        instance = this;
     }
 
     @Override
@@ -80,6 +82,7 @@ public class LiveTest extends Fragment {
     }
 
     void LoadSubjects(){
+        CustomStackManager.GetInstance().SetPageState(0);
         dialog.show();
         currentLayer = 0;
         db.collection("section").document("lt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -117,6 +120,7 @@ public class LiveTest extends Fragment {
     }
 
     void LoadChapters(){
+        CustomStackManager.GetInstance().SetPageState(1);
         currentLayer = 1;
         dialog.show();
         db.collection("section").document("lt").collection("branch").document(currentSubject).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

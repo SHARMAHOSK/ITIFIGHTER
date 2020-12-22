@@ -17,7 +17,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.itifighterAdmin.Question;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,7 +34,7 @@ import static android.content.ContentValues.TAG;
 
 public class MockTest extends Fragment {
 
-
+    public static MockTest instance;
     private int currentLayer = 0;
     private int currentSubjectPos = 0, currentChapterPos = 0;   //records which item was clicked in previous list
     private ProgressDialog dialog;
@@ -57,6 +56,7 @@ public class MockTest extends Fragment {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
         mContext = getContext();
+        instance = this;
     }
 
     @Override
@@ -87,6 +87,7 @@ public class MockTest extends Fragment {
     }
 
     void LoadSubjects(){
+        CustomStackManager.GetInstance().SetPageState(0);
         currentLayer = 0;
         dialog.show();
         db.collection("section").document("mt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -128,6 +129,7 @@ public class MockTest extends Fragment {
     }
 
     void LoadChapters(){
+        CustomStackManager.GetInstance().SetPageState(1);
         dialog.show();
         currentLayer = 1;
         db.collection("section").document("mt").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

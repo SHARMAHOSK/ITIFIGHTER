@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.itifighter.CustomStackManager;
 import com.example.itifighter.CustomViewPager;
 import com.example.itifighter.MyAdapter;
 import com.example.itifighter.R;
@@ -30,10 +31,11 @@ public class HomeFragment extends Fragment {
                              final ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_menu_home, container, false);
         /*tabLayout = root.findViewById(R.id.tabLayoutX);*/
-        bnv = root.findViewById(R.id.bottom_navigation);m
+        bnv = root.findViewById(R.id.bottom_navigation);
         final CustomViewPager viewPager = root.findViewById(R.id.viewPagerX);
         viewPager.setPagingEnabled(false);
         bnv.setSelectedItemId(R.id.page_lt);
+        CustomStackManager.current_page = 2;
         bnv.setItemIconTintList(null);
         bnv.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);   //LABEL_VISIBILITY_SELECTED: The label is only shown on the selected navigation item
         bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -43,22 +45,27 @@ public class HomeFragment extends Fragment {
                     case R.id.page_pp:
                         // Respond to navigation item 1 click
                         viewPager.setCurrentItem(0);
+                        CustomStackManager.current_page = 0;
                         return true;
                     case R.id.page_mt:
                         // Respond to navigation item 2 click
                         viewPager.setCurrentItem(1);
+                        CustomStackManager.current_page = 1;
                         return true;
                     case R.id.page_lt:
                         // Respond to navigation item 3 click
                         viewPager.setCurrentItem(2);
+                        CustomStackManager.current_page = 2;
                         return true;
                     case R.id.page_ts:
                         // Respond to navigation item 4 click
                         viewPager.setCurrentItem(3);
+                        CustomStackManager.current_page = 3;
                         return true;
                     case R.id.page_mts:
                         // Respond to navigation item 5 click
                         viewPager.setCurrentItem(4);
+                        CustomStackManager.current_page = 4;
                         return true;
                     default:
                         return false;
