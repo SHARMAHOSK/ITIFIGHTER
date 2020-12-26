@@ -1,5 +1,6 @@
 package com.example.itifighter.ui.home;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -8,7 +9,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.itifighter.CustomStackManager;
 import com.example.itifighter.CustomViewPager;
@@ -39,6 +39,7 @@ public class HomeFragment extends Fragment {
         bnv.setItemIconTintList(null);
         bnv.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);   //LABEL_VISIBILITY_SELECTED: The label is only shown on the selected navigation item
         bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @SuppressLint("NonConstantResourceId")
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){

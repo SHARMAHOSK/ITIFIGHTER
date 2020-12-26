@@ -1,5 +1,6 @@
 package com.example.itifighter;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ public class ResultUploader extends AppCompatActivity {
 
     CollectionReference mDatabaseReference;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

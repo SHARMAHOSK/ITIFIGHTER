@@ -53,7 +53,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PaytmPayment extends AppCompatActivity {
-	private String Mid = "ahKvVJ36172797507439", Uid = FirebaseAuth.getInstance().getUid(), OrderId, Mobile, Email, txnAmount, firstName, FinalMonth, currentSubject, currentChapter, TAG = "PaytmPayment", currentSection;
+	private final String Mid = "ahKvVJ36172797507439";
+    private final String Uid = FirebaseAuth.getInstance().getUid();
+    private String OrderId;
+    private String Mobile;
+    private String Email;
+    private String txnAmount;
+    private String firstName;
+    private String FinalMonth;
+    private String currentSubject;
+    private String currentChapter;
+    private final String TAG = "PaytmPayment";
+    private String currentSection;
     private ProgressDialog dialog;
 	@SuppressLint("SetTextI18n")
 	@Override

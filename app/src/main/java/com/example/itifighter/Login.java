@@ -52,6 +52,13 @@ public class Login extends AppCompatActivity {
         showMessage = findViewById(R.id.ShowMessage);
         showMessage.setVisibility(View.INVISIBLE);
         progressBar.setProgressTintList(ColorStateList.valueOf(Color.BLUE));
+        TextView forgetPassword = findViewById(R.id.forgetPassword);
+        forgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Login.this,ForgetPassword.class));
+            }
+        });
         //final String Did = getDeviceId();
         if(getIntent()!=null && getIntent().getStringExtra("MsgRegVer")!=null){
             showMessage.setText(getIntent().getStringExtra("MsgRegVer"));

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_login"
     android:gravity="center"
     android:layout_gravity="center"
@@ -40,20 +41,25 @@
                 android:textColor="@color/dark_blue"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/OldId"
-                android:layout_height="45dp"
+            <com.google.android.material.textfield.TextInputLayout
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/blue2"
+                app:hintTextColor="@color/blue2"
                 android:layout_width="match_parent"
-                android:autofillHints="Enter Old Password"
-                android:inputType="textPassword"
-                android:background="#ADD8E6"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:foregroundGravity="center"
-                android:drawableEnd="@drawable/view_password"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="5dp"
-                tools:ignore="LabelFor" />
+                android:layout_height="45dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/OldId"
+                    android:layout_height="45dp"
+                    android:layout_width="match_parent"
+                    android:autofillHints=""
+                    android:paddingStart="5dp"
+                    android:hint="@string/enter_old_password"
+                    android:inputType="textPassword"
+                    android:background="#ADD8E6"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="5dp"
+                    tools:ignore="LabelFor,RtlSymmetry"/>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
     <LinearLayout
@@ -76,20 +82,26 @@
             android:textColor="@color/dark_blue"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/NewId"
-            android:layout_height="45dp"
+        <com.google.android.material.textfield.TextInputLayout
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/blue2"
+            app:hintTextColor="@color/blue2"
             android:layout_width="match_parent"
-            android:inputType="textPassword"
-            android:background="#ADD8E6"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:foregroundGravity="center"
-            android:layout_marginStart="20dp"
-            android:drawableEnd="@drawable/view_password"
-            android:layout_marginEnd="5dp"
-            tools:ignore="LabelFor"
-            android:autofillHints="Enter New Password" />
+            android:layout_height="45dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/NewId"
+                android:layout_height="45dp"
+                android:layout_width="match_parent"
+                android:inputType="textPassword"
+                android:background="#ADD8E6"
+                android:drawableEnd="@drawable/view_password"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="5dp"
+                android:paddingStart="5dp"
+                android:hint="@string/enter_new_password"
+                android:autofillHints=""
+                tools:ignore="RtlSymmetry" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -112,20 +124,26 @@
             android:textColor="@color/dark_blue"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/ConId"
-            android:layout_height="45dp"
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/blue2"
+            app:hintTextColor="@color/blue2"
             android:layout_width="match_parent"
-            android:inputType="textPassword"
-            android:background="#ADD8E6"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:foregroundGravity="center"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="5dp"
-            android:drawableEnd="@drawable/view_password"
-            android:autofillHints="none"
-            tools:ignore="LabelFor" />
+            android:layout_height="45dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ConId"
+                android:layout_height="45dp"
+                android:layout_width="match_parent"
+                android:inputType="textPassword"
+                android:background="#ADD8E6"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="5dp"
+                android:paddingStart="5dp"
+                android:hint="@string/enter_confirm_password"
+                android:autofillHints=""
+                tools:ignore="RtlSymmetry" />
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
