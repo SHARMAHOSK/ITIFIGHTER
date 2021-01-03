@@ -144,7 +144,7 @@ public class MockTest extends Fragment {
                     Titles = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         CHapterIds.add(document.getId());
-                        Chapters.add(new CustomListItem(document.getString("name"),
+                        Chapters.add(new CustomListItem(CHapterIds.size(), document.getString("name"),
                                 document.getString("desc"),
                                 Double.parseDouble(Objects.requireNonNull(document.getString("price"))),
                                 Double.parseDouble(Objects.requireNonNull(document.getString("discount"))),

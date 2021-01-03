@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -55,7 +56,10 @@ public class TestQuestionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_questions);
         currentApiVersion = android.os.Build.VERSION.SDK_INT;
-        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+
+
+
+        /*final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -76,7 +80,9 @@ public class TestQuestionsActivity extends AppCompatActivity {
                     if((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) decorView.setSystemUiVisibility(flags);
                 }
             });
-        }
+        }*/
+
+
 
         /* let's see if putting my code here works... */
         radioGroup = findViewById(R.id.radioGroup1);
@@ -114,15 +120,16 @@ public class TestQuestionsActivity extends AppCompatActivity {
         questions = (List<Question>) getIntent().getSerializableExtra("questions");  //= question list from prev activity
         _mpq = getIntent().getIntExtra("_mpq", 1);
 
-        if(getIntent().getStringExtra("section").equals("lt")){
+        if(!getIntent().getStringExtra("section").equals("mt")){
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        }if(getIntent().getStringExtra("section").equals("lt")){
+            findViewById(R.id.ThisIsLive).setVisibility(View.VISIBLE);
         }else{
             timer = getIntent().getIntExtra("timer", 60)/**60*/;   //default an hour.
         }
 
         sub_ans = new int[questions.size()];
-        Toast.makeText(this, "total ans blocks: "+sub_ans.length, Toast.LENGTH_SHORT).show();
         selectedFeedbackOption = new int[questions.size()];
-        Toast.makeText(this, "total ques: total ans: "+questions.size()+" : "+sub_ans.length, Toast.LENGTH_LONG).show();
         Arrays.fill(sub_ans, -1);
         Arrays.fill(selectedFeedbackOption, -1);
 
@@ -467,25 +474,20 @@ public class TestQuestionsActivity extends AppCompatActivity {
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             switch (checkedId) {
                 default:
-                    //Toast.makeText(TestQuestionsActivity.this, "No Support for questions with more than 4 possible answers. checkId: " + checkedId, Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.radioButton4:
-                    //Toast.makeText(TestQuestionsActivity.this, "option 4", Toast.LENGTH_SHORT).show();
                     //submitAnswer(4);
                     picked_ans = 4;
                     break;
                 case R.id.radioButton3:
-                    //Toast.makeText(TestQuestionsActivity.this, "option 3", Toast.LENGTH_SHORT).show();
                     picked_ans = 3;
                     //submitAnswer(3);
                     break;
                 case R.id.radioButton2:
-                    //Toast.makeText(TestQuestionsActivity.this, "option 2", Toast.LENGTH_SHORT).show();
                     picked_ans = 2;
                     //submitAnswer(2);
                     break;
                 case R.id.radioButton:
-                    //Toast.makeText(TestQuestionsActivity.this, "option 1", Toast.LENGTH_SHORT).show();
                     picked_ans = 1;
                     //submitAnswer(1);
                     break;
@@ -588,7 +590,6 @@ public class TestQuestionsActivity extends AppCompatActivity {
         //call on next/submit click
         //currently ato-submit by on radio button lick listener above.
         //collect student answers in an array and proceed to next ques if not last.
-        Toast.makeText(this, "saving ans index: "+currentQues, Toast.LENGTH_LONG).show();
         sub_ans[currentQues] = i;
         if(i == -1)
             quesBtns.get(currentQues).setBackgroundColor(getResources().getColor(R.color.design_default_color_error));
@@ -661,7 +662,6 @@ public class TestQuestionsActivity extends AppCompatActivity {
         intent.putExtra("questions", (Serializable) questions);
         if(testTimer != null)
             testTimer.cancel();
-        Toast.makeText(this, "section, subject, chap, test: "+getIntent().getStringExtra("section")+","+getIntent().getStringExtra("subject")+","+getIntent().getStringExtra("chapter")+","+getIntent().getStringExtra("tid"), Toast.LENGTH_LONG).show();
         startActivity(intent);
         finish();
     }

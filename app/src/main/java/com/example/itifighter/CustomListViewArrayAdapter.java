@@ -125,6 +125,17 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
         TextView _discountedTV = (TextView)view.findViewById(R.id.MockChap_FPrice);
         _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
         _discountedTV.setTextColor(Color.parseColor("#000099"));
+        if(property.getImagex().contains("mt")){
+            _discountedTV.setVisibility(View.GONE);
+            originalPrice.setVisibility(View.GONE);
+            topicHeader.setTextSize(25);
+            thumbNail.setVisibility(View.GONE);
+            view.findViewById(R.id.thumbnail2).setVisibility(View.VISIBLE);
+            TextView chapterIndex = view.findViewById(R.id.ChapterIndex);
+            chapterIndex.setVisibility(View.VISIBLE);
+            int index = property.getChapterIndex();
+            chapterIndex.setText(index > 9 ? ""+index : "0"+index);
+        }
         return view;
     }
 

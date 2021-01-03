@@ -14,6 +14,7 @@ class CustomListItem {
     private int duration;
     private int MPQ,NOQ;
     private int type;
+    private int chapterIndex;
     private String imagex;
     private String coupanCode,coupanActive;
 
@@ -25,6 +26,19 @@ class CustomListItem {
     }
 
     public CustomListItem(String topicHeader, String description, double price, double discount, int quesCount, int duration, int MPQ,String imagex){
+        this.topicHeader = topicHeader;
+        this.description = description;
+        this.price = price;
+        type = 1;
+        this.discount = discount;
+        this.quesCount = quesCount;
+        this.duration = duration;
+        this.MPQ = MPQ;
+        this.imagex = imagex;
+    }
+
+    public CustomListItem(int chapterIndex, String topicHeader, String description, double price, double discount, int quesCount, int duration, int MPQ,String imagex){
+        this.chapterIndex = chapterIndex;
         this.topicHeader = topicHeader;
         this.description = description;
         this.price = price;
@@ -72,6 +86,9 @@ class CustomListItem {
 
     public int getType() {
         return type;
+    }
+    public int getChapterIndex() {
+        return chapterIndex;
     }
 
     public double getPrice() {
