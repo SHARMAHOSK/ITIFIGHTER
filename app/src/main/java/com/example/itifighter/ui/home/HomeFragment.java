@@ -2,6 +2,7 @@ package com.example.itifighter.ui.home;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,14 +82,15 @@ public class HomeFragment extends Fragment {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);*/
         System.out.println("hello");
         final MyAdapter adapter = new MyAdapter(getParentFragmentManager(), /*tabLayout.getTabCount()*/5);
-        new Runnable(){
+        new Handler().post(new Runnable() {
             @Override
             public void run() {
-                viewPager.clearOnPageChangeListeners();
+//                viewPager.canResolveLayoutDirection();
+//                viewPager.clearOnPageChangeListeners();
                 viewPager.setAdapter(adapter);
                 Objects.requireNonNull(viewPager.getAdapter()).finishUpdate(container);
             }
-        }.run();
+        });
         System.out.println("sk");
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         viewPager.setCurrentItem(2);

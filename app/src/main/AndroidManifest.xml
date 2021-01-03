@@ -6,6 +6,7 @@
     <uses-permission
         android:name="android.permission.READ_PHONE_STATE"
         tools:ignore="ManifestOrder" />
+
     <uses-permission
         android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
@@ -19,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".ForgetPassword"></activity>
+        <activity android:name=".ForgetPassword" />
         <activity android:name=".ResultUploader" />
         <activity android:name=".MockChapterXyz" />
         <activity android:name=".LiveTestXyz" />

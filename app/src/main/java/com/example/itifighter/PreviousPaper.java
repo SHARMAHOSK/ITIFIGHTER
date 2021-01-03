@@ -60,17 +60,16 @@ public class PreviousPaper extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View ppView = inflater.inflate(R.layout.fragment_previous_paper, container, false);
-        dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
-        dialog.setMessage("Loading...");
-        dialog.setCancelable(false);
         listView = ppView.findViewById(R.id.branch_list);
         emptyListMessage = ppView.findViewById(R.id.emptyListMessagepp);
+        setDialogMessage();
         CustomizeView();
         return ppView;
     }
+
+
 
 
     public void LoadSubjects(){
@@ -181,8 +180,8 @@ public class PreviousPaper extends Fragment {
                                                     String status = documentSnapshot.getString("status");
                                                     String curruntSubjectPdf = documentSnapshot.getString("currentSubject");
                                                     String currentChapterPdf = documentSnapshot.getString("currentChapter");
-                                                    if(status.equals("1") && currentChapterPdf.equals(curruntChapter) &&
-                                                            curruntSubjectPdf.equals(curruntSubject))  openPdf(PdfName);
+                                                    if(Objects.requireNonNull(status).equals("1") && Objects.equals(currentChapterPdf, curruntChapter) &&
+                                                            Objects.equals(curruntSubjectPdf, curruntSubject))  openPdf(PdfName);
                                                     else openPaytmPaymentGateway(price,discount,PdfName);
                                                 }else openPaytmPaymentGateway(price,discount,PdfName);
                                             }
@@ -219,7 +218,8 @@ public class PreviousPaper extends Fragment {
     }
 
 
-    private void CustomizeView() { LoadSubjects(); }
+
+
     private void openPdf(String pdfName){
         dialog.dismiss();
         Intent intent = new Intent(mContext, LoadPdf.class);
@@ -237,5 +237,13 @@ public class PreviousPaper extends Fragment {
         intent.putExtra("currentSubject",curruntSubject);
         intent.putExtra("currentChapter",curruntChapter);
         startActivity(intent);
+    }
+
+    private void CustomizeView() { LoadSubjects(); }
+
+    private void setDialogMessage() {
+        dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
     }
 }
