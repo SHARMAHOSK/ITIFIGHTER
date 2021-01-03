@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class CustomStackManager {
     public static int current_page = 2;
-    private int[] pageState;
+    private final int[] pageState;
     private static CustomStackManager instance = null;
 
     private CustomStackManager(){
@@ -17,6 +17,26 @@ public class CustomStackManager {
             instance = new CustomStackManager();
 
         return instance;
+    }
+
+    public void ReloadCurrent(){
+        switch(current_page){
+            case 0:
+                PreviousPaper.instance.LoadSubjects();
+                break;
+            case 1:
+                MockTest.instance.LoadSubjects();
+                break;
+            case 2:
+                LiveTest.instance.LoadSubjects();
+                break;
+            case 3:
+                TestSeries.instance.LoadSubjects();
+                break;
+            case 4:
+                MyTestSeries.instance.LoadChapters();
+                break;
+        }
     }
 
     public void SetPageState(int level){
@@ -44,6 +64,26 @@ public class CustomStackManager {
                     PreviousPaper.instance.LoadSubjects();
                 else if(GetPageState() == 2)
                     PreviousPaper.instance.LoadExams();
+                break;
+            case 1:
+                if(GetPageState() == 1)
+                    MockTest.instance.LoadSubjects();
+                else if(GetPageState() == 2)
+                    MockTest.instance.LoadChapters();
+                break;
+            case 2:
+                if(GetPageState() == 1)
+                    LiveTest.instance.LoadSubjects();
+                break;
+            case 3:
+                if(GetPageState() == 1)
+                    TestSeries.instance.LoadSubjects();
+                else if(GetPageState() == 2)
+                    TestSeries.instance.LoadChapters();
+                break;
+            case 4:
+                if(GetPageState() == 1)
+                    MyTestSeries.instance.LoadChapters();
                 break;
         }
     }

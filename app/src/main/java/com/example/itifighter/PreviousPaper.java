@@ -1,5 +1,6 @@
 package com.example.itifighter;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,11 +35,9 @@ import static android.content.ContentValues.TAG;
 
 public class PreviousPaper extends Fragment {
 
-
-    private int currentLayer = 0;
+    @SuppressLint("StaticFieldLeak")
     public static PreviousPaper instance;
     private String currentPdf = "";
-    //private int currentSubjectPos = 0, currentExamPos = 0;  //records which item was clicked in previous list
     private ArrayList<CustomListItem> Subjects, Exams;
     private ListView listView;
     private ArrayList<String> PdfS, pdfFile, SubjectIds, ExamIds;
@@ -47,9 +45,8 @@ public class PreviousPaper extends Fragment {
     private FirebaseFirestore db;
     private ProgressDialog dialog;
     private Context mContext;
-    private ImageButton back;
     private ArrayAdapter adapter;
-    private String curruntSubject="",curruntChapter="";
+    public String curruntSubject="",curruntChapter="";
     TextView emptyListMessage;
 
     public PreviousPaper() {}
@@ -62,36 +59,15 @@ public class PreviousPaper extends Fragment {
         instance = this;
     }
 
-    public void CustomBackButton(){
-
-        switch (currentLayer){
-            case 1: LoadSubjects();
-            break;
-            case 2: LoadExams();
-            break;
-        }
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View ppView = inflater.inflate(R.layout.fragment_previous_paper, container, false);
-        //this.spinner = R.layout.fragment_previous_paper.findViewById(R.id.progressBar1);
         dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
         dialog.setMessage("Loading...");
         dialog.setCancelable(false);
         listView = ppView.findViewById(R.id.branch_list);
         emptyListMessage = ppView.findViewById(R.id.emptyListMessagepp);
-        back = ppView.findViewById(R.id.CustomBackButtonPP);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CustomBackButton();
-            }
-        });
-        back.setVisibility(View.INVISIBLE);
         CustomizeView();
         return ppView;
     }
@@ -99,8 +75,6 @@ public class PreviousPaper extends Fragment {
 
     public void LoadSubjects(){
         CustomStackManager.GetInstance().SetPageState(0);
-        currentLayer = 0;
-        dialog.show();
         db.collection("section").document("pp").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -113,12 +87,9 @@ public class PreviousPaper extends Fragment {
                                         document.getString(/*"description"*/"desc"), "pp"));
                     }
                     emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);
-                    //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
-                    /*listView = (ListView) _ppView.findViewById(R.id.branch_list);*/
                     listView.setAdapter(adapter);
                     dialog.dismiss();
-                    back.setVisibility(View.INVISIBLE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {@Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
@@ -137,7 +108,6 @@ public class PreviousPaper extends Fragment {
     public void LoadExams(){
         CustomStackManager.GetInstance().SetPageState(1);
         dialog.show();
-        currentLayer = 1;
         db.collection("section").document("pp").collection("branch").document(curruntSubject).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -150,11 +120,9 @@ public class PreviousPaper extends Fragment {
                                 document.getString("desc"), "pp/chapter"));
                     }
                     emptyListMessage.setVisibility(ExamIds.size() <= 0 ? View.VISIBLE : View.GONE);
-                    //create our new array adapter
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);
                     listView.setAdapter(adapter);
                     dialog.dismiss();
-                    back.setVisibility(View.VISIBLE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
@@ -174,7 +142,6 @@ public class PreviousPaper extends Fragment {
     void LoadPdfS(){
         CustomStackManager.GetInstance().SetPageState(2);
         dialog.show();
-        currentLayer = 2;
         db.collection("section").document("pp").collection("branch/"+curruntSubject+"/exam").document(curruntChapter).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

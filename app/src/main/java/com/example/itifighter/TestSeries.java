@@ -269,6 +269,7 @@ public class TestSeries extends Fragment {
         });
     }
     private void LoadExam() {
+        CustomStackManager.GetInstance().SetPageState(2);
         dialog.show();
         db.collection("section").document("ts").collection("branch").document(currentSubject).collection("chapter").document(currentChapter)
                 .collection("tests").document(currentTest).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
