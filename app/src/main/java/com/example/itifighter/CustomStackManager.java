@@ -22,19 +22,24 @@ public class CustomStackManager {
     public void ReloadCurrent(){
         switch(current_page){
             case 0:
-                PreviousPaper.instance.LoadSubjects();
+                if(PreviousPaper.instance != null)
+                    PreviousPaper.instance.LoadSubjects();
                 break;
             case 1:
-                MockTest.instance.LoadSubjects();
+                if(MockTest.instance != null)
+                    MockTest.instance.LoadSubjects();
                 break;
             case 2:
-                LiveTest.instance.LoadSubjects();
+                if(LiveTest.instance != null)
+                    LiveTest.instance.LoadSubjects();
                 break;
             case 3:
-                TestSeries.instance.LoadSubjects();
+                if(TestSeries.instance != null)
+                    TestSeries.instance.LoadSubjects();
                 break;
             case 4:
-                MyTestSeries.instance.LoadChapters();
+                if(MyTestSeries.instance != null)
+                    MyTestSeries.instance.LoadChapters();
                 break;
         }
     }

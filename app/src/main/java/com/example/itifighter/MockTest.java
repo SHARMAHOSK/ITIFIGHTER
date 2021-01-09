@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -190,6 +191,11 @@ public class MockTest extends Fragment {
                         questions.add(new Question(document.getString("question"), document.getString("option1"),
                                 document.getString("option2"), document.getString("option3"),
                                 document.getString("option4"), document.getString("answer")));
+                    }
+
+                    if(questions.isEmpty()){
+                        Toast.makeText(mContext, "selected chapter contains 0 questions..", Toast.LENGTH_SHORT).show();
+                        return;
                     }
 
                     final String uuid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();

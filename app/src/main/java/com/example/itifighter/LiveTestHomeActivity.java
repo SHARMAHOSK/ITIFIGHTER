@@ -192,6 +192,11 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                                             document.getString("option4"), document.getString("answer")));
                                 }
 
+                                if(these_questions.isEmpty()){
+                                    Toast.makeText(mContext, "selected test contains 0 questions..", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
 
                                 String total_attempted = "", total_skipped = "", total_correct = "";
                                 String sub_list = "";

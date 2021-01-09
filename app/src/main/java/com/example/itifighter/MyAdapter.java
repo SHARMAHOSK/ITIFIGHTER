@@ -20,15 +20,20 @@ public class MyAdapter extends FragmentStatePagerAdapter{
     public Fragment getItem(int position) {
         switch (position) {
             case 1:
-                return new MockTest();
+                MockTest.instance = new MockTest();
+                return MockTest.instance;
             case 2:
-                return new LiveTest();
+                LiveTest.instance = new LiveTest();
+                return LiveTest.instance;
             case 3:
-                return new TestSeries();
+                TestSeries.instance = new TestSeries();
+                return TestSeries.instance;
             case 4:
-                return new MyTestSeries();
+                MyTestSeries.instance = new MyTestSeries();
+                return MyTestSeries.instance;
             default:
-                return new PreviousPaper();
+                PreviousPaper.instance = new PreviousPaper();
+                return PreviousPaper.instance;
         }
     }
 

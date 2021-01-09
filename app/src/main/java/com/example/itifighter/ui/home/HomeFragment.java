@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.itifighter.CustomStackManager;
 import com.example.itifighter.CustomViewPager;
@@ -26,18 +27,19 @@ public class HomeFragment extends Fragment {
 
 
     private TabLayout tabLayout;
-    BottomNavigationView bnv;
+    /*BottomNavigationView bnv;*/
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_menu_home, container, false);
-        /*tabLayout = root.findViewById(R.id.tabLayoutX);*/
-        bnv = root.findViewById(R.id.bottom_navigation);
-        final CustomViewPager viewPager = root.findViewById(R.id.viewPagerX);
-        viewPager.setPagingEnabled(false);
-        bnv.setSelectedItemId(R.id.page_lt);
+        tabLayout = root.findViewById(R.id.tabLayoutX);
+        /*bnv = root.findViewById(R.id.bottom_navigation);*/
+        final ViewPager viewPager = root.findViewById(R.id.viewPagerX);
+//        final CustomViewPager viewPager = root.findViewById(R.id.viewPagerX);
+//        viewPager.setPagingEnabled(false);
+        /*bnv.setSelectedItemId(R.id.page_lt);*/
         CustomStackManager.current_page = 2;
-        bnv.setItemIconTintList(null);
+        /*bnv.setItemIconTintList(null);
         bnv.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);   //LABEL_VISIBILITY_SELECTED: The label is only shown on the selected navigation item
         bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")
@@ -73,13 +75,14 @@ public class HomeFragment extends Fragment {
                         return false;
                 }
             }
-        });
-        /*tabLayout.addTab(tabLayout.newTab().setText("Previous Paper"));
+        });*/
+        tabLayout.addTab(tabLayout.newTab().setText("Previous Paper"));
         tabLayout.addTab(tabLayout.newTab().setText("Mock Test"));
         tabLayout.addTab(tabLayout.newTab().setText("Daily Live Test"));
         tabLayout.addTab(tabLayout.newTab().setText("Test Series"));
         tabLayout.addTab(tabLayout.newTab().setText("My Test Series"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);*/
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
         System.out.println("hello");
         final MyAdapter adapter = new MyAdapter(getParentFragmentManager(), /*tabLayout.getTabCount()*/5);
         new Handler().post(new Runnable() {
@@ -89,15 +92,36 @@ public class HomeFragment extends Fragment {
 //                viewPager.clearOnPageChangeListeners();
                 viewPager.setAdapter(adapter);
                 Objects.requireNonNull(viewPager.getAdapter()).finishUpdate(container);
+                viewPager.setCurrentItem(2);
+                tabLayout.selectTab(tabLayout.getTabAt(2));
+                CustomStackManager.current_page = 2;
             }
         });
         System.out.println("sk");
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        viewPager.setCurrentItem(2);
-        /*tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                CustomStackManager.current_page = position;
+                CustomStackManager.GetInstance().ReloadCurrent();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                CustomStackManager.current_page = position;
+                CustomStackManager.GetInstance().ReloadCurrent();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                CustomStackManager.current_page = tab.getPosition();
+                CustomStackManager.GetInstance().ReloadCurrent();
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
@@ -106,10 +130,11 @@ public class HomeFragment extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-        tabLayout.post(mTabLayout_config);*/
+        tabLayout.post(mTabLayout_config);
+
         return root;
     }
-    /*protected Runnable mTabLayout_config = new Runnable()
+    protected Runnable mTabLayout_config = new Runnable()
     {
         @Override
         public void run()
@@ -126,5 +151,5 @@ public class HomeFragment extends Fragment {
                 tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
             }
         }
-    };*/
+    };
 }
