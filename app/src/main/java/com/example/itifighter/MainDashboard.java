@@ -43,7 +43,7 @@ import java.util.Objects;
 public class MainDashboard extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private boolean doubleBackToExitPressedOnce = false;
+    private boolean doubleBackToExitPressedOnce = false, allowStackBack = true;
 
     @SuppressLint({"SetTextI18n", "InflateParams"})
     @Override
@@ -66,10 +66,13 @@ public class MainDashboard extends AppCompatActivity {
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 if(destination.getLabel() != null && destination.getLabel().toString().equals("Home")){
+                    allowStackBack = true;
+                    CustomStackManager.GetInstance(MainDashboard.this).ReloadCurrent();
                     fab.setEnabled(true);
                     fab.setVisibility(View.VISIBLE);
                 }
                 else{
+                    allowStackBack = false;
                     fab.setEnabled(false);
                     fab.setVisibility(View.GONE);
                 }
@@ -177,8 +180,8 @@ public class MainDashboard extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(CustomStackManager.GetInstance().GetPageState() > 0){
-            CustomStackManager.GetInstance().GoBack();
+        if(CustomStackManager.GetInstance(this).GetPageState() > 0/* && allowStackBack*/){
+            CustomStackManager.GetInstance(this).GoBack();
             return;
         }
         if (doubleBackToExitPressedOnce) {

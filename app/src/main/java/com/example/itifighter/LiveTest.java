@@ -51,6 +51,7 @@ public class LiveTest extends Fragment {
     private ImageButton back;
     private String currentSubject,currentChapter;
     private TextView emptyListMessage;
+    String curruntSubject, curruntChapter;
 
     public LiveTest() { }
 
@@ -82,7 +83,8 @@ public class LiveTest extends Fragment {
     }
 
     void LoadSubjects(){
-        CustomStackManager.GetInstance().SetPageState(0);
+        /*CustomStackManager.GetInstance().SetPageState(0);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.LT_STATE_KEY, 0);
         dialog.show();
         currentLayer = 0;
         db.collection("section").document("lt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -108,6 +110,7 @@ public class LiveTest extends Fragment {
                                                 int position, long id) {
                             currentSubjectPos = position;
                             currentSubject = SubjectIds.get(position);
+                            CustomStackManager.SetSPKeyValue(CustomStackManager.LT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, curruntSubject);
                             LoadChapters();
                         }
                     });
@@ -120,7 +123,9 @@ public class LiveTest extends Fragment {
     }
 
     void LoadChapters(){
-        CustomStackManager.GetInstance().SetPageState(1);
+        /*CustomStackManager.GetInstance().SetPageState(1);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.LT_STATE_KEY, 1);
+        curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.LT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
         currentLayer = 1;
         dialog.show();
         db.collection("section").document("lt").collection("branch").document(currentSubject).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -156,6 +161,8 @@ public class LiveTest extends Fragment {
                             dialog.show();
                             currentChapterPos = position;
                             currentChapter = CHapterIds.get(currentChapterPos);
+                            CustomStackManager.SetSPKeyValue(CustomStackManager.LT_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, curruntChapter);
+
                             final String price = String.valueOf(Chapters.get(position).getPrice()),
                                     discount = String.valueOf(Chapters.get(position).getDiscount()),
                                     finalPrice = getFinalPrice(price,discount);
@@ -247,6 +254,18 @@ public class LiveTest extends Fragment {
     }
 
     private void CustomizeView() {
-        LoadSubjects();
+        int currentState = CustomStackManager.GetSPKeyValue(CustomStackManager.LT_STATE_KEY, 0);
+        switch(currentState){
+            case 1:
+                curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.LT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+                if(curruntSubject == null || curruntSubject.isEmpty())
+                    LoadSubjects();
+                else
+                    LoadChapters();
+                break;
+            default:
+                LoadSubjects();
+                break;
+        }
     }
 }

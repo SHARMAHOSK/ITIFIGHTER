@@ -45,6 +45,7 @@ public class MockTest extends Fragment {
     private ListView listView;
     private ImageButton back;
     private TextView emptyListMessage;
+    String curruntSubject, curruntChapter;
 
     //private View progressOverlay;
     private FirebaseFirestore db;
@@ -88,7 +89,8 @@ public class MockTest extends Fragment {
     }
 
     void LoadSubjects(){
-        CustomStackManager.GetInstance().SetPageState(0);
+        /*CustomStackManager.GetInstance().SetPageState(0);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.MT_STATE_KEY, 0);
         currentLayer = 0;
         dialog.show();
         db.collection("section").document("mt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -118,6 +120,8 @@ public class MockTest extends Fragment {
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
                             currentSubjectPos = position;
+                            curruntSubject = SubjectIds.get(position);
+                            CustomStackManager.SetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, curruntSubject);
                             LoadChapters();
                         }
                     });
@@ -130,10 +134,12 @@ public class MockTest extends Fragment {
     }
 
     void LoadChapters(){
-        CustomStackManager.GetInstance().SetPageState(1);
+        /*CustomStackManager.GetInstance().SetPageState(1);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.MT_STATE_KEY, 1);
         dialog.show();
+        curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
         currentLayer = 1;
-        db.collection("section").document("mt").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("section").document("mt").collection("branch").document(/*SubjectIds.get(currentSubjectPos)*/curruntSubject).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -169,6 +175,8 @@ public class MockTest extends Fragment {
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
                             currentChapterPos = position;
+                            curruntChapter = CHapterIds.get(position);
+                            CustomStackManager.SetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, curruntChapter);
                             LoadTest();
                         }
                     });
@@ -181,8 +189,9 @@ public class MockTest extends Fragment {
     }
 
     private void LoadTest() {
-
-        db.collection("section").document("mt").collection("branch").document(SubjectIds.get(currentSubjectPos)).collection("chapter").document(CHapterIds.get(currentChapterPos)).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+        curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, "");
+        db.collection("section").document("mt").collection("branch").document(/*SubjectIds.get(currentSubjectPos)*/curruntSubject).collection("chapter").document(/*CHapterIds.get(currentChapterPos)*/curruntChapter).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -275,7 +284,27 @@ public class MockTest extends Fragment {
     }
 
     private void CustomizeView() {
-        LoadSubjects();
+        int currentState = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY, 0);
+        switch(currentState){
+            case 1:
+                curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+                if(curruntSubject == null || curruntSubject.isEmpty())
+                    LoadSubjects();
+                else
+                    LoadChapters();
+                break;
+            case 2:
+                curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+                curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, "");
+                if(curruntSubject == null || curruntSubject.isEmpty() || curruntChapter == null || curruntChapter.isEmpty())
+                    LoadSubjects();
+                else
+                    LoadTest();
+                break;
+            default:
+                LoadSubjects();
+                break;
+        }
     }
 
     @Override

@@ -84,7 +84,8 @@ public class MyTestSeries extends Fragment {
     }
 
     void LoadChapters(){
-        CustomStackManager.GetInstance().SetPageState(0);
+        /*CustomStackManager.GetInstance().SetPageState(0);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.MTS_STATE_KEY, 0);
         currentLayer = 0;
         dialog.show();
         db.collection("users").document(Uid)
@@ -122,7 +123,8 @@ public class MyTestSeries extends Fragment {
     }
 
     private void LoadTest(){
-        CustomStackManager.GetInstance().SetPageState(1);
+        /*CustomStackManager.GetInstance().SetPageState(1);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.MTS_STATE_KEY, 1);
         dialog.show();
         currentLayer = 1;
         db.collection("section").document("ts").collection("branch").document(currentSubject).collection("chapter").document(currentChapter)

@@ -95,7 +95,8 @@ public class TestSeries extends Fragment {
     }
 
     void LoadSubjects(){
-        CustomStackManager.GetInstance().SetPageState(0);
+        /*CustomStackManager.GetInstance().SetPageState(0);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.TS_STATE_KEY, 0);
         currentLayer = 0;
         dialog.show();
         db.collection("section").document("ts")
@@ -133,7 +134,8 @@ public class TestSeries extends Fragment {
         });
     }
     void LoadChapters(){
-        CustomStackManager.GetInstance().SetPageState(1);
+        /*CustomStackManager.GetInstance().SetPageState(1);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.TS_STATE_KEY, 1);
         dialog.show();
         currentLayer = 1;
         db.collection("section").document("ts")
@@ -269,7 +271,8 @@ public class TestSeries extends Fragment {
         });
     }
     private void LoadExam() {
-        CustomStackManager.GetInstance().SetPageState(2);
+        /*CustomStackManager.GetInstance().SetPageState(2);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.TS_STATE_KEY, 2);
         dialog.show();
         db.collection("section").document("ts").collection("branch").document(currentSubject).collection("chapter").document(currentChapter)
                 .collection("tests").document(currentTest).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

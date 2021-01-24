@@ -38,7 +38,8 @@ public class HomeFragment extends Fragment {
 //        final CustomViewPager viewPager = root.findViewById(R.id.viewPagerX);
 //        viewPager.setPagingEnabled(false);
         /*bnv.setSelectedItemId(R.id.page_lt);*/
-        CustomStackManager.current_page = 2;
+        /*CustomStackManager.current_page = 2;*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.CURRENT_PAGE_KEY, 2);
         /*bnv.setItemIconTintList(null);
         bnv.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);   //LABEL_VISIBILITY_SELECTED: The label is only shown on the selected navigation item
         bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -94,7 +95,8 @@ public class HomeFragment extends Fragment {
                 Objects.requireNonNull(viewPager.getAdapter()).finishUpdate(container);
                 viewPager.setCurrentItem(2);
                 tabLayout.selectTab(tabLayout.getTabAt(2));
-                CustomStackManager.current_page = 2;
+                /*CustomStackManager.current_page = 2;*/
+                CustomStackManager.SetSPKeyValue(CustomStackManager.CURRENT_PAGE_KEY, 2);
             }
         });
         System.out.println("sk");
@@ -102,14 +104,16 @@ public class HomeFragment extends Fragment {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                CustomStackManager.current_page = position;
-                CustomStackManager.GetInstance().ReloadCurrent();
+                /*CustomStackManager.current_page = position;*/
+                CustomStackManager.SetSPKeyValue(CustomStackManager.CURRENT_PAGE_KEY, position);
+                //CustomStackManager.GetInstance().ReloadCurrent();
             }
 
             @Override
             public void onPageSelected(int position) {
-                CustomStackManager.current_page = position;
-                CustomStackManager.GetInstance().ReloadCurrent();
+                /*CustomStackManager.current_page = position;*/
+                CustomStackManager.SetSPKeyValue(CustomStackManager.CURRENT_PAGE_KEY, position);
+                //CustomStackManager.GetInstance().ReloadCurrent();
             }
 
             @Override
@@ -120,8 +124,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-                CustomStackManager.current_page = tab.getPosition();
-                CustomStackManager.GetInstance().ReloadCurrent();
+                /*CustomStackManager.current_page = tab.getPosition();*/
+                CustomStackManager.SetSPKeyValue(CustomStackManager.CURRENT_PAGE_KEY, tab.getPosition());
+                //CustomStackManager.GetInstance().ReloadCurrent();
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {

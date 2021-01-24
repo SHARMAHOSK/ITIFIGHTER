@@ -73,7 +73,8 @@ public class PreviousPaper extends Fragment {
 
 
     public void LoadSubjects(){
-        CustomStackManager.GetInstance().SetPageState(0);
+        /*CustomStackManager.GetInstance().SetPageState(0);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 0);
         db.collection("section").document("pp").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -93,6 +94,7 @@ public class PreviousPaper extends Fragment {
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
                             curruntSubject = SubjectIds.get(position);
+                            CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, curruntSubject);
                             LoadExams();
                         }
                     });
@@ -105,8 +107,10 @@ public class PreviousPaper extends Fragment {
     }
 
     public void LoadExams(){
-        CustomStackManager.GetInstance().SetPageState(1);
+        /*CustomStackManager.GetInstance().SetPageState(1);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 1);
         dialog.show();
+        curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, "");
         db.collection("section").document("pp").collection("branch").document(curruntSubject).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -127,6 +131,7 @@ public class PreviousPaper extends Fragment {
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
                             curruntChapter = ExamIds.get(position);
+                            CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, curruntChapter);
                             LoadPdfS();
                         }
                     });
@@ -139,8 +144,10 @@ public class PreviousPaper extends Fragment {
     }
 
     void LoadPdfS(){
-        CustomStackManager.GetInstance().SetPageState(2);
+        /*CustomStackManager.GetInstance().SetPageState(2);*/
+        CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 2);
         dialog.show();
+        curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, "");
         db.collection("section").document("pp").collection("branch/"+curruntSubject+"/exam").document(curruntChapter).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -239,7 +246,29 @@ public class PreviousPaper extends Fragment {
         startActivity(intent);
     }
 
-    private void CustomizeView() { LoadSubjects(); }
+    private void CustomizeView() {
+        int currentState = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY, 0);
+        switch(currentState){
+            case 1:
+                curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+                if(curruntSubject == null || curruntSubject.isEmpty())
+                    LoadSubjects();
+                else
+                    LoadExams();
+                break;
+            case 2:
+                curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+                curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, "");
+                if(curruntSubject == null || curruntSubject.isEmpty() || curruntChapter == null || curruntChapter.isEmpty())
+                    LoadSubjects();
+                else
+                    LoadExams();
+                break;
+            default:
+                LoadSubjects();
+                break;
+        }
+    }
 
     private void setDialogMessage() {
         dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
