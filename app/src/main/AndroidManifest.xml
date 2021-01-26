@@ -21,7 +21,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
         <activity android:name=".ForgetPassword" />
-        <activity android:name=".ResultUploader" />
+        <activity android:name=".ResultUploader"
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
         <activity android:name=".MockChapterXyz" />
         <activity android:name=".LiveTestXyz" />
         <activity android:name=".InstructionXyz" />
