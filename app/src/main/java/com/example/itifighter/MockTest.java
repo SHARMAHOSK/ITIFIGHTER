@@ -189,6 +189,7 @@ public class MockTest extends Fragment {
     }
 
     private void LoadTest() {
+        CustomStackManager.SetSPKeyValue(CustomStackManager.MT_STATE_KEY, 2);
         curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
         curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, "");
         db.collection("section").document("mt").collection("branch").document(/*SubjectIds.get(currentSubjectPos)*/curruntSubject).collection("chapter").document(/*CHapterIds.get(currentChapterPos)*/curruntChapter).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
