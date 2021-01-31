@@ -1,6 +1,7 @@
 package com.example.itifighter;
 
-class CustomListItem {
+public class CustomListItem {
+    private boolean paymentStatus;
     private String topicHeader;
     private String months,month2,month3;
     private String description;
@@ -22,6 +23,14 @@ class CustomListItem {
         this.topicHeader = topicHeader;
         this.price = price;
         this.discount = discount;
+        type = 2;
+    }
+
+    public CustomListItem(String topicHeader, double price, double discount, boolean paymentStatus){
+        this.topicHeader = topicHeader;
+        this.price = price;
+        this.discount = discount;
+        this.paymentStatus = paymentStatus;
         type = 2;
     }
 
@@ -150,5 +159,12 @@ class CustomListItem {
 
     public String getCoupanActive() {
         return coupanActive;
+    }
+
+    public boolean getPaymentStatus() {
+        return paymentStatus;
+    }
+    public void setPaymentStatus(boolean paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

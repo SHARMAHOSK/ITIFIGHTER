@@ -10,23 +10,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
+public class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
     private Context context;
     private List<CustomListItem> Subjects;
     private LayoutInflater inflater;
     FirebaseStorage mFirebaseStorage= FirebaseStorage.getInstance();
     StorageReference mmFirebaseStorageRef;
+
     @Override
-    public int getCount() { return Subjects.size(); }
+    public int getCount() {
+        return Subjects.size();
+    }
 
     @Nullable
     @Override
@@ -35,7 +42,10 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
     }
 
     @Override
-    public long getItemId(int position) {return position;}
+    public long getItemId(int position) {
+        return position;
+    }
+
     public CustomListViewArrayAdapter(Context context, int resource, ArrayList<CustomListItem> objects) {
         super(context, resource, objects);
         this.context = context;
@@ -64,7 +74,7 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
                 break;
         }
         return vv;
-        //return property.getType() == 1 ? getType1(property) : property.getType() == 2 ? getType2(property) : getType0(property);
+
     }
 
     private View getType0(CustomListItem property) {
@@ -143,23 +153,26 @@ class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
         return  (price)-((price*discount)/100);
     }
 
-    private View getType2(CustomListItem property) {
-        //get the inflater and inflate the XML layout for each item
-        if (inflater == null)
-            inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        @SuppressLint({"ViewHolder", "InflateParams"}) View view = inflater.inflate(R.layout.activity__branch_list_view2, null);
-
+    @SuppressLint("SetTextI18n")
+    private synchronized View getType2(final CustomListItem property) {
+        inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        @SuppressLint("InflateParams") final View view = inflater.inflate(R.layout.activity__branch_list_view2, null);
+        LinearLayout layout = view.findViewById(R.id.backgroundPdf);
         TextView topicHeader = view.findViewById(R.id.titlePPP);
-
+        TextView originalPrice = view.findViewById(R.id.originalPrice);
+        TextView _discountedTV = view.findViewById(R.id.discountedPrice);
+        if(property.getPaymentStatus()){
+            layout.setBackgroundColor(Color.parseColor("#C5FBBC"));
+            originalPrice.setText("Open");
+            originalPrice.setTextColor(Color.parseColor("#003700"));
+        }else{
+            originalPrice.setText(""+property.getPrice()+" \u20b9");
+            originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            double discounted = (getFinalPrice(property.getPrice(), property.getDiscount()));
+            _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
+            _discountedTV.setTextColor(Color.parseColor("#000099"));
+        }
         topicHeader.setText(property.getTopicHeader());
-
-        TextView originalPrice = (TextView)view.findViewById(R.id.originalPrice);
-        originalPrice.setText(""+property.getPrice()+" \u20b9");
-        originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        double discounted = (getFinalPrice(property.getPrice(), property.getDiscount()));
-        TextView _discountedTV = (TextView)view.findViewById(R.id.discountedPrice);
-        _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
-        _discountedTV.setTextColor(Color.parseColor("#000099"));
         return view;
     }
 

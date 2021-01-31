@@ -1,0 +1,817 @@
+Index: app/src/main/java/com/example/itifighter/PreviousPaper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.itifighter;\r\n\r\nimport android.annotation.SuppressLint;\r\nimport android.app.ProgressDialog;\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.util.Log;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.AdapterView;\r\nimport android.widget.ArrayAdapter;\r\nimport android.widget.ListView;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.fragment.app.Fragment;\r\n\r\nimport com.google.android.gms.tasks.OnCanceledListener;\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.OnFailureListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.firestore.DocumentSnapshot;\r\nimport com.google.firebase.firestore.FirebaseFirestore;\r\nimport com.google.firebase.firestore.QueryDocumentSnapshot;\r\nimport com.google.firebase.firestore.QuerySnapshot;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.Objects;\r\n\r\nimport static android.content.ContentValues.TAG;\r\n\r\npublic class PreviousPaper extends Fragment {\r\n\r\n    @SuppressLint(\"StaticFieldLeak\")\r\n    public static PreviousPaper instance;\r\n    private String currentPdf = \"\";\r\n    private ArrayList<CustomListItem> Subjects, Exams;\r\n    private ListView listView;\r\n    private ArrayList<String> PdfS, pdfFile, SubjectIds, ExamIds;\r\n    private ArrayList<CustomListItem> PdfS_CL;\r\n    private FirebaseFirestore db;\r\n    private ProgressDialog dialog;\r\n    private Context mContext;\r\n    private ArrayAdapter adapter;\r\n    public String curruntSubject=\"\",curruntChapter=\"\";\r\n    TextView emptyListMessage;\r\n\r\n    public PreviousPaper() {}\r\n\r\n    @Override\r\n    public void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        db = FirebaseFirestore.getInstance();\r\n        mContext = getContext();\r\n        instance = this;\r\n    }\r\n\r\n    @Override\r\n    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {\r\n        View ppView = inflater.inflate(R.layout.fragment_previous_paper, container, false);\r\n        listView = ppView.findViewById(R.id.branch_list);\r\n        emptyListMessage = ppView.findViewById(R.id.emptyListMessagepp);\r\n        setDialogMessage();\r\n        CustomizeView();\r\n        return ppView;\r\n    }\r\n\r\n\r\n\r\n\r\n    public void LoadSubjects(){\r\n        /*CustomStackManager.GetInstance().SetPageState(0);*/\r\n        CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 0);\r\n        db.collection(\"section\").document(\"pp\").collection(\"branch\").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {\r\n            @Override\r\n            public void onComplete(@NonNull Task<QuerySnapshot> task) {\r\n                if (task.isSuccessful()) {\r\n                    Subjects = new ArrayList<>();\r\n                    SubjectIds = new ArrayList<>();\r\n                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {\r\n                        SubjectIds.add(document.getId());\r\n                        Subjects.add(new CustomListItem(document.getString(/*\"Name\"*/\"name\"),\r\n                                        document.getString(/*\"description\"*/\"desc\"), \"pp\"));\r\n                    }\r\n                    emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);\r\n                    ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);\r\n                    listView.setAdapter(adapter);\r\n                    dialog.dismiss();\r\n                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {@Override\r\n                        public void onItemClick(AdapterView<?> parent, View view,\r\n                                                int position, long id) {\r\n                            curruntSubject = SubjectIds.get(position);\r\n                            CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, curruntSubject);\r\n                            LoadExams();\r\n                        }\r\n                    });\r\n                } else {\r\n                    Log.d(TAG, \"Error getting documents: \", task.getException());\r\n                    LoadSubjects();\r\n                }\r\n            }\r\n        });\r\n    }\r\n\r\n    public void LoadExams(){\r\n        /*CustomStackManager.GetInstance().SetPageState(1);*/\r\n        CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 1);\r\n        dialog.show();\r\n        curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, \"\");\r\n        db.collection(\"section\").document(\"pp\").collection(\"branch\").document(curruntSubject).collection(\"exam\").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {\r\n            @Override\r\n            public void onComplete(@NonNull Task<QuerySnapshot> task) {\r\n                if (task.isSuccessful()) {\r\n                    Exams = new ArrayList<>();\r\n                    ExamIds = new ArrayList<>();\r\n                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {\r\n                        ExamIds.add(document.getId());\r\n                        Exams.add(new CustomListItem(document.getString(\"name\"),\r\n                                document.getString(\"desc\"), \"pp/chapter\"));\r\n                    }\r\n                    emptyListMessage.setVisibility(ExamIds.size() <= 0 ? View.VISIBLE : View.GONE);\r\n                    ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);\r\n                    listView.setAdapter(adapter);\r\n                    dialog.dismiss();\r\n                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {\r\n                        @Override\r\n                        public void onItemClick(AdapterView<?> parent, View view,\r\n                                                int position, long id) {\r\n                            curruntChapter = ExamIds.get(position);\r\n                            CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, curruntChapter);\r\n                            LoadPdfS();\r\n                        }\r\n                    });\r\n                } else {\r\n                    Log.d(TAG, \"Error getting documents: \", task.getException());\r\n                    LoadExams();\r\n                }\r\n            }\r\n        });\r\n    }\r\n\r\n    void LoadPdfS(){\r\n        /*CustomStackManager.GetInstance().SetPageState(2);*/\r\n        CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 2);\r\n        dialog.show();\r\n        curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, \"\");\r\n        db.collection(\"section\").document(\"pp\").collection(\"branch/\"+curruntSubject+\"/exam\").document(curruntChapter).collection(\"pdf\").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {\r\n            @Override\r\n            public void onComplete(@NonNull Task<QuerySnapshot> task) {\r\n                if (task.isSuccessful()) {\r\n                    PdfS = new ArrayList<>();\r\n                    PdfS_CL = new ArrayList<>();\r\n                    pdfFile = new ArrayList<>();\r\n                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {\r\n                        PdfS.add(document.getId());\r\n                        PdfS_CL.add(new CustomListItem(document.getId(), Double.parseDouble(Objects.requireNonNull(document.getString(\"price\"))),\r\n                                Double.parseDouble(Objects.requireNonNull(document.getString(\"discount\")))));\r\n                        pdfFile.add(\"\"+document.getString(\"Name\"));\r\n                    }\r\n                    emptyListMessage.setVisibility(PdfS.size() <= 0 ? View.VISIBLE : View.GONE);\r\n                    adapter = new CustomListViewArrayAdapter(mContext, 0, PdfS_CL);\r\n                    listView.setAdapter(adapter);\r\n                    dialog.dismiss();\r\n                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {\r\n                        @Override\r\n                        public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {\r\n                            currentPdf = PdfS.get(position); dialog.show();\r\n                            final String price = String.valueOf(PdfS_CL.get(position).getPrice()),\r\n                                         discount = String.valueOf(PdfS_CL.get(position).getDiscount()),\r\n                                         finalPrice = getFinalPrice(price,discount),\r\n                                         PdfName = String.valueOf(pdfFile.get(position));\r\n                            if(Double.parseDouble(finalPrice)<1){ openPdf(PdfName);}\r\n                            else{\r\n                                String Uid = FirebaseAuth.getInstance().getUid();\r\n                                if(Uid!=null){ try{\r\n                                        db.collection(\"users\").document(Uid).collection(\"Products\")\r\n                                                .document(\"pp\").collection(\"ProductId\").document(currentPdf)\r\n                                                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {\r\n                                            @Override\r\n                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {\r\n                                                DocumentSnapshot documentSnapshot = task.getResult();\r\n                                                if(documentSnapshot!=null && documentSnapshot.exists()){\r\n                                                    String status = documentSnapshot.getString(\"status\");\r\n                                                    String curruntSubjectPdf = documentSnapshot.getString(\"currentSubject\");\r\n                                                    String currentChapterPdf = documentSnapshot.getString(\"currentChapter\");\r\n                                                    if(Objects.requireNonNull(status).equals(\"1\") && Objects.equals(currentChapterPdf, curruntChapter) &&\r\n                                                            Objects.equals(curruntSubjectPdf, curruntSubject))  openPdf(PdfName);\r\n                                                    else openPaytmPaymentGateway(price,discount,PdfName);\r\n                                                }else openPaytmPaymentGateway(price,discount,PdfName);\r\n                                            }\r\n                                        }).addOnFailureListener(new OnFailureListener() {\r\n                                            @Override\r\n                                            public void onFailure(@NonNull Exception e) {\r\n                                                Toast.makeText(getContext(),\" something failure\",Toast.LENGTH_SHORT).show();\r\n                                            }\r\n                                        }).addOnCanceledListener(new OnCanceledListener() {\r\n                                            @Override\r\n                                            public void onCanceled() {\r\n                                                Toast.makeText(getContext(),\"task canceled\",Toast.LENGTH_SHORT).show();\r\n                                            }\r\n                                        });\r\n                                    }catch (Exception e){\r\n                                        Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();\r\n                                    }\r\n                                }\r\n                            }\r\n\r\n                        }\r\n\r\n                        private String getFinalPrice(String price, String discount) {\r\n                            double price1 = Double.parseDouble(price),discount1 = Double.parseDouble(discount);\r\n                            return  String.valueOf((price1)-((price1*discount1)/100));\r\n                        }\r\n                    });\r\n                } else {\r\n                    Log.d(TAG, \"Error getting documents: \", task.getException());\r\n                    LoadPdfS();\r\n                }\r\n            }\r\n        });\r\n    }\r\n\r\n\r\n\r\n\r\n    private void openPdf(String pdfName){\r\n        dialog.dismiss();\r\n        Intent intent = new Intent(mContext, LoadPdf.class);\r\n        intent.putExtra(\"pdf\",pdfName);\r\n        startActivity(intent);\r\n    }\r\n\r\n    private void openPaytmPaymentGateway(String price,String discount,String PdfName){\r\n        dialog.dismiss();\r\n        Intent intent = new Intent(mContext,PaytmPaymentpp.class);\r\n        intent.putExtra(\"price\",price);\r\n        intent.putExtra(\"discount\",discount);\r\n        intent.putExtra(\"titleName\",PdfName);\r\n        intent.putExtra(\"curruntPdf\",currentPdf);\r\n        intent.putExtra(\"currentSubject\",curruntSubject);\r\n        intent.putExtra(\"currentChapter\",curruntChapter);\r\n        startActivity(intent);\r\n    }\r\n\r\n    private void CustomizeView() {\r\n        int currentState = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY, 0);\r\n        switch(currentState){\r\n            case 1:\r\n                curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, \"\");\r\n                if(curruntSubject == null || curruntSubject.isEmpty())\r\n                    LoadSubjects();\r\n                else\r\n                    LoadExams();\r\n                break;\r\n            case 2:\r\n                curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, \"\");\r\n                curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, \"\");\r\n                if(curruntSubject == null || curruntSubject.isEmpty() || curruntChapter == null || curruntChapter.isEmpty())\r\n                    LoadSubjects();\r\n                else\r\n                    LoadExams();\r\n                break;\r\n            default:\r\n                LoadSubjects();\r\n                break;\r\n        }\r\n    }\r\n\r\n    private void setDialogMessage() {\r\n        dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);\r\n        dialog.setMessage(\"Loading...\");\r\n        dialog.setCancelable(false);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/itifighter/PreviousPaper.java	(revision 6a3c55046ee8b94b6c280da2d13ed80b94775c72)
++++ app/src/main/java/com/example/itifighter/PreviousPaper.java	(date 1612089600673)
+@@ -21,14 +21,17 @@
+ import com.google.android.gms.tasks.OnCanceledListener;
+ import com.google.android.gms.tasks.OnCompleteListener;
+ import com.google.android.gms.tasks.OnFailureListener;
++import com.google.android.gms.tasks.OnSuccessListener;
+ import com.google.android.gms.tasks.Task;
+ import com.google.firebase.auth.FirebaseAuth;
++import com.google.firebase.firestore.CollectionReference;
+ import com.google.firebase.firestore.DocumentSnapshot;
+ import com.google.firebase.firestore.FirebaseFirestore;
+ import com.google.firebase.firestore.QueryDocumentSnapshot;
+ import com.google.firebase.firestore.QuerySnapshot;
+ 
+ import java.util.ArrayList;
++import java.util.HashMap;
+ import java.util.Objects;
+ 
+ import static android.content.ContentValues.TAG;
+@@ -42,237 +45,296 @@
+     private ListView listView;
+     private ArrayList<String> PdfS, pdfFile, SubjectIds, ExamIds;
+     private ArrayList<CustomListItem> PdfS_CL;
++    private HashMap<String,Boolean>pdfPayment;
+     private FirebaseFirestore db;
+     private ProgressDialog dialog;
+     private Context mContext;
+     private ArrayAdapter adapter;
+     public String curruntSubject="",curruntChapter="";
+     TextView emptyListMessage;
++    private CollectionReference ref;
++
+ 
+     public PreviousPaper() {}
+ 
+     @Override
+     public void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        db = FirebaseFirestore.getInstance();
+-        mContext = getContext();
+-        instance = this;
++        try{
++            super.onCreate(savedInstanceState);
++            db = FirebaseFirestore.getInstance();
++            mContext = getContext();
++            instance = this;
++        }catch(Exception e) {
++            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
++        }
+     }
+ 
+     @Override
+-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+-        View ppView = inflater.inflate(R.layout.fragment_previous_paper, container, false);
+-        listView = ppView.findViewById(R.id.branch_list);
+-        emptyListMessage = ppView.findViewById(R.id.emptyListMessagepp);
+-        setDialogMessage();
+-        CustomizeView();
+-        return ppView;
++    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
++        try{
++            View ppView = inflater.inflate(R.layout.fragment_previous_paper, container, false);
++            listView = ppView.findViewById(R.id.branch_list);
++            emptyListMessage = ppView.findViewById(R.id.emptyListMessagepp);
++            setDialogMessage();
++            CustomizeView();
++            return ppView;
++        }catch(Exception e){
++            Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
++            return inflater.inflate(R.layout.fragment_previous_paper, container, false);
++        }
++
+     }
+ 
+ 
+ 
+ 
+     public void LoadSubjects(){
+-        /*CustomStackManager.GetInstance().SetPageState(0);*/
+-        CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 0);
+-        db.collection("section").document("pp").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+-            @Override
+-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+-                if (task.isSuccessful()) {
+-                    Subjects = new ArrayList<>();
+-                    SubjectIds = new ArrayList<>();
+-                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+-                        SubjectIds.add(document.getId());
+-                        Subjects.add(new CustomListItem(document.getString(/*"Name"*/"name"),
+-                                        document.getString(/*"description"*/"desc"), "pp"));
+-                    }
+-                    emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);
+-                    ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
+-                    listView.setAdapter(adapter);
+-                    dialog.dismiss();
+-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {@Override
++        try{
++            // CustomStackManager.GetInstance().SetPageState(0);
++            db.collection("section").document("pp").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
++                @Override
++                public void onComplete(@NonNull Task<QuerySnapshot> task) {
++                    if (task.isSuccessful()) {
++                        Subjects = new ArrayList<>();
++                        SubjectIds = new ArrayList<>();
++                        for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
++                            SubjectIds.add(document.getId());
++                            Subjects.add(new CustomListItem(document.getString(/*"Name"*/"name"),
++                                    document.getString(/*"description"*/"desc"), "pp"));
++                        }
++                        emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);
++                        ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
++                        listView.setAdapter(adapter);
++                        dialog.dismiss();
++                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {@Override
+                         public void onItemClick(AdapterView<?> parent, View view,
+                                                 int position, long id) {
+                             curruntSubject = SubjectIds.get(position);
+-                            CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, curruntSubject);
+                             LoadExams();
+                         }
+-                    });
+-                } else {
+-                    Log.d(TAG, "Error getting documents: ", task.getException());
+-                    LoadSubjects();
+-                }
+-            }
+-        });
++                        });
++                    } else {
++                        Log.d(TAG, "Error getting documents: ", task.getException());
++                        LoadSubjects();
++                    }
++                }
++            });
++        }catch(Exception e) {
++            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
++            LoadSubjects();
++        }
+     }
+ 
+     public void LoadExams(){
+-        /*CustomStackManager.GetInstance().SetPageState(1);*/
+-        CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 1);
+-        dialog.show();
+-        curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, "");
+-        db.collection("section").document("pp").collection("branch").document(curruntSubject).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+-            @Override
+-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+-                if (task.isSuccessful()) {
+-                    Exams = new ArrayList<>();
+-                    ExamIds = new ArrayList<>();
+-                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+-                        ExamIds.add(document.getId());
+-                        Exams.add(new CustomListItem(document.getString("name"),
+-                                document.getString("desc"), "pp/chapter"));
+-                    }
+-                    emptyListMessage.setVisibility(ExamIds.size() <= 0 ? View.VISIBLE : View.GONE);
+-                    ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);
+-                    listView.setAdapter(adapter);
+-                    dialog.dismiss();
+-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+-                        @Override
+-                        public void onItemClick(AdapterView<?> parent, View view,
+-                                                int position, long id) {
+-                            curruntChapter = ExamIds.get(position);
+-                            CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, curruntChapter);
+-                            LoadPdfS();
+-                        }
+-                    });
+-                } else {
+-                    Log.d(TAG, "Error getting documents: ", task.getException());
+-                    LoadExams();
+-                }
+-            }
+-        });
++        try{
++            //CustomStackManager.GetInstance().SetPageState(1);
++            dialog.show();
++            db.collection("section").document("pp").collection("branch").document(curruntSubject).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
++                @Override
++                public void onComplete(@NonNull Task<QuerySnapshot> task) {
++                    if (task.isSuccessful()) {
++                        Exams = new ArrayList<>();
++                        ExamIds = new ArrayList<>();
++                        for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
++                            ExamIds.add(document.getId());
++                            Exams.add(new CustomListItem(document.getString("name"),
++                                    document.getString("desc"), "pp/chapter"));
++                        }
++                        dialog.dismiss();
++                        emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);
++                        ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Exams);
++                        listView.setAdapter(adapter);
++                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
++                            @Override
++                            public void onItemClick(AdapterView<?> parent, View view,
++                                                    int position, long id) {
++                                curruntChapter = ExamIds.get(position);
++                                LoadPdfS();
++                            }
++                        });
++                    } else {
++                        dialog.dismiss();
++                        Log.d(TAG, "Error getting documents: ", task.getException());
++                        LoadExams();
++                    }
++                }
++            });
++        }catch(Exception e){
++            dialog.dismiss();
++            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
++            LoadExams();
++        }
+     }
+ 
+-    void LoadPdfS(){
+-        /*CustomStackManager.GetInstance().SetPageState(2);*/
+-        CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 2);
+-        dialog.show();
+-        curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, "");
+-        db.collection("section").document("pp").collection("branch/"+curruntSubject+"/exam").document(curruntChapter).collection("pdf").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+-            @Override
+-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+-                if (task.isSuccessful()) {
+-                    PdfS = new ArrayList<>();
+-                    PdfS_CL = new ArrayList<>();
+-                    pdfFile = new ArrayList<>();
+-                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+-                        PdfS.add(document.getId());
+-                        PdfS_CL.add(new CustomListItem(document.getId(), Double.parseDouble(Objects.requireNonNull(document.getString("price"))),
+-                                Double.parseDouble(Objects.requireNonNull(document.getString("discount")))));
+-                        pdfFile.add(""+document.getString("Name"));
+-                    }
+-                    emptyListMessage.setVisibility(PdfS.size() <= 0 ? View.VISIBLE : View.GONE);
+-                    adapter = new CustomListViewArrayAdapter(mContext, 0, PdfS_CL);
+-                    listView.setAdapter(adapter);
+-                    dialog.dismiss();
+-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+-                        @Override
+-                        public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+-                            currentPdf = PdfS.get(position); dialog.show();
+-                            final String price = String.valueOf(PdfS_CL.get(position).getPrice()),
+-                                         discount = String.valueOf(PdfS_CL.get(position).getDiscount()),
+-                                         finalPrice = getFinalPrice(price,discount),
+-                                         PdfName = String.valueOf(pdfFile.get(position));
+-                            if(Double.parseDouble(finalPrice)<1){ openPdf(PdfName);}
+-                            else{
+-                                String Uid = FirebaseAuth.getInstance().getUid();
+-                                if(Uid!=null){ try{
+-                                        db.collection("users").document(Uid).collection("Products")
+-                                                .document("pp").collection("ProductId").document(currentPdf)
+-                                                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+-                                            @Override
+-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+-                                                DocumentSnapshot documentSnapshot = task.getResult();
+-                                                if(documentSnapshot!=null && documentSnapshot.exists()){
+-                                                    String status = documentSnapshot.getString("status");
+-                                                    String curruntSubjectPdf = documentSnapshot.getString("currentSubject");
+-                                                    String currentChapterPdf = documentSnapshot.getString("currentChapter");
+-                                                    if(Objects.requireNonNull(status).equals("1") && Objects.equals(currentChapterPdf, curruntChapter) &&
+-                                                            Objects.equals(curruntSubjectPdf, curruntSubject))  openPdf(PdfName);
+-                                                    else openPaytmPaymentGateway(price,discount,PdfName);
+-                                                }else openPaytmPaymentGateway(price,discount,PdfName);
+-                                            }
+-                                        }).addOnFailureListener(new OnFailureListener() {
+-                                            @Override
+-                                            public void onFailure(@NonNull Exception e) {
+-                                                Toast.makeText(getContext()," something failure",Toast.LENGTH_SHORT).show();
+-                                            }
+-                                        }).addOnCanceledListener(new OnCanceledListener() {
+-                                            @Override
+-                                            public void onCanceled() {
+-                                                Toast.makeText(getContext(),"task canceled",Toast.LENGTH_SHORT).show();
+-                                            }
+-                                        });
+-                                    }catch (Exception e){
+-                                        Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+-                                    }
+-                                }
+-                            }
+-
+-                        }
+-
+-                        private String getFinalPrice(String price, String discount) {
+-                            double price1 = Double.parseDouble(price),discount1 = Double.parseDouble(discount);
+-                            return  String.valueOf((price1)-((price1*discount1)/100));
+-                        }
+-                    });
+-                } else {
+-                    Log.d(TAG, "Error getting documents: ", task.getException());
+-                    LoadPdfS();
+-                }
+-            }
+-        });
++    public void LoadPdfS(){
++        try{
++            //CustomStackManager.GetInstance().SetPageState(2);
++            dialog.show();
++            String Uid = FirebaseAuth.getInstance().getUid();
++            assert Uid != null;
++            ref = db.collection("users").document(Uid).collection("Products")
++                    .document("pp").collection("ProductId");
++
++            db.collection("section").document("pp")
++                    .collection("branch/"+curruntSubject+"/exam")
++                    .document(curruntChapter).collection("pdf")
++                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
++                @Override
++                public void onComplete(@NonNull Task<QuerySnapshot> task) {
++
++                    try{
++                        if (task.isSuccessful()) {
++                            PdfS = new ArrayList<>();
++                            PdfS_CL = new ArrayList<>();
++                            pdfFile = new ArrayList<>();
++                            pdfPayment = new HashMap<>();
++                            for (final QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
++                                final String curruntPdfSection = document.getId();
++                                ref.document(curruntPdfSection).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
++                                    @Override
++                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
++                                        pdfPayment.put(curruntPdfSection,xNull(String.valueOf(documentSnapshot.get("status"))).equalsIgnoreCase("1"));
++                                        PdfS.add(document.getId());
++                                        pdfFile.add("" + document.getString("Name"));
++                                        PdfS_CL.add(new CustomListItem(document.getId(), Double.parseDouble(Objects.requireNonNull(document.getString("price"))),
++                                                Double.parseDouble(Objects.requireNonNull(document.getString("discount"))),xNull(String.valueOf(documentSnapshot.get("status"))).equalsIgnoreCase("1")));
++
++                                        dialog.dismiss();
++                                        emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);
++                                        adapter = new CustomListViewArrayAdapter(mContext, 0, PdfS_CL);
++                                        listView.setAdapter(adapter);
++                                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
++                                            @Override
++                                            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
++                                                currentPdf = PdfS.get(position);
++                                                dialog.show();
++                                                final String price = String.valueOf(PdfS_CL.get(position).getPrice()),
++                                                        discount = String.valueOf(PdfS_CL.get(position).getDiscount()),
++                                                        finalPrice = getFinalPrice(price,discount),
++                                                        PdfName = String.valueOf(pdfFile.get(position));
++                                                if(Double.parseDouble(finalPrice)<1){ openPdf(PdfName);}
++                                                else{
++                                                    String Uid = FirebaseAuth.getInstance().getUid();
++                                                    if(Uid!=null){ try{
++                                                        db.collection("users").document(Uid).collection("Products")
++                                                                .document("pp").collection("ProductId").document(currentPdf)
++                                                                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
++                                                            @Override
++                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
++                                                                DocumentSnapshot documentSnapshot = task.getResult();
++                                                                if(documentSnapshot!=null && documentSnapshot.exists()){
++                                                                    String status = documentSnapshot.getString("status");
++                                                                    String curruntSubjectPdf = documentSnapshot.getString("currentSubject");
++                                                                    String currentChapterPdf = documentSnapshot.getString("currentChapter");
++                                                                    if(Objects.requireNonNull(status).equals("1") && Objects.equals(currentChapterPdf, curruntChapter) &&
++                                                                            Objects.equals(curruntSubjectPdf, curruntSubject))  openPdf(PdfName);
++                                                                    else openPaytmPaymentGateway(price,discount,PdfName);
++                                                                }else openPaytmPaymentGateway(price,discount,PdfName);
++                                                            }
++                                                        }).addOnFailureListener(new OnFailureListener() {
++                                                            @Override
++                                                            public void onFailure(@NonNull Exception e) {
++                                                                dialog.dismiss();
++                                                                Toast.makeText(getContext()," something failure",Toast.LENGTH_SHORT).show();
++                                                            }
++                                                        }).addOnCanceledListener(new OnCanceledListener() {
++                                                            @Override
++                                                            public void onCanceled() {
++                                                                dialog.dismiss();
++                                                                Toast.makeText(getContext(),"task canceled",Toast.LENGTH_SHORT).show();
++                                                            }
++                                                        });
++                                                    }catch (Exception e){
++                                                        dialog.dismiss();
++                                                        Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
++                                                    }
++                                                    }else{
++                                                        dialog.dismiss();
++                                                    }
++                                                }
++                                            }
++                                            private String getFinalPrice(String price, String discount) {
++                                                double price1 = Double.parseDouble(price),discount1 = Double.parseDouble(discount);
++                                                return  String.valueOf((price1)-((price1*discount1)/100));
++                                            }
++                                        });
++                                    }
++                                }).addOnFailureListener(new OnFailureListener() {
++                                    @Override
++                                    public void onFailure(@NonNull Exception e) {
++                                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
++                                        LoadPdfS();
++                                    }
++                                });
++                            }
++                        } else {
++                            Log.d(TAG, "Error getting documents: ", task.getException());
++                            LoadPdfS();
++                        }
++                    }catch (Exception e){
++                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
++                        LoadPdfS();
++                    }
++                }
++            });
++        }catch(Exception e){
++            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
++            LoadPdfS();
++        }
+     }
+-
+-
+ 
+ 
+     private void openPdf(String pdfName){
+-        dialog.dismiss();
+-        Intent intent = new Intent(mContext, LoadPdf.class);
+-        intent.putExtra("pdf",pdfName);
+-        startActivity(intent);
++        try{
++            dialog.dismiss();
++            Intent intent = new Intent(mContext, LoadPdf.class);
++            intent.putExtra("pdf",pdfName);
++            startActivity(intent);
++        }catch(Exception e){
++            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
++            openPdf(pdfName);
++        }
+     }
+ 
+     private void openPaytmPaymentGateway(String price,String discount,String PdfName){
+-        dialog.dismiss();
+-        Intent intent = new Intent(mContext,PaytmPaymentpp.class);
+-        intent.putExtra("price",price);
+-        intent.putExtra("discount",discount);
+-        intent.putExtra("titleName",PdfName);
+-        intent.putExtra("curruntPdf",currentPdf);
+-        intent.putExtra("currentSubject",curruntSubject);
+-        intent.putExtra("currentChapter",curruntChapter);
+-        startActivity(intent);
++        try{
++            dialog.dismiss();
++            Intent intent = new Intent(mContext,PaytmPaymentpp.class);
++            intent.putExtra("price",price);
++            intent.putExtra("discount",discount);
++            intent.putExtra("titleName",PdfName);
++            intent.putExtra("curruntPdf",currentPdf);
++            intent.putExtra("currentSubject",curruntSubject);
++            intent.putExtra("currentChapter",curruntChapter);
++            startActivity(intent);
++        }catch(Exception e){
++            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
++            openPaytmPaymentGateway(price,discount,PdfName);
++        }
+     }
+ 
+     private void CustomizeView() {
+-        int currentState = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY, 0);
+-        switch(currentState){
+-            case 1:
+-                curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+-                if(curruntSubject == null || curruntSubject.isEmpty())
+-                    LoadSubjects();
+-                else
+-                    LoadExams();
+-                break;
+-            case 2:
+-                curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+-                curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, "");
+-                if(curruntSubject == null || curruntSubject.isEmpty() || curruntChapter == null || curruntChapter.isEmpty())
+-                    LoadSubjects();
+-                else
+-                    LoadExams();
+-                break;
+-            default:
+-                LoadSubjects();
+-                break;
++        try{
++            LoadSubjects();
++        }catch(Exception e){
++            CustomizeView();
+         }
++
+     }
+ 
+     private void setDialogMessage() {
+-        dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+-        dialog.setMessage("Loading...");
+-        dialog.setCancelable(false);
++        try{
++            dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
++            dialog.setMessage("Loading...");
++            dialog.setCancelable(false);
++        }catch(Exception e){
++            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
++            setDialogMessage();
++        }
++    }
++
++    public String xNull(String str) {
++        if(str!=null) return str;
++        else return "";
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources xmlns:tools=\"http://schemas.android.com/tools\">\r\n    <string name=\"app_name\">ITIFighter</string>\r\n    <string name=\"sign_in\">Sign In</string>\r\n    <string name=\"email\">Email</string>\r\n    <string name=\"login_to_continue_your_account\">Login to continue your account</string>\r\n    <string name=\"password\">Password</string>\r\n    <string name=\"login\">Login</string>\r\n    <string name=\"don_t_have_an_account\">Don\\'t have an account</string>\r\n    <string name=\"register\">Register</string>\r\n    <string name=\"already_have_an_account\">Already have an account</string>\r\n    <string name=\"name\">Name</string>\r\n    <string name=\"mobile\">Mobile</string>\r\n    <string name=\"state\">State</string>\r\n    <string name=\"trade\">Trade</string>\r\n    <string name=\"menu_home\">Home</string>\r\n    <string name=\"menu_Profile\">My Profile</string>\r\n    <string name=\"menu_chat\">Discussion</string>\r\n    <string name=\"share\">Share</string>\r\n    <string name=\"rating\">Rating</string>\r\n    <string name=\"change\">Change Password</string>\r\n    <string name=\"logout\">Logout</string>\r\n    <string name=\"username\">ITIFighter</string>\r\n    <string name=\"menu_groups\">Groups</string>\r\n    <!-- TODO: Remove or change this placeholder text -->\r\n    <string name=\"hello_blank_fragment\">Hello blank fragment</string>\r\n    <string name=\"todo\">TODO</string>\r\n    <string name=\"user_email\">Wiliam@gmail.com</string>\r\n    <string name=\"stateX\">Uttar Pradesh</string>\r\n    <string name=\"TradeX\">Fitter</string>\r\n    <string name=\"designed_by_n_sharmask_amp_aj\"><![CDATA[Designed & Devloped by \\n Sharmask & AJ]]></string>\r\n    <string name=\"phone\">phone</string>\r\n    <string name=\"rate_our_app\">Rate our app</string>\r\n    <string name=\"rate_our_previous_paper\">Rate our previous Paper</string>\r\n    <string name=\"rate_our_mock_test\">Rate our mock test</string>\r\n    <string name=\"rate_our_test_series\">Rate our Tets series</string>\r\n    <string name=\"rate_our_daily_live_test\">Rate our daily live test</string>\r\n    <string name=\"submit\">submit</string>\r\n    <string name=\"oldpassword\">Old Password</string>\r\n    <string name=\"newpassword\">New Password</string>\r\n    <string name=\"confirmpassword\">Confirm Password</string>\r\n    <!-- TODO: Remove or change this placeholder text -->\r\n\r\n    <string name=\"joey_tribbiani\">Joey Tribbiani</string>\r\n    <string name=\"new_york_usa\">new york, usa</string>\r\n    <string name=\"_453k\">453K</string>\r\n    <string name=\"_873\">873</string>\r\n    <string name=\"_1_202_555_0157\" tools:ignore=\"TypographyDashes\">+1–202–555-0157</string>\r\n    <string name=\"MyScore\">My Score</string>\r\n    <string name=\"MyRank\">My Rank</string>\r\n    <string name=\"discription\">Discription</string>\r\n    <string name=\"title\">title</string>\r\n    <string name=\"new_message\">new message…</string>\r\n\r\n    <string name=\"placeholder_message\">Placeholder message</string>\r\n    <string name=\"rose\">Rose</string>\r\n    <string name=\"how_are_you_doing_this_is_a_long_message_that_should_probably_wrap\">How are you doing? This is a long message that should probably wrap.</string>\r\n\r\n    <!-- Strings related to login -->\r\n\r\n    <!-- Firestore Strings -->\r\n    <string name=\"collection_chatrooms\">Chatrooms</string>\r\n    <string name=\"collection_chat_messages\">Chat Messages</string>\r\n    <string name=\"collection_chatroom_user_list\">User List</string>\r\n\r\n    <!-- Intent extras -->\r\n\r\n    <!-- Fragments Names -->\r\n\r\n    <!-- Other Strings -->\r\n    <string name=\"payment_gateway\">Payment Gateway</string>\r\n    <string name=\"www_google_com\">www.noobworm.xyz</string>\r\n    <string name=\"paytm_integrations\">Payment integration</string>\r\n    <string name=\"order_id\">order id</string>\r\n    <string name=\"customer_id\">customer_id</string>\r\n    <string name=\"price\">price</string>\r\n    <string name=\"start_payment\">start payment</string>\r\n    <string name=\"choose_subscription_plan\">Choose Subscription</string>\r\n    <string name=\"start\">Start</string>\r\n    <string name=\"result\">Result</string>\r\n    <string name=\"title_here\">TITLE HERE</string>\r\n    <string name=\"submit_feedback\">Submit Feedback</string>\r\n    <string name=\"cancel\">Cancel</string>\r\n    <string name=\"_1\">+1</string>\r\n    <string name=\"dummy_question\">dummy_question</string>\r\n    <string name=\"something_wrong_with_this_question\">Something wrong with this question?</string>\r\n    <string name=\"give_feedback\">Give feedback!</string>\r\n    <string name=\"skip\">Skip</string>\r\n    <string name=\"next\">Next</string>\r\n    <string name=\"live\">LIVE</string>\r\n    <string name=\"ques_num\">Ques Num</string>\r\n    <string name=\"time_left\">Time left</string>\r\n    <string name=\"total_pending_quetion\">total pending quetion:</string>\r\n    <string name=\"total_skipped_quetion\">total skipped quetion:</string>\r\n    <string name=\"total_attempted_quetion\">total attempted quetion:</string>\r\n    <string name=\"total_available_quetion\">total available quetion:</string>\r\n    <string name=\"_10\">10</string>\r\n    <string name=\"score\">Score</string>\r\n    <string name=\"title_activity_view_solution_xyz\">ViewSolutionXyz</string>\r\n    <!-- Strings used for fragments for navigation -->\r\n    <string name=\"first_fragment_label\">First Fragment</string>\r\n    <string name=\"second_fragment_label\">Second Fragment</string>\r\n    <string name=\"previous\">Previous</string>\r\n\r\n    <string name=\"hello_first_fragment\">Hello first fragment</string>\r\n    <string name=\"hello_second_fragment\">Hello second fragment. Arg: %1$s</string>\r\n    <string name=\"prev\">PREV</string>\r\n    <string name=\"leaderboard\">LEADERBOARD</string>\r\n    <string name=\"student_name\">Student Name</string>\r\n    <string name=\"rank\">Rank</string>\r\n    <string name=\"percentage\">Percentage</string>\r\n    <string name=\"points\">Points</string>\r\n    <string name=\"resultX\">RESULT</string>\r\n    <string name=\"analysis\">Analysis</string>\r\n    <string name=\"percent\">Percent</string>\r\n    <string name=\"second\">Second</string>\r\n    <string name=\"accuracy\">Accuracy</string>\r\n    <string name=\"time_quetion\">Time / Quetion</string>\r\n    <string name=\"view_solution\">View Solution</string>\r\n    <string name=\"view_leader_board\">View Leader Board</string>\r\n    <string name=\"re_take_exam\">Re-Take Exam</string>\r\n    <string name=\"close\">CLOSE</string>\r\n    <string name=\"solution\">SOLUTION</string>\r\n    <string name=\"a\">A</string>\r\n    <string name=\"b\">B</string>\r\n    <string name=\"c\">C</string>\r\n    <string name=\"d\">D</string>\r\n    <string name=\"_100_u20b9\"><strike>100 ₹</strike></string>\r\n    <string name=\"back\">Back</string>\r\n    <string name=\"i_have_read_all_instructions\">I have read all instructions</string>\r\n    <string name=\"instruction\">INSTRUCTION</string>\r\n    <string name=\"minutes\">Minutes</string>\r\n    <string name=\"marks\">Marks</string>\r\n    <string name=\"quetions\">Quetions</string>\r\n    <string name=\"Live_Test\">Live Test</string>\r\n    <string name=\"oops_no_data_available\">oops, no data available</string>\r\n    <string name=\"registered_emailid\">Registered Email id</string>\r\n    <string name=\"forget_password\">Forget Password</string>\r\n    <string name=\"enter_old_password\">enter old Password</string>\r\n    <string name=\"enter_new_password\">enter new Password</string>\r\n    <string name=\"enter_confirm_password\">enter confirm password</string>\r\n\r\n\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(revision 6a3c55046ee8b94b6c280da2d13ed80b94775c72)
++++ app/src/main/res/values/strings.xml	(date 1612072484793)
+@@ -138,6 +138,7 @@
+     <string name="enter_old_password">enter old Password</string>
+     <string name="enter_new_password">enter new Password</string>
+     <string name="enter_confirm_password">enter confirm password</string>
++    <string name="menu_notification">Latest Jobs</string>
+ 
+ 
+ </resources>
+\ No newline at end of file
+Index: app/src/main/java/com/example/itifighter/CustomListItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.itifighter;\r\n\r\nclass CustomListItem {\r\n    private String topicHeader;\r\n    private String months,month2,month3;\r\n    private String description;\r\n    private double price;\r\n    private double price2;\r\n    private double price3;\r\n    private double discount;\r\n    private double discount2;\r\n    private double discount3;\r\n    private int quesCount;\r\n    private int duration;\r\n    private int MPQ,NOQ;\r\n    private int type;\r\n    private int chapterIndex;\r\n    private String imagex;\r\n    private String coupanCode,coupanActive;\r\n\r\n    public CustomListItem(String topicHeader, double price, double discount){\r\n        this.topicHeader = topicHeader;\r\n        this.price = price;\r\n        this.discount = discount;\r\n        type = 2;\r\n    }\r\n\r\n    public CustomListItem(String topicHeader, String description, double price, double discount, int quesCount, int duration, int MPQ,String imagex){\r\n        this.topicHeader = topicHeader;\r\n        this.description = description;\r\n        this.price = price;\r\n        type = 1;\r\n        this.discount = discount;\r\n        this.quesCount = quesCount;\r\n        this.duration = duration;\r\n        this.MPQ = MPQ;\r\n        this.imagex = imagex;\r\n    }\r\n\r\n    public CustomListItem(int chapterIndex, String topicHeader, String description, double price, double discount, int quesCount, int duration, int MPQ,String imagex){\r\n        this.chapterIndex = chapterIndex;\r\n        this.topicHeader = topicHeader;\r\n        this.description = description;\r\n        this.price = price;\r\n        type = 1;\r\n        this.discount = discount;\r\n        this.quesCount = quesCount;\r\n        this.duration = duration;\r\n        this.MPQ = MPQ;\r\n        this.imagex = imagex;\r\n    }\r\n\r\n    public CustomListItem(String topicHeader, String description, String imagex){\r\n        this.topicHeader = topicHeader;\r\n        this.description = description;\r\n        type=0;\r\n        this.imagex = imagex;\r\n    }\r\n\r\n    public CustomListItem(String topicHeader, String description, String months, double price, double discount, String imagex) {\r\n        this.topicHeader = topicHeader;\r\n        this.months = months;\r\n        this.description = description;\r\n        this.price = price;\r\n        type = 3;\r\n        this.discount = discount;\r\n        this.imagex = imagex;\r\n    }\r\n\r\n    public CustomListItem(String name, String month1, String month2, String month3, String price1, String price2, String price3, String discount1, String discount2, String discount3, String couponCODE, String couponACTIVE, String noq) {\r\n        this.topicHeader = name;\r\n        this.months = month1;\r\n        this.month2 = month2;\r\n        this.month3 = month3;\r\n        this.price = Double.parseDouble(price1);\r\n        this.price2 = Double.parseDouble(price2);\r\n        this.price3 = Double.parseDouble(price3);\r\n        this.discount = Double.parseDouble(discount1);\r\n        this.discount2 = Double.parseDouble(discount2);\r\n        this.discount3 = Double.parseDouble(discount3);\r\n        this.coupanCode = couponCODE;\r\n        this.coupanActive = couponACTIVE;\r\n        this.NOQ = Integer.parseInt(noq);\r\n\r\n    }\r\n\r\n    public int getType() {\r\n        return type;\r\n    }\r\n    public int getChapterIndex() {\r\n        return chapterIndex;\r\n    }\r\n\r\n    public double getPrice() {\r\n        return price;\r\n    }\r\n\r\n    public double getDiscount() {\r\n        return discount;\r\n    }\r\n\r\n    public int getQuesCount() {\r\n        return quesCount;\r\n    }\r\n\r\n    public String getTopicHeader() {return topicHeader; }\r\n    public String getMonths() {return months; }\r\n    public String getDescription() {return description; }\r\n    public String getImagex(){return  imagex;}\r\n\r\n    public int getDuration() {\r\n        return this.duration;\r\n    }\r\n\r\n    public int getMPQ() {\r\n        return this.MPQ;\r\n    }\r\n\r\n    public String getMonth2() {\r\n        return month2;\r\n    }\r\n\r\n    public String getMonth3() {\r\n        return month3;\r\n    }\r\n\r\n    public double getPrice2() {\r\n        return price2;\r\n    }\r\n\r\n    public double getPrice3() {\r\n        return price3;\r\n    }\r\n\r\n    public double getDiscount2() {\r\n        return discount2;\r\n    }\r\n\r\n    public double getDiscount3() {\r\n        return discount3;\r\n    }\r\n\r\n    public int getNOQ() {\r\n        return NOQ;\r\n    }\r\n\r\n    public String getCoupanCode() {\r\n        return coupanCode;\r\n    }\r\n\r\n    public String getCoupanActive() {\r\n        return coupanActive;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/itifighter/CustomListItem.java	(revision 6a3c55046ee8b94b6c280da2d13ed80b94775c72)
++++ app/src/main/java/com/example/itifighter/CustomListItem.java	(date 1612079751851)
+@@ -1,6 +1,7 @@
+ package com.example.itifighter;
+ 
+-class CustomListItem {
++public class CustomListItem {
++    private boolean paymentStatus;
+     private String topicHeader;
+     private String months,month2,month3;
+     private String description;
+@@ -24,6 +25,14 @@
+         this.discount = discount;
+         type = 2;
+     }
++
++    public CustomListItem(String topicHeader, double price, double discount, boolean paymentStatus){
++        this.topicHeader = topicHeader;
++        this.price = price;
++        this.discount = discount;
++        this.paymentStatus = paymentStatus;
++        type = 2;
++    }
+ 
+     public CustomListItem(String topicHeader, String description, double price, double discount, int quesCount, int duration, int MPQ,String imagex){
+         this.topicHeader = topicHeader;
+@@ -151,4 +160,11 @@
+     public String getCoupanActive() {
+         return coupanActive;
+     }
++
++    public boolean getPaymentStatus() {
++        return paymentStatus;
++    }
++    public void setPaymentStatus(boolean paymentStatus) {
++        this.paymentStatus = paymentStatus;
++    }
+ }
+Index: app/src/main/res/drawable-anydpi-v24/menu_notification.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable-anydpi-v24/menu_notification.xml	(date 1612072459553)
++++ app/src/main/res/drawable-anydpi-v24/menu_notification.xml	(date 1612072459553)
+@@ -0,0 +1,15 @@
++<vector xmlns:android="http://schemas.android.com/apk/res/android"
++    android:width="24dp"
++    android:height="24dp"
++    android:viewportWidth="24"
++    android:viewportHeight="24"
++    android:tint="#FFFFFF">
++  <group android:scaleX="1.104"
++      android:scaleY="1.104"
++      android:translateX="-1.248"
++      android:translateY="-1.248">
++    <path
++        android:fillColor="@android:color/white"
++        android:pathData="M11.99,2C6.47,2 2,6.48 2,12c0,5.52 4.47,10 9.99,10C17.52,22 22,17.52 22,12C22,6.48 17.52,2 11.99,2zM8.5,8C9.33,8 10,8.67 10,9.5S9.33,11 8.5,11S7,10.33 7,9.5S7.67,8 8.5,8zM12,18c-2.28,0 -4.22,-1.66 -5,-4h10C16.22,16.34 14.28,18 12,18zM15.5,11c-0.83,0 -1.5,-0.67 -1.5,-1.5S14.67,8 15.5,8S17,8.67 17,9.5S16.33,11 15.5,11z"/>
++  </group>
++</vector>
+Index: app/src/main/res/layout/activity__branch_list_view2.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"wrap_content\"\r\n    android:layout_margin=\"5dp\"\r\n    android:orientation=\"vertical\">\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_margin=\"5dp\">\r\n    <LinearLayout\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\">\r\n\r\n        <TextView\r\n            android:id=\"@+id/titlePPP\"\r\n            android:layout_width=\"0dp\"\r\n            android:layout_height=\"match_parent\"\r\n            android:layout_marginStart=\"@dimen/dimen_20dp\"\r\n            android:layout_weight=\"1\"\r\n            android:textColor=\"@color/black\"\r\n            android:textStyle=\"bold\" />\r\n    </LinearLayout>\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_marginTop=\"5dp\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginEnd=\"@dimen/dimen_10dp\"\r\n        android:gravity=\"end\">\r\n        <TextView\r\n            android:id=\"@+id/originalPrice\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:textColor=\"@color/black_overlay\"\r\n            android:layout_marginStart=\"@dimen/dimen_20dp\"\r\n            android:textSize=\"12sp\"/>\r\n        <TextView\r\n            android:id=\"@+id/discountedPrice\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:textColor=\"@color/black_overlay\"\r\n            android:layout_marginStart=\"10sp\"\r\n            android:textSize=\"12sp\"/>\r\n\r\n    </LinearLayout>\r\n    </LinearLayout>\r\n    <TextView\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"2dp\"\r\n        android:layout_margin=\"5dp\"\r\n        android:background=\"@color/grey\"/>\r\n</LinearLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity__branch_list_view2.xml	(revision 6a3c55046ee8b94b6c280da2d13ed80b94775c72)
++++ app/src/main/res/layout/activity__branch_list_view2.xml	(date 1612071767681)
+@@ -1,13 +1,12 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+-    android:layout_width="match_parent"
+-    android:layout_height="wrap_content"
+-    android:layout_margin="5dp"
+-    android:orientation="vertical">
+-    <LinearLayout
+-        android:layout_width="match_parent"
+-        android:layout_height="wrap_content"
+-        android:layout_margin="5dp">
++<LinearLayout
++    android:id="@+id/backgroundPdf"
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    android:layout_margin="10dp"
++    android:padding="15dp"
++    android:orientation="horizontal">
+     <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+@@ -43,10 +42,4 @@
+             android:textSize="12sp"/>
+ 
+     </LinearLayout>
+-    </LinearLayout>
+-    <TextView
+-        android:layout_width="match_parent"
+-        android:layout_height="2dp"
+-        android:layout_margin="5dp"
+-        android:background="@color/grey"/>
+ </LinearLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/itifighter/CustomListViewArrayAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.itifighter;\r\n\r\nimport android.annotation.SuppressLint;\r\nimport android.app.Activity;\r\nimport android.content.Context;\r\nimport android.graphics.Color;\r\nimport android.graphics.Paint;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.ArrayAdapter;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport com.bumptech.glide.Glide;\r\nimport com.google.firebase.storage.FirebaseStorage;\r\nimport com.google.firebase.storage.StorageReference;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\nclass CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {\r\n    private Context context;\r\n    private List<CustomListItem> Subjects;\r\n    private LayoutInflater inflater;\r\n    FirebaseStorage mFirebaseStorage= FirebaseStorage.getInstance();\r\n    StorageReference mmFirebaseStorageRef;\r\n    @Override\r\n    public int getCount() { return Subjects.size(); }\r\n\r\n    @Nullable\r\n    @Override\r\n    public CustomListItem getItem(int position) {\r\n        return Subjects.get(position);\r\n    }\r\n\r\n    @Override\r\n    public long getItemId(int position) {return position;}\r\n    public CustomListViewArrayAdapter(Context context, int resource, ArrayList<CustomListItem> objects) {\r\n        super(context, resource, objects);\r\n        this.context = context;\r\n        this.Subjects = objects;\r\n    }\r\n\r\n    // called when rendering the list\r\n    @NonNull\r\n    public View getView(int position, View convertView, @NonNull ViewGroup parent) {\r\n\r\n        //get the property we are displaying\r\n        CustomListItem property = Subjects.get(position);\r\n        View vv;\r\n        switch (property.getType()){\r\n            case 1:\r\n                vv = getType1(property);\r\n                break;\r\n            case 2:\r\n                vv = getType2(property);\r\n                break;\r\n            case 3:\r\n                vv = getType3(property);\r\n                break;\r\n            default:\r\n                vv = getType0(property);\r\n                break;\r\n        }\r\n        return vv;\r\n        //return property.getType() == 1 ? getType1(property) : property.getType() == 2 ? getType2(property) : getType0(property);\r\n    }\r\n\r\n    private View getType0(CustomListItem property) {\r\n        //get the inflater and inflate the XML layout for each item\r\n        if (inflater == null)\r\n            inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);\r\n        @SuppressLint({\"ViewHolder\", \"InflateParams\"}) View view = inflater.inflate(R.layout.activity_custom_list_view_row, null);\r\n\r\n        ImageView thumbNail = view\r\n                .findViewById(R.id.thumbnail);\r\n        TextView description = view.findViewById(R.id.genre);\r\n        TextView topicHeader = view.findViewById(R.id.title);\r\n\r\n        topicHeader.setText(property.getTopicHeader());\r\n        mmFirebaseStorageRef=mFirebaseStorage.getReference().child(\"menu/section/\"+property.getImagex()+\"/\");\r\n\r\n        Glide.with(context)\r\n                .load(mmFirebaseStorageRef.child(\"\"+property.getTopicHeader()))\r\n                .into(thumbNail);\r\n        //display trimmed excerpt for description\r\n\r\n        if(property.getDescription() != null){\r\n            int descriptionLength = property.getDescription().length();\r\n            if(descriptionLength >= 100){\r\n                String descriptionTrim = property.getDescription().substring(0,100) + \"...\";\r\n                description.setText(descriptionTrim);\r\n            }else{\r\n                description.setText(property.getDescription());\r\n            }\r\n        }else{ description.setText(\"--\"); }\r\n\r\n        return view;\r\n    }\r\n\r\n    private View getType1(CustomListItem property) {\r\n        //get the inflater and inflate the XML layout for each item\r\n        if (inflater == null)\r\n            inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);\r\n        @SuppressLint({\"ViewHolder\", \"InflateParams\"}) View view = inflater.inflate(R.layout.activity_mock_chapter_xyz, null);\r\n\r\n        ImageView thumbNail = view\r\n                .findViewById(R.id.thumbnail);\r\n        TextView topicHeader = view.findViewById(R.id.title);\r\n\r\n        topicHeader.setText(property.getTopicHeader());\r\n        mmFirebaseStorageRef=mFirebaseStorage.getReference().child(\"menu/section/\"+property.getImagex()+\"/\");\r\n\r\n        Glide.with(context)\r\n                .load(mmFirebaseStorageRef.child(\"\"+property.getTopicHeader()))\r\n                .into(thumbNail);\r\n        //display trimmed excerpt for description\r\n        String _NOQ_DUR_MRX = \"\"+property.getQuesCount()+\" Qs  |  \"+property.getDuration()+\" Mins  |  \"+(property.getQuesCount()*property.getMPQ())+\" Marks\";\r\n        ((TextView)view.findViewById(R.id.MockChap_NOQ_DUR_MRX)).setText(_NOQ_DUR_MRX);\r\n        TextView originalPrice = (TextView)view.findViewById(R.id.MockChap_Price);\r\n        originalPrice.setText(\"\"+property.getPrice()+\" \\u20b9\");\r\n        originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);\r\n        double discounted = (getFinalPrice(property.getPrice(), property.getDiscount()));\r\n        TextView _discountedTV = (TextView)view.findViewById(R.id.MockChap_FPrice);\r\n        _discountedTV.setText(\"\"+(discounted > 0 ? discounted+\" \\u20b9\" : \"FREE\"));\r\n        _discountedTV.setTextColor(Color.parseColor(\"#000099\"));\r\n        if(property.getImagex().contains(\"mt\")){\r\n            _discountedTV.setVisibility(View.GONE);\r\n            originalPrice.setVisibility(View.GONE);\r\n            topicHeader.setTextSize(25);\r\n            thumbNail.setVisibility(View.GONE);\r\n            view.findViewById(R.id.thumbnail2).setVisibility(View.VISIBLE);\r\n            TextView chapterIndex = view.findViewById(R.id.ChapterIndex);\r\n            chapterIndex.setVisibility(View.VISIBLE);\r\n            int index = property.getChapterIndex();\r\n            chapterIndex.setText(index > 9 ? \"\"+index : \"0\"+index);\r\n        }\r\n        return view;\r\n    }\r\n\r\n    private double getFinalPrice(double price, double discount) {\r\n        return  (price)-((price*discount)/100);\r\n    }\r\n\r\n    private View getType2(CustomListItem property) {\r\n        //get the inflater and inflate the XML layout for each item\r\n        if (inflater == null)\r\n            inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);\r\n        @SuppressLint({\"ViewHolder\", \"InflateParams\"}) View view = inflater.inflate(R.layout.activity__branch_list_view2, null);\r\n\r\n        TextView topicHeader = view.findViewById(R.id.titlePPP);\r\n\r\n        topicHeader.setText(property.getTopicHeader());\r\n\r\n        TextView originalPrice = (TextView)view.findViewById(R.id.originalPrice);\r\n        originalPrice.setText(\"\"+property.getPrice()+\" \\u20b9\");\r\n        originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);\r\n        double discounted = (getFinalPrice(property.getPrice(), property.getDiscount()));\r\n        TextView _discountedTV = (TextView)view.findViewById(R.id.discountedPrice);\r\n        _discountedTV.setText(\"\"+(discounted > 0 ? discounted+\" \\u20b9\" : \"FREE\"));\r\n        _discountedTV.setTextColor(Color.parseColor(\"#000099\"));\r\n        return view;\r\n    }\r\n\r\n    private View getType3(CustomListItem property) {\r\n        //get the inflater and inflate the XML layout for each item\r\n        if (inflater == null)\r\n            inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);\r\n        @SuppressLint({\"ViewHolder\", \"InflateParams\"}) View view = inflater.inflate(R.layout.activity_mock_chapter_xyz, null);\r\n\r\n        ImageView thumbNail = view\r\n                .findViewById(R.id.thumbnail);\r\n        TextView topicHeader = view.findViewById(R.id.title);\r\n\r\n        topicHeader.setText(property.getTopicHeader());\r\n        mmFirebaseStorageRef=mFirebaseStorage.getReference().child(\"menu/section/\"+property.getImagex()+\"/\");\r\n\r\n        Glide.with(context)\r\n                .load(mmFirebaseStorageRef.child(\"\"+property.getTopicHeader()))\r\n                .into(thumbNail);\r\n        //display trimmed excerpt for description\r\n        String _NOQ_DUR_MRX = \"\"+property.getMonths()+\" Months\";\r\n        ((TextView)view.findViewById(R.id.MockChap_NOQ_DUR_MRX)).setText(_NOQ_DUR_MRX);\r\n        TextView originalPrice = (TextView)view.findViewById(R.id.MockChap_Price);\r\n        originalPrice.setText(\"\"+property.getPrice()+\" \\u20b9\");\r\n        originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);\r\n        double discounted = (getFinalPrice(property.getPrice(), property.getDiscount()));\r\n        TextView _discountedTV = (TextView)view.findViewById(R.id.MockChap_FPrice);\r\n        _discountedTV.setText(\"\"+(discounted > 0 ? discounted+\" \\u20b9\" : \"FREE\"));\r\n        _discountedTV.setTextColor(Color.parseColor(\"#000099\"));\r\n        return view;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/itifighter/CustomListViewArrayAdapter.java	(revision 6a3c55046ee8b94b6c280da2d13ed80b94775c72)
++++ app/src/main/java/com/example/itifighter/CustomListViewArrayAdapter.java	(date 1612083871200)
+@@ -10,23 +10,30 @@
+ import android.view.ViewGroup;
+ import android.widget.ArrayAdapter;
+ import android.widget.ImageView;
++import android.widget.LinearLayout;
+ import android.widget.TextView;
++
+ import androidx.annotation.NonNull;
+ import androidx.annotation.Nullable;
++
+ import com.bumptech.glide.Glide;
+ import com.google.firebase.storage.FirebaseStorage;
+ import com.google.firebase.storage.StorageReference;
++
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+-class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
++public class CustomListViewArrayAdapter extends ArrayAdapter<CustomListItem> {
+     private Context context;
+     private List<CustomListItem> Subjects;
+     private LayoutInflater inflater;
+     FirebaseStorage mFirebaseStorage= FirebaseStorage.getInstance();
+     StorageReference mmFirebaseStorageRef;
++
+     @Override
+-    public int getCount() { return Subjects.size(); }
++    public int getCount() {
++        return Subjects.size();
++    }
+ 
+     @Nullable
+     @Override
+@@ -35,7 +42,10 @@
+     }
+ 
+     @Override
+-    public long getItemId(int position) {return position;}
++    public long getItemId(int position) {
++        return position;
++    }
++
+     public CustomListViewArrayAdapter(Context context, int resource, ArrayList<CustomListItem> objects) {
+         super(context, resource, objects);
+         this.context = context;
+@@ -64,7 +74,7 @@
+                 break;
+         }
+         return vv;
+-        //return property.getType() == 1 ? getType1(property) : property.getType() == 2 ? getType2(property) : getType0(property);
++
+     }
+ 
+     private View getType0(CustomListItem property) {
+@@ -143,23 +153,26 @@
+         return  (price)-((price*discount)/100);
+     }
+ 
+-    private View getType2(CustomListItem property) {
+-        //get the inflater and inflate the XML layout for each item
+-        if (inflater == null)
+-            inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+-        @SuppressLint({"ViewHolder", "InflateParams"}) View view = inflater.inflate(R.layout.activity__branch_list_view2, null);
+-
++    @SuppressLint("SetTextI18n")
++    private synchronized View getType2(final CustomListItem property) {
++        inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
++        @SuppressLint("InflateParams") final View view = inflater.inflate(R.layout.activity__branch_list_view2, null);
++        LinearLayout layout = view.findViewById(R.id.backgroundPdf);
+         TextView topicHeader = view.findViewById(R.id.titlePPP);
+-
+-        topicHeader.setText(property.getTopicHeader());
+-
+-        TextView originalPrice = (TextView)view.findViewById(R.id.originalPrice);
+-        originalPrice.setText(""+property.getPrice()+" \u20b9");
+-        originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+-        double discounted = (getFinalPrice(property.getPrice(), property.getDiscount()));
+-        TextView _discountedTV = (TextView)view.findViewById(R.id.discountedPrice);
+-        _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
+-        _discountedTV.setTextColor(Color.parseColor("#000099"));
++        TextView originalPrice = view.findViewById(R.id.originalPrice);
++        TextView _discountedTV = view.findViewById(R.id.discountedPrice);
++        if(property.getPaymentStatus()){
++            layout.setBackgroundColor(Color.parseColor("#C5FBBC"));
++            originalPrice.setText("Open");
++            originalPrice.setTextColor(Color.parseColor("#003700"));
++        }else{
++            originalPrice.setText(""+property.getPrice()+" \u20b9");
++            originalPrice.setPaintFlags(originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
++            double discounted = (getFinalPrice(property.getPrice(), property.getDiscount()));
++            _discountedTV.setText(""+(discounted > 0 ? discounted+" \u20b9" : "FREE"));
++            _discountedTV.setTextColor(Color.parseColor("#000099"));
++        }
++        topicHeader.setText(property.getTopicHeader());
+         return view;
+     }
+ 
+Index: app/src/main/res/navigation/mobile_navigation.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n\r\n<navigation xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    app:startDestination=\"@+id/nav_home\">\r\n\r\n    <fragment\r\n        android:id=\"@+id/nav_home\"\r\n        android:name=\"com.example.itifighter.ui.home.HomeFragment\"\r\n        android:label=\"@string/menu_home\"\r\n        tools:layout=\"@layout/fragment_menu_home\" />\r\n\r\n    <fragment\r\n        android:id=\"@+id/nav_profile\"\r\n        android:name=\"com.example.itifighter.ui.profile.ProfileFragment\"\r\n        android:label=\"@string/menu_Profile\"\r\n        tools:layout=\"@layout/fragment_menu_profile\" />\r\n\r\n    <fragment\r\n        android:id=\"@+id/nav_chat\"\r\n        android:name=\"com.example.itifighter.ui.chat.ChatFragment\"\r\n        android:label=\"@string/menu_chat\"\r\n        tools:layout=\"@layout/fragment_menu_chat\" />\r\n\r\n    <fragment\r\n        android:id=\"@+id/nav_groups\"\r\n        android:name=\"com.example.itifighter.ui.groups.GroupsFragment\"\r\n        android:label=\"@string/menu_groups\"\r\n        tools:layout=\"@layout/fragment_menu_groups\" />\r\n    <fragment\r\n        android:id=\"@+id/nav_change\"\r\n        android:name=\"com.example.itifighter.ui.change.ChangeFragment\"\r\n        android:label=\"Change Password\"\r\n        tools:layout=\"@layout/fragment_menu_change\" />\r\n    <fragment\r\n        android:id=\"@+id/nav_rating\"\r\n        android:name=\"com.example.itifighter.ui.rating.RatingFragment\"\r\n        android:label=\"Rating\"\r\n        tools:layout=\"@layout/fragment_menu_rating\" />\r\n\r\n</navigation>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/navigation/mobile_navigation.xml	(revision 6a3c55046ee8b94b6c280da2d13ed80b94775c72)
++++ app/src/main/res/navigation/mobile_navigation.xml	(date 1612074627981)
+@@ -28,6 +28,13 @@
+         android:name="com.example.itifighter.ui.groups.GroupsFragment"
+         android:label="@string/menu_groups"
+         tools:layout="@layout/fragment_menu_groups" />
++
++    <fragment
++        android:id="@+id/nav_notification"
++        android:name="com.example.itifighter.ui.notification.notificationFragment"
++        android:label="@string/menu_notification"
++        tools:layout="@layout/fragment_menu_notification" />
++
+     <fragment
+         android:id="@+id/nav_change"
+         android:name="com.example.itifighter.ui.change.ChangeFragment"
+Index: app/src/main/res/menu/activity_main_drawer.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<menu xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    tools:showIn=\"navigation_view\">\r\n\r\n    <group android:checkableBehavior=\"single\">\r\n        <item\r\n            android:id=\"@+id/nav_home\"\r\n            android:icon=\"@drawable/home_foreground\"\r\n            android:title=\"@string/menu_home\" />\r\n        <item\r\n            android:id=\"@+id/nav_profile\"\r\n            android:icon=\"@drawable/profile_foreground\"\r\n            android:title=\"@string/menu_Profile\" />\r\n        <item\r\n            android:id=\"@+id/nav_chat\"\r\n            android:icon=\"@drawable/chat_foreground\"\r\n            android:title=\"@string/menu_chat\" />\r\n        <item\r\n            android:id=\"@+id/nav_groups\"\r\n            android:icon=\"@drawable/group_foreground\"\r\n            android:title=\"@string/menu_groups\" />\r\n        <item\r\n            android:id=\"@+id/nav_change\"\r\n            android:icon=\"@drawable/change_foreground\"\r\n            android:title=\"@string/change\" />\r\n        <item\r\n            android:id=\"@+id/nav_rating\"\r\n            android:icon=\"@drawable/rating_foreground\"\r\n            android:title=\"@string/rating\" />\r\n    </group>\r\n</menu>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/menu/activity_main_drawer.xml	(revision 6a3c55046ee8b94b6c280da2d13ed80b94775c72)
++++ app/src/main/res/menu/activity_main_drawer.xml	(date 1612072482469)
+@@ -21,6 +21,10 @@
+             android:icon="@drawable/group_foreground"
+             android:title="@string/menu_groups" />
+         <item
++            android:id="@+id/nav_notification"
++            android:icon="@drawable/menu_notification"
++            android:title="@string/menu_notification" />
++        <item
+             android:id="@+id/nav_change"
+             android:icon="@drawable/change_foreground"
+             android:title="@string/change" />
+Index: app/src/main/java/com/example/itifighter/ui/notification/ListItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/itifighter/ui/notification/ListItem.java	(date 1612074671026)
++++ app/src/main/java/com/example/itifighter/ui/notification/ListItem.java	(date 1612074671026)
+@@ -0,0 +1,17 @@
++package com.example.itifighter.ui.notification;
++
++public class ListItem {
++    private String name,desc,url;
++    public ListItem(){}
++    public ListItem(String name, String desc, String url){
++        this.name = name;
++        this.desc = desc;
++        this.url = url;
++    }
++    public String getName(){return name;}
++    public String getDesc(){return desc;}
++    public void setName(String name){this.name=name;}
++    public void setDesc(String desc){this.desc=desc;}
++    public void setUrl(String url){this.url=url;}
++    public String getUrl(){return url;}
++}
+diff --git .idea/shelf/Uncommitted_changes_before_Update_at_18-12-2020_18_13__Default_Changelist_.xml .idea/shelf/Uncommitted_changes_before_Update_at_18-12-2020_18_13__Default_Changelist_.xml

@@ -28,6 +28,13 @@
         android:name="com.example.itifighter.ui.groups.GroupsFragment"
         android:label="@string/menu_groups"
         tools:layout="@layout/fragment_menu_groups" />
+
+    <fragment
+        android:id="@+id/nav_notification"
+        android:name="com.example.itifighter.ui.notification.notificationFragment"
+        android:label="@string/menu_notification"
+        tools:layout="@layout/fragment_menu_notification" />
+
     <fragment
         android:id="@+id/nav_change"
         android:name="com.example.itifighter.ui.change.ChangeFragment"
