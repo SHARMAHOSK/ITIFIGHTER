@@ -91,6 +91,7 @@ public class PreviousPaper extends Fragment {
     public void LoadSubjects(){
         try{
             // CustomStackManager.GetInstance().SetPageState(0);
+            CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 0);
             db.collection("section").document("pp").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -110,6 +111,7 @@ public class PreviousPaper extends Fragment {
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
                             curruntSubject = SubjectIds.get(position);
+                            CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, curruntSubject);
                             LoadExams();
                         }
                         });
@@ -128,7 +130,9 @@ public class PreviousPaper extends Fragment {
     public void LoadExams(){
         try{
             //CustomStackManager.GetInstance().SetPageState(1);
+            CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 1);
             dialog.show();
+            curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, "");
             db.collection("section").document("pp").collection("branch").document(curruntSubject).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -149,6 +153,7 @@ public class PreviousPaper extends Fragment {
                             public void onItemClick(AdapterView<?> parent, View view,
                                                     int position, long id) {
                                 curruntChapter = ExamIds.get(position);
+                                CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, curruntChapter);
                                 LoadPdfS();
                             }
                         });
@@ -169,7 +174,10 @@ public class PreviousPaper extends Fragment {
     public void LoadPdfS(){
         try{
             //CustomStackManager.GetInstance().SetPageState(2);
+            CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 2);
             dialog.show();
+            curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, "");
+
             String Uid = FirebaseAuth.getInstance().getUid();
             assert Uid != null;
             ref = db.collection("users").document(Uid).collection("Products")
@@ -315,7 +323,27 @@ public class PreviousPaper extends Fragment {
 
     private void CustomizeView() {
         try{
-            LoadSubjects();
+            int currentState = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY, 0);
+            switch(currentState){
+                case 1:
+                    curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+                    if(curruntSubject == null || curruntSubject.isEmpty())
+                        LoadSubjects();
+                    else
+                        LoadExams();
+                    break;
+                case 2:
+                    curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+                    curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, "");
+                    if(curruntSubject == null || curruntSubject.isEmpty() || curruntChapter == null || curruntChapter.isEmpty())
+                        LoadSubjects();
+                    else
+                        LoadExams();
+                    break;
+                default:
+                    LoadSubjects();
+                    break;
+            }
         }catch(Exception e){
             CustomizeView();
         }
