@@ -179,7 +179,7 @@ public class CustomStackManager {
                     PreviousPaper.instance.LoadExams();
                 break;
             case 1:
-                if(GetSPKeyValue(MTS_STATE_KEY, 0) == 1)
+                if(GetSPKeyValue(MT_STATE_KEY, 0) == 1)
                     MockTest.instance.LoadSubjects();
                 /*else if(GetPageState() == 2)
                     MockTest.instance.LoadChapters();*/

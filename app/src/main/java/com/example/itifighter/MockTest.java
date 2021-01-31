@@ -67,9 +67,7 @@ public class MockTest extends Fragment {
         // Inflate the layout for this fragment
         View mtView = inflater.inflate(R.layout.fragment_mock_test, container, false);
         listView = mtView.findViewById(R.id.mt_branch_list);
-        dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
-        dialog.setMessage("Loading...");
-        dialog.setCancelable(false);
+
         emptyListMessage = mtView.findViewById(R.id.emptyListMessagetsmt);
         back = mtView.findViewById(R.id.CustomBackButtonMT);
         back.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +90,6 @@ public class MockTest extends Fragment {
         /*CustomStackManager.GetInstance().SetPageState(0);*/
         CustomStackManager.SetSPKeyValue(CustomStackManager.MT_STATE_KEY, 0);
         currentLayer = 0;
-        dialog.show();
         db.collection("section").document("mt").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -113,7 +110,6 @@ public class MockTest extends Fragment {
 
                     /*listView = (ListView) _ppView.findViewById(R.id.branch_list);*/
                     listView.setAdapter(adapter);
-                    dialog.dismiss();
                     back.setVisibility(View.INVISIBLE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -136,7 +132,6 @@ public class MockTest extends Fragment {
     void LoadChapters(){
         /*CustomStackManager.GetInstance().SetPageState(1);*/
         CustomStackManager.SetSPKeyValue(CustomStackManager.MT_STATE_KEY, 1);
-        dialog.show();
         curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
         currentLayer = 1;
         db.collection("section").document("mt").collection("branch").document(/*SubjectIds.get(currentSubjectPos)*/curruntSubject).collection("chapter").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -168,7 +163,6 @@ public class MockTest extends Fragment {
                     ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Chapters);
 
                     listView.setAdapter(adapter);
-                    dialog.dismiss();
                     back.setVisibility(View.VISIBLE);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -189,7 +183,7 @@ public class MockTest extends Fragment {
     }
 
     private void LoadTest() {
-        CustomStackManager.SetSPKeyValue(CustomStackManager.MT_STATE_KEY, 2);
+        /*CustomStackManager.SetSPKeyValue(CustomStackManager.MT_STATE_KEY, 2);*/
         curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
         curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, "");
         db.collection("section").document("mt").collection("branch").document(/*SubjectIds.get(currentSubjectPos)*/curruntSubject).collection("chapter").document(/*CHapterIds.get(currentChapterPos)*/curruntChapter).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -286,31 +280,37 @@ public class MockTest extends Fragment {
 
     private void CustomizeView() {
         int currentState = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY, 0);
+        Toast.makeText(mContext, "cs: "+currentState, Toast.LENGTH_LONG).show();
         switch(currentState){
             case 1:
                 curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
-                if(curruntSubject == null || curruntSubject.isEmpty())
+                Toast.makeText(mContext, "cs:1; current subject: "+curruntSubject, Toast.LENGTH_LONG).show();
+                if(curruntSubject == null || curruntSubject.isEmpty()){
+                    Toast.makeText(mContext, "cs 1 but subject empty or null", Toast.LENGTH_LONG).show();
                     LoadSubjects();
-                else
+                }
+                else{
+                    Toast.makeText(mContext, "cs 1 so loading chapter", Toast.LENGTH_SHORT).show();
                     LoadChapters();
+                }
                 break;
-            case 2:
+            /*case 2:
                 curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
                 curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.MT_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, "");
                 if(curruntSubject == null || curruntSubject.isEmpty() || curruntChapter == null || curruntChapter.isEmpty())
                     LoadSubjects();
                 else
                     LoadTest();
-                break;
+                break;*/
             default:
                 LoadSubjects();
                 break;
         }
     }
 
-    @Override
+    /*@Override
     public void onStart() {
         super.onStart();
         LoadSubjects();
-    }
+    }*/
 }

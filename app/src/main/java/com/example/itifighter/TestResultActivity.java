@@ -137,8 +137,8 @@ public class TestResultActivity extends AppCompatActivity {
         if (targetSection.contains("lt"))
             return;
         Intent myIntent = new Intent(this, TestInstructionsActivity.class);
-        //clears all other activities from stack and makes the new one the root of stack
-        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        /*//clears all other activities from stack and makes the new one the root of stack
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
         myIntent.putExtra("section", targetSection);
         myIntent.putExtra("subject", targetSubject);
         myIntent.putExtra("chapter", targetChapter);
