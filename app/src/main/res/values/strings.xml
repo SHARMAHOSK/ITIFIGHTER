@@ -139,6 +139,8 @@
     <string name="enter_new_password">enter new Password</string>
     <string name="enter_confirm_password">enter confirm password</string>
     <string name="menu_notification">Latest Jobs</string>
+    <string name="apply">Apply</string>
+    <string name="apply_coupan_code">Apply Coupan Code</string>
 
 
 </resources>

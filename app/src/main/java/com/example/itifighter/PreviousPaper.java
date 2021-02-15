@@ -18,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,7 +30,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
@@ -45,7 +43,7 @@ public class PreviousPaper extends Fragment {
     private ListView listView;
     private ArrayList<String> PdfS, pdfFile, SubjectIds, ExamIds;
     private ArrayList<CustomListItem> PdfS_CL;
-    private HashMap<String,Boolean>pdfPayment;
+    private ArrayList<Boolean> pdfPayment;
     private FirebaseFirestore db;
     private ProgressDialog dialog;
     private Context mContext;
@@ -85,14 +83,11 @@ public class PreviousPaper extends Fragment {
 
     }
 
-
-
-
     public void LoadSubjects(){
         try{
-            // CustomStackManager.GetInstance().SetPageState(0);
             CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 0);
-            db.collection("section").document("pp").collection("branch").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            CollectionReference reference = db.collection("section").document("pp").collection("branch");
+            reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
@@ -100,8 +95,8 @@ public class PreviousPaper extends Fragment {
                         SubjectIds = new ArrayList<>();
                         for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                             SubjectIds.add(document.getId());
-                            Subjects.add(new CustomListItem(document.getString(/*"Name"*/"name"),
-                                    document.getString(/*"description"*/"desc"), "pp"));
+                            Subjects.add(new CustomListItem(document.getString("name"),
+                                    document.getString("desc"), "pp"));
                         }
                         emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);
                         ArrayAdapter<CustomListItem> adapter = new CustomListViewArrayAdapter(mContext, 0, Subjects);
@@ -117,8 +112,14 @@ public class PreviousPaper extends Fragment {
                         });
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
-                        LoadSubjects();
+                        Toast.makeText(getContext(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }catch(Exception e) {
@@ -129,11 +130,11 @@ public class PreviousPaper extends Fragment {
 
     public void LoadExams(){
         try{
-            //CustomStackManager.GetInstance().SetPageState(1);
             CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 1);
             dialog.show();
             curruntSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, "");
-            db.collection("section").document("pp").collection("branch").document(curruntSubject).collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            db.collection("section").document("pp").collection("branch").document(curruntSubject)
+                    .collection("exam").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
@@ -163,6 +164,12 @@ public class PreviousPaper extends Fragment {
                         LoadExams();
                     }
                 }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             });
         }catch(Exception e){
             dialog.dismiss();
@@ -173,11 +180,9 @@ public class PreviousPaper extends Fragment {
 
     public void LoadPdfS(){
         try{
-            //CustomStackManager.GetInstance().SetPageState(2);
             CustomStackManager.SetSPKeyValue(CustomStackManager.PP_STATE_KEY, 2);
             dialog.show();
             curruntChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.PP_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, "");
-
             String Uid = FirebaseAuth.getInstance().getUid();
             assert Uid != null;
             ref = db.collection("users").document(Uid).collection("Products")
@@ -189,24 +194,22 @@ public class PreviousPaper extends Fragment {
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
                     try{
                         if (task.isSuccessful()) {
                             PdfS = new ArrayList<>();
                             PdfS_CL = new ArrayList<>();
                             pdfFile = new ArrayList<>();
-                            pdfPayment = new HashMap<>();
+                            pdfPayment = new ArrayList<>();
                             for (final QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                                 final String curruntPdfSection = document.getId();
                                 ref.document(curruntPdfSection).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        pdfPayment.put(curruntPdfSection,xNull(String.valueOf(documentSnapshot.get("status"))).equalsIgnoreCase("1"));
+                                        pdfPayment.add(xNull(String.valueOf(documentSnapshot.get("status"))).equalsIgnoreCase("1"));
                                         PdfS.add(document.getId());
                                         pdfFile.add("" + document.getString("Name"));
                                         PdfS_CL.add(new CustomListItem(document.getId(), Double.parseDouble(Objects.requireNonNull(document.getString("price"))),
                                                 Double.parseDouble(Objects.requireNonNull(document.getString("discount"))),xNull(String.valueOf(documentSnapshot.get("status"))).equalsIgnoreCase("1")));
-
                                         dialog.dismiss();
                                         emptyListMessage.setVisibility(SubjectIds.size() <= 0 ? View.VISIBLE : View.GONE);
                                         adapter = new CustomListViewArrayAdapter(mContext, 0, PdfS_CL);
@@ -219,46 +222,13 @@ public class PreviousPaper extends Fragment {
                                                 final String price = String.valueOf(PdfS_CL.get(position).getPrice()),
                                                         discount = String.valueOf(PdfS_CL.get(position).getDiscount()),
                                                         finalPrice = getFinalPrice(price,discount),
-                                                        PdfName = String.valueOf(pdfFile.get(position));
+                                                        PdfName = String.valueOf(pdfFile.get(position)),
+                                                        coupanCode = "shubham",coupanDiscount="50";
+                                                        boolean paymentStatus = pdfPayment.get(position);
                                                 if(Double.parseDouble(finalPrice)<1){ openPdf(PdfName);}
+                                                else if(paymentStatus){ openPdf(PdfName);}
                                                 else{
-                                                    String Uid = FirebaseAuth.getInstance().getUid();
-                                                    if(Uid!=null){ try{
-                                                        db.collection("users").document(Uid).collection("Products")
-                                                                .document("pp").collection("ProductId").document(currentPdf)
-                                                                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                DocumentSnapshot documentSnapshot = task.getResult();
-                                                                if(documentSnapshot!=null && documentSnapshot.exists()){
-                                                                    String status = documentSnapshot.getString("status");
-                                                                    String curruntSubjectPdf = documentSnapshot.getString("currentSubject");
-                                                                    String currentChapterPdf = documentSnapshot.getString("currentChapter");
-                                                                    if(Objects.requireNonNull(status).equals("1") && Objects.equals(currentChapterPdf, curruntChapter) &&
-                                                                            Objects.equals(curruntSubjectPdf, curruntSubject))  openPdf(PdfName);
-                                                                    else openPaytmPaymentGateway(price,discount,PdfName);
-                                                                }else openPaytmPaymentGateway(price,discount,PdfName);
-                                                            }
-                                                        }).addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-                                                                dialog.dismiss();
-                                                                Toast.makeText(getContext()," something failure",Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }).addOnCanceledListener(new OnCanceledListener() {
-                                                            @Override
-                                                            public void onCanceled() {
-                                                                dialog.dismiss();
-                                                                Toast.makeText(getContext(),"task canceled",Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        });
-                                                    }catch (Exception e){
-                                                        dialog.dismiss();
-                                                        Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-                                                    }
-                                                    }else{
-                                                        dialog.dismiss();
-                                                    }
+                                                    openPaytmPaymentGateway(price,discount,PdfName,coupanCode,coupanDiscount);
                                                 }
                                             }
                                             private String getFinalPrice(String price, String discount) {
@@ -304,7 +274,7 @@ public class PreviousPaper extends Fragment {
         }
     }
 
-    private void openPaytmPaymentGateway(String price,String discount,String PdfName){
+    private void openPaytmPaymentGateway(String price,String discount,String PdfName,String coupanCode,String coupanDiscount){
         try{
             dialog.dismiss();
             Intent intent = new Intent(mContext,PaytmPaymentpp.class);
@@ -314,10 +284,11 @@ public class PreviousPaper extends Fragment {
             intent.putExtra("curruntPdf",currentPdf);
             intent.putExtra("currentSubject",curruntSubject);
             intent.putExtra("currentChapter",curruntChapter);
+            intent.putExtra("coupanCode",coupanCode);
+            intent.putExtra("coupanDiscount",coupanDiscount);
             startActivity(intent);
         }catch(Exception e){
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            openPaytmPaymentGateway(price,discount,PdfName);
         }
     }
 

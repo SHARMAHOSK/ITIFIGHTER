@@ -57,7 +57,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="180dp"
         android:orientation="vertical"
         android:background="@color/white">
 
@@ -95,6 +95,7 @@
                 android:id="@+id/sub_pdfPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:text="\u20B9 500"
                 app:layout_constraintBottom_toBottomOf="@+id/sub_itemx"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -117,12 +118,36 @@
                 android:id="@+id/sub_pdfTaxPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:text="+ \u20B9 0.0"
                 android:textColor="@color/holo_red_dark"
                 app:layout_constraintBottom_toBottomOf="@+id/sub_taxx"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/finalpricex"
                 app:layout_constraintTop_toTopOf="@+id/sub_taxx" />
+
+            <TextView
+                android:id="@+id/coupanCodeMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Coupan Code Discount"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sub_taxx"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/coupnCodeDiscount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:text="- \u20B9 0"
+                android:textColor="@color/green1"
+                app:layout_constraintBottom_toBottomOf="@+id/coupanCodeMsg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/coupanCodeMsg"
+                tools:ignore="UnknownIdInLayout" />
 
             <TextView
                 android:id="@+id/sub_discountx"
@@ -130,21 +155,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Total Discount"
+                android:text="Regular Discount"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sub_taxx"
+                app:layout_constraintTop_toBottomOf="@+id/coupanCodeMsg"
                 tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/sub_pdfDiscountPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/green1"
                 android:text="- \u20B9 250"
+                android:textColor="@color/green1"
+                android:layout_marginEnd="5dp"
                 app:layout_constraintBottom_toBottomOf="@+id/sub_discountx"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/finalpricex"
                 app:layout_constraintTop_toTopOf="@+id/sub_discountx"
                 tools:ignore="UnknownIdInLayout" />
 
@@ -154,8 +179,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:textColor="@color/black"
                 android:text="You have to pay only "
+                android:textColor="@color/black"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sub_discountx"
@@ -165,12 +190,12 @@
                 android:id="@+id/finalpdfPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
                 android:text="\u20B9 250"
                 android:textColor="@color/black"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="5dp"
-                android:layout_marginEnd="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/sub_finalx" />
@@ -178,7 +203,29 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal">
+    <EditText
+        android:id="@+id/textCoupanCode"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/backrec"
+        android:layout_height="30dp"
+        android:textSize="15dp"
+        android:paddingStart="5dp"
+        android:hint="@string/apply_coupan_code"/>
+    <Button
+        android:id="@+id/coupanClick"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:background="@color/startblue"
+        android:textColor="#ffffff"
+        android:text="@string/apply"/>
 
+</LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

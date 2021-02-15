@@ -19,7 +19,7 @@ import com.example.itifighter.R;
 import com.example.itifighter.ui.groups.ListItem;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestore; 
 import com.google.firebase.firestore.Query;
 
 public class notificationFragment extends Fragment {
