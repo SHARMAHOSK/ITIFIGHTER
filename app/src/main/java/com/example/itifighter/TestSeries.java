@@ -74,11 +74,34 @@ public class TestSeries extends Fragment {
         try {
             listView = mtView.findViewById(R.id.testxtRecycle);
             emptyListMessage = mtView.findViewById(R.id.emptyListMessagets);
-            LoadSubjects();
+            //LoadSubjects();
+            CustomizeView();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return mtView;
+    }
+
+    private void CustomizeView() {
+        int currentState = CustomStackManager.GetSPKeyValue(CustomStackManager.TS_STATE_KEY, 0);
+        if (currentState == 1) {
+            currentSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.TS_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, "");
+            if (bNull(currentSubject)) {
+                LoadSubjects();
+            } else {
+                LoadChapters();
+            }
+        } else if(currentState == 2){
+            currentSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.TS_STATE_KEY+CustomStackManager.TARGET_SUBJECT_KEY, "");
+            currentChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.TS_STATE_KEY+CustomStackManager.TARGET_CHAPTER_KEY, "");
+            if(currentSubject == null || currentSubject.isEmpty() || currentChapter == null || currentChapter.isEmpty())
+                LoadSubjects();
+            else
+                LoadTest();
+        }
+        else {
+            LoadSubjects();
+        }
     }
 
     void LoadSubjects() {
@@ -313,7 +336,7 @@ public class TestSeries extends Fragment {
     }
 
     private void LoadExam() {
-        CustomStackManager.SetSPKeyValue(CustomStackManager.TS_STATE_KEY, 3);
+        //CustomStackManager.SetSPKeyValue(CustomStackManager.TS_STATE_KEY, 3);
         currentSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.TS_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, "");
         currentChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.TS_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, "");
         currentTest = CustomStackManager.GetSPKeyValue(CustomStackManager.TS_STATE_KEY + CustomStackManager.TARGET_EXAM_KEY, "");
