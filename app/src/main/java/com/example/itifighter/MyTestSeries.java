@@ -63,8 +63,24 @@ public class MyTestSeries extends Fragment {
         View mtView = inflater.inflate(R.layout.fragment_my_test_series, container, false);
         listView = mtView.findViewById(R.id.testmtRecycle);
         emptyListMessage = mtView.findViewById(R.id.emptyListMessagemts);
-        LoadChapters();
+        //LoadChapters();
+        CustomizeView();
         return mtView;
+    }
+
+    private void CustomizeView() {
+        int currentState = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY, 0);
+        if (currentState == 1) {
+            currentSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, "");
+            currentChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, "");
+            if (bNull(currentSubject) && bNull(currentChapter)) {
+                LoadTest();
+            } else {
+                LoadChapters();
+            }
+        } else {
+            LoadChapters();
+        }
     }
 
 
@@ -165,7 +181,7 @@ public class MyTestSeries extends Fragment {
 
     private void LoadExam() {
 
-        CustomStackManager.SetSPKeyValue(CustomStackManager.MTS_STATE_KEY, 2);
+        //CustomStackManager.SetSPKeyValue(CustomStackManager.MTS_STATE_KEY, 2);
         currentSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, "");
         currentChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, "");
         currentTest = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_EXAM_KEY, "");
