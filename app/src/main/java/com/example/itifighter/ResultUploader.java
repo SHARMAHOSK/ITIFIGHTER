@@ -121,9 +121,8 @@ public class ResultUploader extends AppCompatActivity {
         userTestRecordMap.put("_mpq", "" + _mpq);
         userTestRecordMap.put("accuracy", "" + accuracy);
         userTestRecordMap.put("tpq", "" + tpq);
-        String answerString = "";
-        for (int n : sub_ans)
-            answerString += n + "_";
+        StringBuilder answerString = new StringBuilder();
+        for (int n : sub_ans) answerString.append(n).append("_");
         sub_list = answerString.substring(0, answerString.length() - 1);
         userTestRecordMap.put("answer_key", sub_list);
 

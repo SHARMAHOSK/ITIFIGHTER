@@ -17,6 +17,7 @@ tools:context=".TestInstructionsActivity">
     android:background="@color/white"
     android:paddingStart="10dp"
     tools:ignore="RtlSymmetry,UseCompoundDrawables">
+
     <ImageView
         android:layout_width="20sp"
         android:layout_height="20sp"
@@ -118,6 +119,7 @@ tools:context=".TestInstructionsActivity">
             tools:ignore="SmallSp"/>
     </LinearLayout>
 </LinearLayout>
+
 <TextView
     android:id="@+id/examInstruction"
     android:layout_width="match_parent"
@@ -126,7 +128,7 @@ tools:context=".TestInstructionsActivity">
     android:layout_marginBottom="10dp"
     android:layout_marginStart="20dp"
     android:layout_marginEnd="20dp"
-    android:background="@color/white"
+    android:background="@drawable/backrec"
     android:padding="5dp"
     android:gravity="center"
     android:textColor="@color/dark_blue"
@@ -140,12 +142,15 @@ tools:context=".TestInstructionsActivity">
     android:layout_marginTop="10dp"
     android:layout_marginStart="20dp"
     android:layout_marginEnd="20dp"
+    android:paddingStart="@dimen/dimen_1dp"
+    android:paddingEnd="@dimen/dimen_1dp"
     android:scrollbars="vertical"
     android:isScrollContainer="true"
     android:nestedScrollingEnabled="true"
     android:src="@drawable/self"
-    android:background="@color/white"
+    android:background="@drawable/backrec"
     android:contentDescription="@string/todo" />
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -170,7 +175,7 @@ tools:context=".TestInstructionsActivity">
         android:background="@color/startblue"
         android:onClick="BeginTest"
         android:text="@string/start"
-        android:textColor="@color/white"
-        />
+        android:textColor="@color/white" />
 </LinearLayout>
+
 </LinearLayout>

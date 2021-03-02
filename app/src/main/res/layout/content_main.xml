@@ -19,5 +19,4 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/mobile_navigation" />
 
-    <include layout="@layout/include_progress_overlay"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,6 +40,4 @@
                 android:orientation="vertical"/>
         </ScrollView>
     </LinearLayout>
-
-    <include layout="@layout/include_progress_overlay"/>
 </LinearLayout>

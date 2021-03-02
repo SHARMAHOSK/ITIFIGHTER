@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import com.paytm.pgsdk.TransactionManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -59,13 +61,14 @@ public class PaytmPaymentpp extends AppCompatActivity {
     private String currentSection;
     private ProgressDialog dialog;
 
-
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paytm_payment_pp);
         Intent intent = getIntent();
+
+
         // get Data from intent
         pdfPrice = intent.getStringExtra("price");
         Discount = intent.getStringExtra("discount");
@@ -76,20 +79,24 @@ public class PaytmPaymentpp extends AppCompatActivity {
         coupanCode = intent.getStringExtra("coupanCode");
         coupanDiscount = intent.getStringExtra("coupanDiscount");
 
-        //set dialog message
+        // set dialog message
         dialog = new ProgressDialog(this, R.style.AppCompatAlertDialogStyle);
         dialog.setMessage("Loading...");
         dialog.setCancelable(false);
 
         //get Instance of layout and set data in main view
         final TextView title = findViewById(R.id.pdfTitle), Price = findViewById(R.id.pdfPrice),
-                subPdfPrice = findViewById(R.id.sub_pdfPrice), subPdfDiscount = findViewById(R.id.sub_pdfDiscountPrice),
-                finalPrice = findViewById(R.id.finalpdfPrice), coupanDiscountPrice = findViewById(R.id.coupnCodeDiscount);
+                subPdfPrice = findViewById(R.id.sub_itempricex), subPdfDiscount = findViewById(R.id.sub_pdfDiscountPrice),
+                finalPrice = findViewById(R.id.finalpdfPrice), coupanDiscountPrice = findViewById(R.id.coupnCodeDiscount),
+                removeCoupanButton = findViewById(R.id.removeCoupanButton), sub_discountMsg = findViewById(R.id.sub_discountx),
+                coupanCodeMsg = findViewById(R.id.coupanCodeMsg);
+
+        final LinearLayout CoupanMsgLayout = findViewById(R.id.coupanMsg);
 
         final EditText text = findViewById(R.id.textCoupanCode);
         Button couponButton = findViewById(R.id.coupanClick);
         setPdfDetails(title, Price);
-        setTransactionDetails(subPdfPrice, subPdfDiscount, finalPrice,coupanDiscountPrice);
+        setTransactionDetails(subPdfPrice, subPdfDiscount, finalPrice, coupanDiscountPrice, CoupanMsgLayout, sub_discountMsg, coupanCodeMsg);
         Button cancel = findViewById(R.id.cancelx), payx = findViewById(R.id.payButtonpp);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,45 +108,100 @@ public class PaytmPaymentpp extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 dialog.show();
-                if (txnAmount.equals("")) {
+                if (xNull(txnAmount).equals("")) {
                     dialog.dismiss();
                     Toast.makeText(PaytmPaymentpp.this, "Amount is mandatory", Toast.LENGTH_SHORT).show();
+                } else if (iNull(txnAmount).trim().equalsIgnoreCase("0.0")) {
+                    setAutoPayment();
                 } else getToken();
             }
         });
+
+
+        removeCoupanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.show();
+                setTransactionDetails(subPdfPrice, subPdfDiscount, finalPrice, coupanDiscountPrice, CoupanMsgLayout, sub_discountMsg, coupanCodeMsg);
+                dialog.dismiss();
+            }
+        });
+
         couponButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!coupanActive) {
                     dialog.show();
                     String textCoupan = text.getText().toString().trim();
-                    if(!textCoupan.equalsIgnoreCase("")){
+                    if (!textCoupan.equalsIgnoreCase("")) {
                         if (textCoupan.equalsIgnoreCase(coupanCode)) {
                             if (Double.parseDouble(coupanDiscount) > 0) {
-                                setApplyCoupanDetails(subPdfPrice, subPdfDiscount, finalPrice,coupanDiscountPrice);
-                            }else{
+                                setApplyCoupanDetails(subPdfPrice, subPdfDiscount, finalPrice, coupanDiscountPrice, CoupanMsgLayout, sub_discountMsg, coupanCodeMsg);
+                            } else {
                                 dialog.dismiss();
-                                Toast.makeText(PaytmPaymentpp.this, "Coupan not valid !", Toast.LENGTH_SHORT).show();
+                                text.setError("Coupan not valid !");
                             }
                         } else {
                             dialog.dismiss();
-                            Toast.makeText(PaytmPaymentpp.this, "Coupan not valid !", Toast.LENGTH_SHORT).show();
+                            text.setError("Coupan not valid !");
                         }
-                    }else{
+                    } else {
                         dialog.dismiss();
-                        text.setError("please enter coupan code");
+                        text.setError("please enter coupan code !");
                     }
                 } else {
                     dialog.dismiss();
-                    Toast.makeText(PaytmPaymentpp.this, "Coupan already used", Toast.LENGTH_SHORT).show();
+                    text.setError("Coupan already used ");
                 }
                 text.setText("");
             }
         });
     }
 
+    private void setAutoPayment() {
+        try {
+            Bundle bundle;
+            bundle = setAutoBundle();
+            setTransactionDetails(bundle);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(PaytmPaymentpp.this, "Exception in Auto data saving", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private Bundle setAutoBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putString("BANKNAME", "FREE");
+        bundle.putString("BANKTXNID", "FREE" + coupanCode);
+        bundle.putString("CHECKSUMHASH", "FREE" + coupanCode);
+        bundle.putString("CURRENCY", "INR");
+        bundle.putString("GATEWAYNAME", "FREE");
+        bundle.putString("MID", xNull(Mid));
+        bundle.putString("ORDERID", xNull(OrderId));
+        bundle.putString("PAYMENTMODE", "FREE");
+        bundle.putString("RESPCODE", "01");
+        bundle.putString("RESPMSG", "Txn Success");
+        bundle.putString("STATUS", "TXN_SUCCESS");
+        bundle.putString("TXNAMOUNT", xNull(txnAmount));
+        Date d = new Date();
+        bundle.putString("TXNDATE", d.toString());
+        bundle.putString("TXNID", "FREE" + xNull(OrderId) + xNull(Uid));
+        return bundle;
+    }
+
+    private String iNull(String value) {
+        if (value == null) return "0.0";
+        else if(value.trim().equalsIgnoreCase("0")) return "0.0";
+        else return value;
+    }
+
+    private String xNull(String value) {
+        if (value == null) return "";
+        else return value;
+    }
+
     @SuppressLint("SetTextI18n")
-    private void setApplyCoupanDetails(TextView subPdfPrice, TextView subPdfDiscount, TextView finalPrice, TextView coupanDiscountPrice) {
+    private void setApplyCoupanDetails(TextView subPdfPrice, TextView subPdfDiscount, TextView finalPrice, TextView coupanDiscountPrice, LinearLayout coupanMsgLayout, TextView sub_discountMsg, TextView coupanCodeMsg) {
         double discount1 = Double.parseDouble(getDiscountedPrice(pdfPrice, coupanDiscount));
         double discount2 = Double.parseDouble(getDiscountedPrice(pdfPrice, Discount));
         double price = Double.parseDouble(pdfPrice);
@@ -147,24 +209,35 @@ public class PaytmPaymentpp extends AppCompatActivity {
             txnAmount = String.valueOf(price - (discount1 + discount2));
             subPdfPrice.setText("\u20B9 " + pdfPrice);
             subPdfDiscount.setText("- \u20B9 " + discount2);
+            coupanCodeMsg.setVisibility(View.VISIBLE);
+            coupanDiscountPrice.setVisibility(View.VISIBLE);
+            coupanMsgLayout.setVisibility(View.VISIBLE);
+            sub_discountMsg.setText("Regular Discount @ " + Discount + "%");
+            coupanCodeMsg.setText("Coupan Code Discount @ " + coupanDiscount + "%");
             coupanDiscountPrice.setText("- \u20B9 " + discount1);
-            finalPrice.setText(txnAmount);
+            finalPrice.setText("\u20B9 " + txnAmount);
             coupanActive = true;
-        }else{
-            setTransactionDetails(subPdfPrice, subPdfDiscount, finalPrice,coupanDiscountPrice);
+        } else {
+            setTransactionDetails(subPdfPrice, subPdfDiscount, finalPrice, coupanDiscountPrice, coupanMsgLayout, sub_discountMsg, coupanCodeMsg);
             Toast.makeText(PaytmPaymentpp.this, "invalid coupan ! contact admin", Toast.LENGTH_SHORT).show();
         }
         dialog.dismiss();
     }
 
     @SuppressLint("SetTextI18n")
-    private void setTransactionDetails(TextView subPdfPrice, TextView subPdfDiscount, TextView finalPrice, TextView coupanDiscountPrice) {
+    private void setTransactionDetails(TextView subPdfPrice, TextView subPdfDiscount, TextView finalPrice, TextView coupanDiscountPrice, LinearLayout coupanMsgLayout, TextView sub_discountMsg, TextView coupanCodeMsg) {
         txnAmount = getFinalPrice(pdfPrice, Discount);
         subPdfPrice.setText("\u20B9 " + pdfPrice);
         subPdfDiscount.setText("- \u20B9 " + getDiscountedPrice(pdfPrice, Discount));
+        coupanCodeMsg.setText("Coupan Code Discount @ 0%");
         coupanDiscountPrice.setText("- \u20B9 " + 0.0);
-        finalPrice.setText(txnAmount);
+        finalPrice.setText("\u20B9 " + txnAmount);
+        sub_discountMsg.setText("Regular Discount @ " + Discount + "%");
+        coupanCodeMsg.setVisibility(View.GONE);
+        coupanDiscountPrice.setVisibility(View.GONE);
+        coupanMsgLayout.setVisibility(View.GONE);
         coupanActive = false;
+        dialog.dismiss();
     }
 
     @SuppressLint("SetTextI18n")
@@ -175,7 +248,7 @@ public class PaytmPaymentpp extends AppCompatActivity {
     }
 
     private String getDiscountedPrice(String pdfPrice, String discount) {
-        return String.valueOf((Double.parseDouble(pdfPrice) * Double.parseDouble(discount)) / 100);
+        return String.valueOf(Math.round((Double.parseDouble(pdfPrice) * Double.parseDouble(discount)) / 100));
     }
 
     private String getFinalPrice(String pdfPrice, String discount) {
@@ -272,7 +345,6 @@ public class PaytmPaymentpp extends AppCompatActivity {
                 Log.e(TAG, " transaction cancel " + s);
                 Toast.makeText(PaytmPaymentpp.this, " transaction cancel " + s, Toast.LENGTH_SHORT).show();
             }
-
         });
 
         transactionManager.setShowPaymentUrl(host + "theia/api/v1/showPaymentPage");
@@ -309,6 +381,7 @@ public class PaytmPaymentpp extends AppCompatActivity {
     private void setTransactionDetails(final Bundle bundle) {
         try {
             dialog.show();
+            Toast.makeText(this,""+bundle.getString("TXNID"),Toast.LENGTH_SHORT).show();
             DocumentReference reference = FirebaseFirestore.getInstance().collection("users").document(Uid)
                     .collection("transaction").document("pp").collection("TXNID")
                     .document(Objects.requireNonNull(bundle.getString("TXNID")));
@@ -318,9 +391,9 @@ public class PaytmPaymentpp extends AppCompatActivity {
             map.put("currentSubject", currentSubject);
             map.put("currentChapter", currentChapter);
             map.put("curruntPdf", currentSection);
-            if(coupanActive){
-                map.put("coupanCode",coupanCode);
-                map.put("coupanDiscount",coupanDiscount);
+            if (coupanActive) {
+                map.put("coupanCode", coupanCode);
+                map.put("coupanDiscount", coupanDiscount);
             }
             reference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -353,9 +426,9 @@ public class PaytmPaymentpp extends AppCompatActivity {
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     map.put("currentSubject", currentSubject);
                     map.put("currentChapter", currentChapter);
-                    if(coupanActive){
-                        map.put("coupanCode",coupanCode);
-                        map.put("coupanDiscount",coupanDiscount);
+                    if (coupanActive) {
+                        map.put("coupanCode", coupanCode);
+                        map.put("coupanDiscount", coupanDiscount);
                     }
                     map.put("status", "1");
                     reference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {

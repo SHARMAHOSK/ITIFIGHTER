@@ -46,7 +46,7 @@ public class RatingFragment extends Fragment {
         final FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final String UserId = Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid();
-        final DocumentReference reference = db.collection("Rating").document(UserId);
+        final DocumentReference reference = db.collection("users").document(UserId).collection("rating").document("01");
         reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {

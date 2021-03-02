@@ -41,7 +41,7 @@ public class ChatFragment extends Fragment implements
     private static final String TAG = "ChatroomActivity";
 
     //widgets
-    private Chatroom mChatroom = new Chatroom("bhosk","123456");
+    private final Chatroom mChatroom = new Chatroom("bhosk","123456");
     private EditText mMessage;
 
     //vars
@@ -49,8 +49,8 @@ public class ChatFragment extends Fragment implements
     private RecyclerView mChatMessageRecyclerView;
     private ChatMessageRecyclerAdapter mChatMessageRecyclerAdapter;
     private FirebaseFirestore mDb;
-    private ArrayList<ChatMessage> mMessages = new ArrayList<>();
-    private Set<String> mMessageIds = new HashSet<>();
+    private final ArrayList<ChatMessage> mMessages = new ArrayList<>();
+    private final Set<String> mMessageIds = new HashSet<>();
     private ArrayList<User> mUserList = new ArrayList<>();
     private String email,name,id;
 
@@ -92,7 +92,6 @@ public class ChatFragment extends Fragment implements
                             Log.e(TAG, "onEvent: Listen failed.", e);
                             return;
                         }
-
                         if(queryDocumentSnapshots != null){
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
 
@@ -100,7 +99,7 @@ public class ChatFragment extends Fragment implements
                                 if(!mMessageIds.contains(message.getMessage_id())){
                                     mMessageIds.add(message.getMessage_id());
                                     mMessages.add(message);
-                                    mChatMessageRecyclerView.smoothScrollToPosition(mMessages.size() - 1);
+                                    mChatMessageRecyclerView.scrollToPosition(mMessages.size() - 1);
                                 }
 
                             }
@@ -147,17 +146,19 @@ public class ChatFragment extends Fragment implements
         mChatMessageRecyclerAdapter = new ChatMessageRecyclerAdapter(mMessages, getContext());
         mChatMessageRecyclerView.setAdapter(mChatMessageRecyclerAdapter);
         mChatMessageRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mChatMessageRecyclerView.setVerticalScrollBarEnabled(true);
+
         mChatMessageRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v,
-                                       int left, int top, int right, int bottom,
+                                       int left, final int top, int right, final int bottom,
                                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 if (bottom < oldBottom) {
                     mChatMessageRecyclerView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             if(mMessages.size() > 0){
-                                mChatMessageRecyclerView.smoothScrollToPosition(
+                              mChatMessageRecyclerView.scrollToPosition(
                                         Objects.requireNonNull(mChatMessageRecyclerView.getAdapter()).getItemCount() - 1);
                             }
 

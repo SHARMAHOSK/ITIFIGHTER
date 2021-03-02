@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -12,25 +13,22 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import java.io.Serializable;
 import java.util.List;
 
 public class TestInstructionsActivity extends AppCompatActivity {
 
-    TextView tQues, tMarks, tMin;
-    CheckBox insCB;
+    private CheckBox insCB;
+    private List<Question> questions;
+    private int _mpq,timer;   //marks per question , //time in seconds
+    private String title;
 
-    List<Question> questions;
-    int _mpq;   //marks per question
-    int timer;  //time in seconds
-    String title;
-
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_instructions);
+
         questions = (List<Question>) getIntent().getSerializableExtra("questions");  //= question list from prev activity
         _mpq = getIntent().getIntExtra("_mpq", 1);
         title = getIntent().getStringExtra("title");
@@ -40,21 +38,35 @@ public class TestInstructionsActivity extends AppCompatActivity {
             timer = getIntent().getIntExtra("timer", 60);   //default a min.
         }
 
-        tQues = findViewById(R.id.TQues);
-        tMarks = findViewById(R.id.TMarks);
-        tMin = findViewById(R.id.TMin);
+        TextView tQues = findViewById(R.id.TQues);
+        TextView tMarks = findViewById(R.id.TMarks);
+        TextView tMin = findViewById(R.id.TMin);
+        final TextView cbt = findViewById(R.id.TestTitleIP);
+        insCB = findViewById(R.id.InsCB);
+
+
+
+        //cbt.setVisibility(View.INVISIBLE);
+        cbt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= cbt.getRight() - cbt.getTotalPaddingRight()) {
+                        // your action for drawable click event
+                        onBackPressed();
+                        return true;
+                    }
+                }
+                return true;
+            }
+        });
+
 
         tQues.setText("" + questions.size());
         tMarks.setText("" + _mpq * questions.size());
         tMin.setText("" + timer);
-        ((TextView) findViewById(R.id.TestTitleIP)).setText(title != null ? title : "-");
-        insCB = findViewById(R.id.InsCB);/*
-        FirebaseFirestore.getInstance().collection("common").document("pre test").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                instructionTV.setText(""+documentSnapshot.getString("instruction"));
-            }
-        });*/
+        cbt.setText(title != null ? title : "-");
+
     }
 
     @Override
@@ -65,8 +77,6 @@ public class TestInstructionsActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //if user pressed "yes", then he is allowed to exit from application
-                //startActivity(new Intent(TestInstructionsActivity.this, MainDashboard.class));
                 finish();
             }
         });
@@ -80,6 +90,7 @@ public class TestInstructionsActivity extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
 
     public void BeginTest(View view) {
         if (insCB.isChecked()) {
@@ -97,8 +108,6 @@ public class TestInstructionsActivity extends AppCompatActivity {
             } else {
                 myIntent.putExtra("timer", timer);
             }
-            //Toast.makeText(getApplicationContext(), "section, subject, chap, test: lt,"+getIntent().getStringExtra("subject")+","+getIntent().getStringExtra("chapter")+","+utID, Toast.LENGTH_LONG).show();
-
             startActivity(myIntent);
         } else {
             Toast.makeText(this, "Please agree to the terms and conditions in order to proceed with test", Toast.LENGTH_SHORT).show();

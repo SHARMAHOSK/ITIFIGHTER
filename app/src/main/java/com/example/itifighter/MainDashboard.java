@@ -44,6 +44,7 @@ public class MainDashboard extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private boolean doubleBackToExitPressedOnce = false, allowStackBack = true;
+    private View view;
 
     @SuppressLint({"SetTextI18n", "InflateParams"})
     @Override
@@ -56,7 +57,7 @@ public class MainDashboard extends AppCompatActivity {
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         final NavigationView navigationView = findViewById(R.id.nav_view);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home,R.id.nav_profile,R.id.nav_chat,R.id.nav_groups,R.id.nav_change,R.id.nav_rating)
+                R.id.nav_home,R.id.nav_profile,R.id.nav_chat,R.id.nav_groups,R.id.nav_change,R.id.nav_rating,R.id.nav_notification)
                 .setDrawerLayout(drawer).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -152,13 +153,8 @@ public class MainDashboard extends AppCompatActivity {
     }
     public void setHeaderDetails(NavigationView navigationView){
         final String uid = FirebaseAuth.getInstance().getUid();
-        final View view = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        assert uid != null;
-        Glide.with(MainDashboard.this)
-                        .load(FirebaseStorage.getInstance().getReference().child("UserImage/"+uid))
-                        .placeholder(R.drawable.user)
-                        .apply(new RequestOptions().signature(new ObjectKey(String.valueOf(System.currentTimeMillis()))))
-                        .into((ImageView)view.findViewById(R.id.HeaderImage));
+        view = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        UploadImage();
         FirebaseFirestore.getInstance().collection("users").document(uid)
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -171,6 +167,15 @@ public class MainDashboard extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void UploadImage(){
+        final String uid = FirebaseAuth.getInstance().getUid();
+        Glide.with(MainDashboard.this)
+                .load(FirebaseStorage.getInstance().getReference().child("UserImage/"+uid))
+                .placeholder(R.drawable.user)
+                .apply(new RequestOptions().signature(new ObjectKey(String.valueOf(System.currentTimeMillis()))))
+                .into((ImageView) view.findViewById(R.id.HeaderImage));
     }
 
     @Override

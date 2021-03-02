@@ -1,6 +1,6 @@
 package com.example.itifighter;
 
-import android.app.ProgressDialog;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,19 +36,19 @@ import static android.content.ContentValues.TAG;
 public class MyTestSeries extends Fragment {
     private ListView listView;
     private FirebaseFirestore db;
+    @SuppressLint("StaticFieldLeak")
     public static MyTestSeries instance;
     private Context mContext;
-    private String Uid = FirebaseAuth.getInstance().getUid();
-    private ArrayList<CustomListItemY> ProductData,Tests;
-    private ArrayList<String> SubjectId,ChapterId,TestId,MPQ,Timmr,Tittl;
-    private String currentChapter,currentSubject,currentTest;
-    private ProgressDialog dialog;
-    private int currentLayer = 0,currentChapterPos=0,currentSubjectPos=0,currentTestPos=0;   //0=subjects, 1=chapters
-    private ImageButton back;
+    private final String Uid = FirebaseAuth.getInstance().getUid();
+    private ArrayList<CustomListItemY> ProductData, Tests;
+    private ArrayList<String> SubjectId, ChapterId, TestId, MPQ, Timmr, Tittl;
+    private String currentChapter, currentSubject, currentTest;
+    private int currentChapterPos = 0, currentSubjectPos = 0, currentTestPos = 0;   //0=subjects, 1=chapters
     private TextView emptyListMessage;
 
 
-    public MyTestSeries() {}
+    public MyTestSeries() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,133 +57,148 @@ public class MyTestSeries extends Fragment {
         mContext = getContext();
         instance = this;
     }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mtView = inflater.inflate(R.layout.fragment_my_test_series, container, false);
         listView = mtView.findViewById(R.id.testmtRecycle);
-        back = mtView.findViewById(R.id.CustomBackButtonMTS);
         emptyListMessage = mtView.findViewById(R.id.emptyListMessagemts);
-        dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
-        dialog.setMessage("Loading...");
-        dialog.setCancelable(false);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CustomBackButton();
-            }
-        });
-        back.setVisibility(View.INVISIBLE);
         LoadChapters();
         return mtView;
     }
 
-    private void CustomBackButton() {
-        if (currentLayer == 1) LoadChapters();
-    }
 
-    void LoadChapters(){
-        /*CustomStackManager.GetInstance().SetPageState(0);*/
+    void LoadChapters() {
         CustomStackManager.SetSPKeyValue(CustomStackManager.MTS_STATE_KEY, 0);
-        currentLayer = 0;
-        dialog.show();
         db.collection("users").document(Uid)
                 .collection("Products").document("ts")
                 .collection("ProductId")
-        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     ProductData = new ArrayList<>();
                     ChapterId = new ArrayList<>();
                     SubjectId = new ArrayList<>();
-                    for(QueryDocumentSnapshot queryDocumentSnapshot : Objects.requireNonNull(task.getResult())){
-                        ProductData.add(new CustomListItemY(queryDocumentSnapshot.getString("currentSubject"),
-                                queryDocumentSnapshot.getId(),queryDocumentSnapshot.getString("ExpiryDate")));
-                        SubjectId.add(queryDocumentSnapshot.getString("currentSubject"));
-                        ChapterId.add(queryDocumentSnapshot.getId());
+                    for (QueryDocumentSnapshot queryDocumentSnapshot : Objects.requireNonNull(task.getResult())) {
+                        ProductData.add(
+                                new CustomListItemY(
+                                        xNull(queryDocumentSnapshot.getString("currentSubject")),
+                                        xNull(queryDocumentSnapshot.getId()),
+                                        xNull(queryDocumentSnapshot.getString("ExpiryDate"))));
+                        SubjectId.add(xNull(queryDocumentSnapshot.getString("currentSubject")));
+                        ChapterId.add(xNull(queryDocumentSnapshot.getId()));
                     }
                     emptyListMessage.setVisibility(SubjectId.size() <= 0 ? View.VISIBLE : View.GONE);
-                    listView.setAdapter( new CustomListViewArrayAdapterY(mContext,0,ProductData));
+                    listView.setAdapter(new CustomListViewArrayAdapterY(mContext, 0, ProductData));
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             currentChapter = ChapterId.get(i);
                             currentSubject = SubjectId.get(i);
-                            currentSubjectPos = currentChapterPos = i;
-                            LoadTest();
+                            if (bNull(currentSubject) && bNull(currentChapter)) {
+                                currentSubjectPos = currentChapterPos = i;
+                                CustomStackManager.SetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, currentSubject);
+                                CustomStackManager.SetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, currentChapter);
+                                LoadTest();
+                            }
                         }
                     });
-                    dialog.dismiss();
-                    back.setVisibility(View.INVISIBLE);
                 }
             }
         });
     }
 
-    private void LoadTest(){
-        /*CustomStackManager.GetInstance().SetPageState(1);*/
+    private void LoadTest() {
+
         CustomStackManager.SetSPKeyValue(CustomStackManager.MTS_STATE_KEY, 1);
-        dialog.show();
-        currentLayer = 1;
-        db.collection("section").document("ts").collection("branch").document(currentSubject).collection("chapter").document(currentChapter)
-                .collection("tests").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    Tests = new ArrayList<>();
-                    TestId = new ArrayList<>();
-                    MPQ = new ArrayList<>();
-                    Timmr = new ArrayList<>();
-                    Tittl = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        int duration = Integer.parseInt(String.valueOf(document.get("duration"))), marks = Integer.parseInt(String.valueOf(document.get("marks"))), NOQ = Integer.parseInt(String.valueOf(document.get("NOQs")));
-                        int score = marks*NOQ;
-                        Tests.add(new CustomListItemY(document.getId(),
-                                document.getString("title"), String.valueOf(duration),
-                                String.valueOf(NOQ), String.valueOf(score)));
-                        TestId.add(document.getId());
-                        MPQ.add(String.valueOf(marks));
-                        Timmr.add(String.valueOf(duration));
-                        Tittl.add(document.getString("title"));
-                    }
-                    emptyListMessage.setVisibility(TestId.size() <= 0 ? View.VISIBLE : View.GONE);
-                    listView.setAdapter(new CustomListViewArrayAdapterZ(mContext,0,Tests,currentSubject,currentChapter));
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            currentTest = TestId.get(i);
-                            currentTestPos = i;
-                            LoadExam();
+        currentSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, "");
+        currentChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, "");
+        db.collection("section").document("ts")
+                .collection("branch").document(xNull(currentSubject))
+                .collection("chapter").document(xNull(currentChapter))
+                .collection("tests")
+                .get().addOnCompleteListener(
+                new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Tests = new ArrayList<>();
+                            TestId = new ArrayList<>();
+                            MPQ = new ArrayList<>();
+                            Timmr = new ArrayList<>();
+                            Tittl = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                int duration = iNull(oNull(document.get("duration"))),
+                                        marks = iNull(oNull(document.get("marks"))),
+                                        NOQ = iNull(oNull(document.get("NOQs")));
+                                int score = marks * NOQ;
+                                Tests.add(
+                                        new CustomListItemY(
+                                                xNull(document.getId()),
+                                                xNull(document.getString("title")),
+                                                intToStringNull(duration),
+                                                intToStringNull(NOQ),
+                                                intToStringNull(score)));
+                                TestId.add(xNull(document.getId()));
+                                MPQ.add(intToStringNull(marks));
+                                Timmr.add(intToStringNull(duration));
+                                Tittl.add(xNull(document.getString("title")));
+                            }
+                            emptyListMessage.setVisibility(TestId.size() <= 0 ? View.VISIBLE : View.GONE);
+                            listView.setAdapter(new CustomListViewArrayAdapterZ(mContext, 0, Tests, currentSubject, currentChapter));
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    currentTest = TestId.get(i);
+                                    if (bNull(currentTest)) {
+                                        currentTestPos = i;
+                                        CustomStackManager.SetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_EXAM_KEY, currentTest);
+                                        LoadExam();
+                                    }
+                                }
+                            });
                         }
-                    });
-                    dialog.dismiss();
-                    back.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+                    }
+                });
     }
 
     private void LoadExam() {
-        dialog.show();
-        db.collection("section").document("ts").collection("branch").document(currentSubject).collection("chapter").document(currentChapter)
-                .collection("tests").document(currentTest).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        CustomStackManager.SetSPKeyValue(CustomStackManager.MTS_STATE_KEY, 2);
+        currentSubject = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_SUBJECT_KEY, "");
+        currentChapter = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_CHAPTER_KEY, "");
+        currentTest = CustomStackManager.GetSPKeyValue(CustomStackManager.MTS_STATE_KEY + CustomStackManager.TARGET_EXAM_KEY, "");
+
+        db.collection("section").document("ts")
+                .collection("branch").document(xNull(currentSubject))
+                .collection("chapter").document(xNull(currentChapter))
+                .collection("tests").document(xNull(currentTest))
+                .collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful() && task.getResult()!=null) {
+                if (task.isSuccessful() && task.getResult() != null) {
                     final ArrayList<Object> questions = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        questions.add(new Question(document.getString("question"), document.getString("option1"),
-                                document.getString("option2"), document.getString("option3"),
-                                document.getString("option4"), document.getString("answer")));
+                        questions.add(
+                                new Question(
+                                        xNull(document.getString("question")),
+                                        xNull(document.getString("option1")),
+                                        xNull(document.getString("option2")),
+                                        xNull(document.getString("option3")),
+                                        xNull(document.getString("option4")),
+                                        xNull(document.getString("answer"))
+                                ));
                     }
                     final String uuid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-                    final DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document("" + uuid);
-                    final CollectionReference UserTestRecord = userDoc.collection("scoreboard").document("ts").collection("test");
+                    final DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document(xNull(uuid));
+                    final CollectionReference UserTestRecord = userDoc.collection("scoreboard").document("ts")
+                            .collection("test");
                     UserTestRecord.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
+
                                 boolean found = false;
                                 String total_attempted = "", total_skipped = "", total_correct = "";
                                 String sub_list = "";
@@ -193,19 +207,19 @@ public class MyTestSeries extends Fragment {
                                 for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                                     if (document.getId().equals(targetChapterID)) {
                                         found = true;
-                                        total_attempted = document.getString("total_attempted");
-                                        total_skipped = document.getString("total_skipped");
-                                        total_correct = document.getString("total_correct");
-                                        accuracy = document.getString("accuracy");
-                                        tpq = document.getString("tpq");
-                                        _mpq = document.getString("_mpq");
-                                        sub_list = document.getString("answer_key");
+                                        total_attempted = xNull(document.getString("total_attempted"));
+                                        total_skipped =  xNull( document.getString("total_skipped"));
+                                        total_correct = xNull(document.getString("total_correct"));
+                                        accuracy = xNull(document.getString("accuracy"));
+                                        tpq = xNull(document.getString("tpq"));
+                                        _mpq = xNull(document.getString("_mpq"));
+                                        sub_list = xNull(document.getString("answer_key"));
                                         break;
                                     }
                                 }
+                                Intent myIntent;
                                 if (found) {
-                                    //load result activity
-                                    Intent myIntent = new Intent(getContext(), TestResultActivity.class);
+                                    myIntent = new Intent(getContext(), TestResultActivity.class);
                                     myIntent.putExtra("is_past_result", "true");
                                     myIntent.putExtra("total_skipped", total_skipped);
                                     myIntent.putExtra("total_attempted", total_attempted);
@@ -221,10 +235,8 @@ public class MyTestSeries extends Fragment {
                                     myIntent.putExtra("title", Tittl.get(currentTestPos));
                                     myIntent.putExtra("accuracy", accuracy);
                                     myIntent.putExtra("tpq", tpq);
-                                    dialog.dismiss();
-                                    startActivity(myIntent);
                                 } else {
-                                    Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
+                                    myIntent = new Intent(getContext(), TestInstructionsActivity.class);
                                     myIntent.putExtra("section", "ts");
                                     myIntent.putExtra("subject", SubjectId.get(currentSubjectPos));
                                     myIntent.putExtra("chapter", ChapterId.get(currentChapterPos));
@@ -232,10 +244,9 @@ public class MyTestSeries extends Fragment {
                                     myIntent.putExtra("_mpq", Integer.parseInt(MPQ.get(currentChapterPos)));
                                     myIntent.putExtra("timer", Integer.parseInt(Timmr.get(currentChapterPos)));
                                     myIntent.putExtra("title", Tittl.get(currentChapterPos) + " (Test Series)");
-                                    dialog.dismiss();
-                                    startActivity(myIntent);
                                 }
-                            }else {
+                                startActivity(myIntent);
+                            } else {
                                 Intent myIntent = new Intent(getContext(), TestInstructionsActivity.class);
                                 myIntent.putExtra("section", "ts");
                                 myIntent.putExtra("subject", SubjectId.get(currentSubjectPos));
@@ -244,17 +255,97 @@ public class MyTestSeries extends Fragment {
                                 myIntent.putExtra("_mpq", Integer.parseInt(MPQ.get(currentChapterPos)));
                                 myIntent.putExtra("timer", Integer.parseInt(Timmr.get(currentChapterPos)));
                                 myIntent.putExtra("title", Tittl.get(currentChapterPos));
-                                dialog.dismiss();
                                 startActivity(myIntent);
                             }
                         }
                     });
                 } else {
-                    Toast.makeText(mContext,"no test found",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "no test found", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Error getting documents: ", task.getException());
                     LoadTest();
                 }
             }
         });
+    }
+
+    public String xNull(String str) {
+        if (str != null) return str;
+        else return "";
+    }
+
+    public boolean bNull(String str) {
+        if (str == null) return false;
+        else return !str.trim().isEmpty();
+    }
+
+    public Double dNull(Double dbl) {
+        if (dbl == null) return 0.0;
+        else if (dbl < 1.0) return 0.0;
+        else return dbl;
+    }
+
+    public Double vNull(String str) {
+        double num = 0.0;
+        if (bNull(xNull(str))) {
+            try {
+                num = Double.parseDouble(str);
+            } catch (NumberFormatException e) {
+                num = 0.0;
+            }
+        }
+        return num;
+    }
+
+    public String vNull(double str) {
+        String num = "0.0";
+        if (dNull(str) > 0) {
+            try {
+                num = String.valueOf(str);
+            } catch (Exception e) {
+                num = "0.0";
+            }
+        }
+        return num;
+    }
+
+    public int iNull(int value) {
+        if (value < 1) return 0;
+        else return value;
+    }
+
+    public int iNull(String value) {
+        int num = 0;
+        if (bNull(xNull(value))) {
+            try {
+                num = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                num = 0;
+            }
+        }
+        return iNull(num);
+    }
+
+    public String intToStringNull(int value) {
+        String num = "0";
+        if (iNull(value) > 0) {
+            try {
+                num = String.valueOf(value);
+            } catch (NumberFormatException e) {
+                num = "0";
+            }
+        }
+        return num;
+    }
+
+    private String oNull(Object cc) {
+        String value = "";
+        if (cc != null) {
+            try {
+                value = String.valueOf(cc);
+            } catch (Exception e) {
+                value = "";
+            }
+        }
+        return value;
     }
 }

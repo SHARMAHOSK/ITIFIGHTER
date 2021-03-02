@@ -2,7 +2,9 @@ package com.example.itifighter.TestSeriesX;
 
 public class CustomListItemX {
     private String topicHeader,test,imagex,Uid,month1,month2,month3,price1,price2,price3,discount1,discount2,discount3;
-    public CustomListItemX(String topicHeader, String test,String imagex, String Uid,String month1,String month2, String month3,String price1, String price2, String price3, String discount1, String discount2, String discount3){
+    private String coupanCode, coupanActive, coupanDiscount;
+
+    public CustomListItemX(String topicHeader, String test,String imagex, String Uid,String month1,String month2, String month3,String price1, String price2, String price3, String discount1, String discount2, String discount3, String couponCODE, String coupanDiscount, String coupanActive){
         this.topicHeader = topicHeader;
         this.test = test;
         this.imagex = imagex;
@@ -16,6 +18,11 @@ public class CustomListItemX {
         this.discount1 = discount1;
         this.discount2= discount2;
         this.discount3 = discount3;
+        this.coupanCode =couponCODE;
+        this.coupanActive = coupanActive;
+        this.coupanDiscount = coupanDiscount;
+
+
     }
 
     public String getTopicHeader() {return topicHeader; }
@@ -32,4 +39,27 @@ public class CustomListItemX {
     public String getDiscount2(){return  discount2;}
     public String getDiscount3(){return  discount3;}
 
+    public String getCoupanCode() {
+        return coupanCode;
+    }
+
+    public void setCoupanCode(String coupanCode) {
+        this.coupanCode = coupanCode;
+    }
+
+    public String getCoupanActive() {
+        return coupanActive;
+    }
+
+    public void setCoupanActive(String coupanActive) {
+        this.coupanActive = coupanActive;
+    }
+
+    public String getCoupanDiscount() {
+        return coupanDiscount;
+    }
+
+    public void setCoupanDiscount(String coupanDiscount) {
+        this.coupanDiscount = coupanDiscount;
+    }
 }

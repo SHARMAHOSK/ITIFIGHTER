@@ -13,6 +13,8 @@
         android:id="@+id/chat_message_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:fontFamily="verdana"
         android:paddingBottom="4dp"
         android:text="@string/rose"/>
 

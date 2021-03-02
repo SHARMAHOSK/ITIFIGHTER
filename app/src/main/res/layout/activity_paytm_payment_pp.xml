@@ -5,61 +5,98 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
     android:background="@drawable/bg_login"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.itifighter.PaytmPaymentpp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/white"
+        android:layout_marginBottom="@dimen/dimen_10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/dimen_10dp"
+            android:textColor="@color/blue2"
+            android:text="@string/payment_information"
+            android:padding="5dp"
+            android:textStyle="bold"
+            tools:ignore="RtlSymmetry" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:orientation="vertical">
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent">
-            <ImageView
-                android:id="@+id/testxy_image_viewx"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/pdficon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@drawable/pdficon" />
+            android:background="@drawable/backrec"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/pdfTitle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@drawable/backrec">
+                <ImageView
+                    android:id="@+id/testxy_image_viewx"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/prev_image"
+                    tools:srcCompat="@drawable/prev_image"
+                    android:contentDescription="@string/todo" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/title"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/testxy_image_viewx"
-                app:layout_constraintTop_toTopOf="parent" />
-            <TextView
-                android:id="@+id/pdfPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@+id/pdfTitle"
-                app:layout_constraintTop_toBottomOf="@+id/pdfTitle"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/pdfTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="@dimen/dimen_10dp"
+                    android:padding="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:gravity="start"/>
+
+                <TextView
+                    android:id="@+id/pdfPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:gravity="start"
+                    android:padding="5dp"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="@dimen/dimen_10dp"/>
+
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -92,7 +129,7 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
-                android:id="@+id/sub_pdfPrice"
+                android:id="@+id/sub_itempricex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
@@ -115,7 +152,7 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
-                android:id="@+id/sub_pdfTaxPrice"
+                android:id="@+id/sub_taxpricex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
@@ -126,6 +163,7 @@
                 app:layout_constraintTop_toTopOf="@+id/sub_taxx" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/coupanCodeMsg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -138,6 +176,7 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/coupnCodeDiscount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -165,9 +204,9 @@
                 android:id="@+id/sub_pdfDiscountPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:text="- \u20B9 250"
                 android:textColor="@color/green1"
-                android:layout_marginEnd="5dp"
                 app:layout_constraintBottom_toBottomOf="@+id/sub_discountx"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/sub_discountx"
@@ -178,7 +217,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="20dp"
                 android:text="You have to pay only "
                 android:textColor="@color/black"
                 android:textSize="14sp"
@@ -196,42 +235,86 @@
                 android:textColor="@color/black"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/sub_finalx"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/sub_finalx" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:orientation="horizontal">
-    <EditText
-        android:id="@+id/textCoupanCode"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/backrec"
-        android:layout_height="30dp"
-        android:textSize="15dp"
-        android:paddingStart="5dp"
-        android:hint="@string/apply_coupan_code"/>
-    <Button
-        android:id="@+id/coupanClick"
-        android:layout_width="70dp"
-        android:layout_height="30dp"
-        android:background="@color/startblue"
-        android:textColor="#ffffff"
-        android:text="@string/apply"/>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/coupanMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/backrec"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_10dp"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/checked" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_10dp"
+            android:text="promo code Applied successfully"
+            android:textColor="@color/green"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end">
+
+            <TextView
+                android:id="@+id/removeCoupanButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove"
+                android:textColor="@color/blue2"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/textCoupanCode"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/backrec"
+            android:hint="@string/apply_coupan_code"
+            android:paddingStart="5dp"
+            android:textSize="15dp" />
+
+        <Button
+            android:id="@+id/coupanClick"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:background="@color/startblue"
+            android:text="@string/apply"
+            android:textColor="#ffffff" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
+        android:layout_weight="1"
         android:gravity="bottom"
-        android:layout_weight="1">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -243,21 +326,21 @@
                 android:id="@+id/cancelx"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/startblue"
-                android:textColor="#ffffff"
-                android:text="Cancel"
                 android:layout_weight="1"
+                android:background="@color/startblue"
+                android:text="Cancel"
+                android:textColor="#ffffff"
                 tools:ignore="ButtonStyle,HardcodedText" />
 
             <Button
                 android:id="@+id/payButtonpp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/startblue"
                 android:layout_marginStart="8dp"
-                android:textColor="#ffffff"
-                android:text="Pay"
                 android:layout_weight="1"
+                android:background="@color/startblue"
+                android:text="Pay"
+                android:textColor="#ffffff"
                 tools:ignore="ButtonStyle,HardcodedText" />
 
         </LinearLayout>

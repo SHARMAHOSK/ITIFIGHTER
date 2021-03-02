@@ -40,6 +40,7 @@
         android:name="com.example.itifighter.ui.change.ChangeFragment"
         android:label="Change Password"
         tools:layout="@layout/fragment_menu_change" />
+
     <fragment
         android:id="@+id/nav_rating"
         android:name="com.example.itifighter.ui.rating.RatingFragment"

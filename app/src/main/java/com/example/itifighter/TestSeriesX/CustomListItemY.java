@@ -14,6 +14,7 @@ public class CustomListItemY {
         this.TestQuetion = TestQuetion;
         this.TestScore= TestScore;
     }
+
     public String getCurrentSubject(){return currentSubject;}
     public String getCurrentChapter() {return currentChapter;}
     public String getExpiryDate() {return expiryDate;}
@@ -22,4 +23,5 @@ public class CustomListItemY {
     public String getTestName() {return TestName;}
     public String getTestQuetion() {return TestQuetion;}
     public String getTestScore() {return TestScore;}
+
 }

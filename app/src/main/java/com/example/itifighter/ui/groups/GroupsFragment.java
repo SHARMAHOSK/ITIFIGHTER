@@ -46,6 +46,7 @@ public class GroupsFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull final ItemViewHolder holder, int i, @NonNull final ListItem listItem) {
+                Glide.with(requireContext()).load(R.drawable.load_image) .into(holder.myImage);
                 holder.text1.setText(listItem.getName());
                 holder.text2.setText(listItem.getDesc());
                 FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();

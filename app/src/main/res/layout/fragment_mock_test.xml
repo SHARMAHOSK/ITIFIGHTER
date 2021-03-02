@@ -5,24 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".MockTest"
     android:orientation="vertical">
-    <ImageButton
-        android:id="@+id/CustomBackButtonMT"
-        android:layout_width="30sp"
-        android:layout_height="25sp"
-        android:layout_marginEnd="10sp"
-        android:background="@drawable/undox"
-        android:visibility="gone"
-        android:layout_gravity="end"
-        android:contentDescription="@string/todo" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
         <TextView
             android:id="@+id/emptyListMessagetsmt"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true"
             android:visibility="invisible"
             android:textColor="@color/black"
             android:gravity="center"
@@ -37,5 +23,4 @@
             android:divider="@color/list_divider"
             android:dividerHeight="1dp"
             android:listSelector="@drawable/list_row_selector"/>
-    </RelativeLayout>
 </LinearLayout>

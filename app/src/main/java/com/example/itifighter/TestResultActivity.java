@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,8 +25,6 @@ public class TestResultActivity extends AppCompatActivity {
     int total_marks = 0;
     long timeLeft;
     double accuracy = 0.0;
-    int tpq = 0;
-    int marks_obtained = 0;
     int _mpq = 1;
     boolean pastResultLT = false;
     String[] feedbackOptions = {"Wrong Question", "Wrong Options", "Incomplete Question", "Incorrect Grammar", "Question out of syllabus",
@@ -107,10 +104,6 @@ public class TestResultActivity extends AppCompatActivity {
 
         accuracy = Double.parseDouble(Objects.requireNonNull(getIntent().getStringExtra("accuracy")));
         total_time_taken = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("tpq")));
-
-
-        int timerValue = getIntent().getIntExtra("timer", 60);
-        Toast.makeText(this, "tca=" + tca + " tra=" + tra + " timerValue=" + timerValue + " timeLeft=" + timeLeft, Toast.LENGTH_SHORT).show();
         if (tca + tra > 0) {
             Accuracy.setText("" + accuracy);
         } else {
@@ -120,7 +113,6 @@ public class TestResultActivity extends AppCompatActivity {
         MO.setText("" + (tca * _mpq));
         TCA.setText("" + tca + " Correct");
         TRA.setText("" + tra + " Incorrect");
-
         TSQ.setText("" + tsq + " Skipped");
     }
 
@@ -137,8 +129,6 @@ public class TestResultActivity extends AppCompatActivity {
         if (targetSection.contains("lt"))
             return;
         Intent myIntent = new Intent(this, TestInstructionsActivity.class);
-        /*//clears all other activities from stack and makes the new one the root of stack
-        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
         myIntent.putExtra("section", targetSection);
         myIntent.putExtra("subject", targetSubject);
         myIntent.putExtra("chapter", targetChapter);
@@ -153,25 +143,13 @@ public class TestResultActivity extends AppCompatActivity {
     public void onBackPressed() {
         //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
         if (marksUploaded) finish();
-        else {
-            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
-        }
+
     }
 
     public void FinishExam() {
         //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
         if (marksUploaded) finish();
-        else {
-            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
-        }
-    }
 
-    public void FinishExam2(View view) {
-        //startActivity(new Intent(TestResultActivity.this, MainDashboard.class));
-        if (marksUploaded) finish();
-        else {
-            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void CheckAnswerSheet(View view) {
@@ -179,8 +157,5 @@ public class TestResultActivity extends AppCompatActivity {
         intent.putExtra("questions", (Serializable) questions);
         intent.putExtra("answer_key", (Serializable) sub_ans);
         if (marksUploaded) startActivity(intent);
-        else {
-            //Toast.makeText(this, "uploading marks, please wait...", Toast.LENGTH_SHORT).show();
-        }
     }
 }

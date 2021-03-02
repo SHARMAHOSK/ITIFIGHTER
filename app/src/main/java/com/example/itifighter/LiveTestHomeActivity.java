@@ -28,7 +28,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -45,37 +44,31 @@ public class LiveTestHomeActivity extends AppCompatActivity {
     LinearLayout ltList;
     int ftCount = 0;
     private Context mContext;
-    private View progressOverlay;
     private ArrayList<Question> questions, these_questions;
     private ArrayList<String> attemptedTestIDs; //tests that student has taken in past.
     ArrayList<LiveTestBody> allTests;
     private LiveTestBody upcomingTest;
     private String utID = "";
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_test_home);
         mContext = getApplicationContext();
-        Toast.makeText(mContext, "ltha: onCreate", Toast.LENGTH_SHORT).show();
-        progressOverlay = findViewById(R.id.progress_overlay);
         ltList = findViewById(R.id.LiveTestList);
-        progressOverlay.setVisibility(View.VISIBLE);
-        Toast.makeText(mContext, "ltha: progress activated in oncreate", Toast.LENGTH_SHORT).show();
         colRef = FirebaseFirestore.getInstance().collection("section").document("lt")
                 .collection("branch").document("" + getIntent().getStringExtra("subject"))
                 .collection("chapter").document("" + getIntent().getStringExtra("chapter"))
                 .collection("tests");
 
         final TextView cbt = findViewById(R.id.ContinueBTNLBT);
-        //cbt.setVisibility(View.INVISIBLE);
         cbt.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (event.getRawX() >= cbt.getRight() - cbt.getTotalPaddingRight()) {
-                        // your action for drawable click event
                         finish();
                         return true;
                     }
@@ -84,9 +77,9 @@ public class LiveTestHomeActivity extends AppCompatActivity {
             }
         });
 
-
         attemptedTestIDs = new ArrayList<>();
-        FirebaseFirestore.getInstance().collection("users").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).collection("scoreboard").document("lt")
+        FirebaseFirestore.getInstance().collection("users").document(Objects.requireNonNull(FirebaseAuth.getInstance()
+                .getCurrentUser()).getUid()).collection("scoreboard").document("lt")
                 .collection("branch").document("" + getIntent().getStringExtra("subject"))
                 .collection("chapter").document("" + getIntent().getStringExtra("chapter"))
                 .collection("test").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -94,7 +87,9 @@ public class LiveTestHomeActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        attemptedTestIDs.add(document.getId());
+                        attemptedTestIDs.add(
+                                xNull(document.getId())
+                        );
                     }
                 }
                 CustomizeView();
@@ -167,9 +162,7 @@ public class LiveTestHomeActivity extends AppCompatActivity {
 
     public void LoadPastResult(final String pid, final int min, final String title) {
 
-        final String tid = pid;
-
-        final String uuid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        final String uuid = xNull((Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())).getUid());
         final DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document("" + uuid)
                 .collection("scoreboard").document("lt")
                 .collection("test").document(pid);
@@ -179,17 +172,20 @@ public class LiveTestHomeActivity extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot valuee, @Nullable FirebaseFirestoreException error) {
                 if (valuee != null && valuee.exists()) {
                     final DocumentSnapshot value = valuee;
-                    colRef.document("" + tid).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    colRef.document(xNull(pid)).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 these_questions = new ArrayList<>();
-                                Toast.makeText(mContext, tid + " task successful: " + Objects.requireNonNull(task.getResult()).size(), Toast.LENGTH_SHORT).show();
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Toast.makeText(mContext, "fetched: " + document.getId(), Toast.LENGTH_SHORT).show();
-                                    these_questions.add(new Question(document.getString("question"), document.getString("option1"),
-                                            document.getString("option2"), document.getString("option3"),
-                                            document.getString("option4"), document.getString("answer")));
+                                for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                    these_questions.add(
+                                            new Question(
+                                                    xNull(document.getString("question")),
+                                                    xNull(document.getString("option1")),
+                                                    xNull(document.getString("option2")),
+                                                    xNull(document.getString("option3")),
+                                                    xNull(document.getString("option4")),
+                                                    xNull(document.getString("answer"))));
                                 }
 
                                 if(these_questions.isEmpty()){
@@ -198,17 +194,16 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                                 }
 
 
-                                String total_attempted = "", total_skipped = "", total_correct = "";
-                                String sub_list = "";
-                                String accuracy = "", tpq = "", _mpq = "";
-                                total_attempted = value.getString("total_attempted");
-                                total_skipped = value.getString("total_skipped");
-                                total_correct = value.getString("total_correct");
-                                accuracy = value.getString("accuracy");
-                                tpq = value.getString("tpq");
-                                _mpq = value.getString("_mpq");
-                                sub_list = value.getString("answer_key");
-
+                                String total_attempted, total_skipped, total_correct;
+                                String sub_list;
+                                String accuracy, tpq, _mpq;
+                                total_attempted = xNull(value.getString("total_attempted"));
+                                total_skipped = xNull(value.getString("total_skipped"));
+                                total_correct = xNull(value.getString("total_correct"));
+                                accuracy = xNull(value.getString("accuracy"));
+                                tpq = xNull(value.getString("tpq"));
+                                _mpq = xNull(value.getString("_mpq"));
+                                sub_list = xNull(value.getString("answer_key"));
 
                                 Intent myIntent = new Intent(getApplicationContext(), TestResultActivity.class);
                                 myIntent.putExtra("is_past_result", "true");
@@ -216,10 +211,10 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                                 myIntent.putExtra("total_attempted", total_attempted);
                                 myIntent.putExtra("total_correct", total_correct);
                                 myIntent.putExtra("section", "lt");
-                                myIntent.putExtra("subject", getIntent().getStringExtra("subject"));
-                                myIntent.putExtra("chapter", getIntent().getStringExtra("chapter"));
+                                myIntent.putExtra("subject", xNull(getIntent().getStringExtra("subject")));
+                                myIntent.putExtra("chapter", xNull(getIntent().getStringExtra("chapter")));
                                 myIntent.putExtra("tid", pid);
-                                myIntent.putExtra("questions", /*questions*/(Serializable) these_questions);
+                                myIntent.putExtra("questions",these_questions);
                                 myIntent.putExtra("answer_key", sub_list);
                                 assert _mpq != null;
                                 myIntent.putExtra("_mpq", _mpq);
@@ -227,6 +222,7 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                                 myIntent.putExtra("title", title);
                                 myIntent.putExtra("accuracy", accuracy);
                                 myIntent.putExtra("tpq", tpq);
+
                                 startActivity(myIntent);
 
 
@@ -252,12 +248,10 @@ public class LiveTestHomeActivity extends AppCompatActivity {
         //5: latest upcoming test that's live
         //6: latest test that's live but attempted already
 
-        Toast.makeText(mContext, "ltha: customize view", Toast.LENGTH_SHORT).show();
-
         //..0..\\
-        final String uuid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        final String uuid = xNull((Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())).getUid());
         final CollectionReference userDoc = FirebaseFirestore.getInstance()
-                .collection("users").document("" + uuid)
+                .collection("users").document(uuid)
                 .collection("scoreboard").document("lt")
                 .collection("test");
 
@@ -266,8 +260,8 @@ public class LiveTestHomeActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 attemptedTestIDs = new ArrayList<>();
                 if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot doc : task.getResult())
-                        attemptedTestIDs.add(doc.getId());
+                    for (QueryDocumentSnapshot doc : Objects.requireNonNull(task.getResult()))
+                        attemptedTestIDs.add(xNull(doc.getId()));
                 }
                 BeginFetchingTests();
             }
@@ -282,13 +276,16 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     //..1..\\
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        allTests.add(new LiveTestBody(document.getId(), Objects.requireNonNull(document.getLong("NOQs")).intValue(),
-                                document.getString("TestInHistory"),
-                                Objects.requireNonNull(document.getLong("duration")).intValue(),
-                                Objects.requireNonNull(document.getLong("marks")).intValue(),
-                                document.getLong("rTime"),
-                                document.getLong("sTime"),
-                                document.getString("title")));
+                        allTests.add(
+                                new LiveTestBody(
+                                        xNull(document.getId()),
+                                        Objects.requireNonNull(document.getLong("NOQs")).intValue(),
+                                        xNull(document.getString("TestInHistory")),
+                                        Objects.requireNonNull(document.getLong("duration")).intValue(),
+                                        Objects.requireNonNull(document.getLong("marks")).intValue(),
+                                        lNull(document.getLong("rTime")),
+                                        lNull(document.getLong("sTime")),
+                                        xNull(document.getString("title"))));
                     }
 
                     Collections.sort(allTests, new Comparator<LiveTestBody>() {
@@ -315,8 +312,8 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                                 upcomingTest.duration, upcomingTest.marks, upcomingTest.sTime, upcomingTest.rTime);
                     }
 
-                    final long currentTime = Calendar.getInstance().getTimeInMillis();
-                    boolean one = false;
+                    //final long currentTime = Calendar.getInstance().getTimeInMillis();
+
                     for (LiveTestBody ltb : allTests) {
                         if(upcomingTest == null || !ltb._id.equals(utID)){
                             if (ltb.TestInHistory.equals("true") || ((ltb.sTime + (ltb.duration * 60 * 100)) <= Calendar.getInstance().getTimeInMillis())) {
@@ -329,12 +326,10 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                     }
 
                     if (upcomingTest == null || countdown == null) {
-                        progressOverlay.setVisibility(View.GONE);
                         return;
                     }
                     new CountDownTimer(
                             upcomingTest.sTime - Calendar.getInstance().getTimeInMillis(), 1000) {
-
                         @SuppressLint("SetTextI18n")
                         public void onTick(long millisUntilFinished) {
                             long secs = millisUntilFinished / 1000;
@@ -379,10 +374,6 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                             }
                         }
                     }.start();
-                    progressOverlay.setVisibility(View.GONE);
-                } else {
-                    Toast.makeText(mContext, "ltha: error in fetching tests in customize view", Toast.LENGTH_SHORT).show();
-                    progressOverlay.setVisibility(View.GONE);
                 }
             }
         });
@@ -393,8 +384,6 @@ public class LiveTestHomeActivity extends AppCompatActivity {
             Toast.makeText(mContext, "test not available at the moment.", Toast.LENGTH_LONG).show();
             return;
         }
-
-        progressOverlay.setVisibility(View.VISIBLE);
         questions = new ArrayList<>();
         colRef.document("" + utID).collection("question").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -402,32 +391,110 @@ public class LiveTestHomeActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     questions = new ArrayList<>();
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        questions.add(new Question(document.getString("question"), document.getString("option1"),
-                                document.getString("option2"), document.getString("option3"),
-                                document.getString("option4"), document.getString("answer")));
+                        questions.add(
+                                new Question(
+                                        xNull(document.getString("question")),
+                                        xNull(document.getString("option1")),
+                                        xNull(document.getString("option2")),
+                                        xNull(document.getString("option3")),
+                                        xNull(document.getString("option4")),
+                                        xNull(document.getString("answer"))));
                     }
 
                     Intent myIntent = new Intent(mContext, TestInstructionsActivity.class);
                     myIntent.putExtra("section", "lt");
-                    myIntent.putExtra("subject", getIntent().getStringExtra("subject"));
-                    myIntent.putExtra("chapter", getIntent().getStringExtra("chapter"));
-                    myIntent.putExtra("questions", (Serializable) questions);
-                    myIntent.putExtra("_mpq", upcomingTest.marks);
-                    myIntent.putExtra("timer", (upcomingTest.sTime/*+(upcomingTest.duration*60*1000)*/));
-                    myIntent.putExtra("duration", upcomingTest.duration);
-                    myIntent.putExtra("title", upcomingTest.title + " (Live Test)");
+                    myIntent.putExtra("subject", xNull(getIntent().getStringExtra("subject")));
+                    myIntent.putExtra("chapter", xNull(getIntent().getStringExtra("chapter")));
+                    myIntent.putExtra("questions", questions);
+                    myIntent.putExtra("_mpq", iNull(upcomingTest.marks));
+                    myIntent.putExtra("timer", lNull(upcomingTest.sTime));
+                    myIntent.putExtra("duration", iNull(upcomingTest.duration));
+                    myIntent.putExtra("title", xNull(upcomingTest.title) + " (Live Test)");
                     myIntent.putExtra("tid", utID);
-                    progressOverlay.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), "section, subject, chap, test: lt," + getIntent().getStringExtra("subject") + "," + getIntent().getStringExtra("chapter") + "," + utID, Toast.LENGTH_LONG).show();
-
                     startActivity(myIntent);
                 } else {
-                    progressOverlay.setVisibility(View.GONE);
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }
         });
     }
+
+    public String xNull(String str) {
+        if (str != null) return str;
+        else return "";
+    }
+
+    public boolean bNull(String str){
+        if(str == null) return false;
+        else return !str.trim().isEmpty();
+    }
+
+    public Double dNull(Double dbl){
+        if(dbl == null) return 0.0;
+        else if(dbl<1.0) return 0.0;
+        else return dbl;
+    }
+
+    public Double vNull(String str){
+        double num = 0.0;
+        if(bNull(xNull(str))){
+            try {
+                num = Double.parseDouble(str);
+            } catch (NumberFormatException e) {
+                num = 0.0;
+            }
+        }
+        return num;
+    }
+    public String vNull(double str){
+        String num = "0.0";
+        if(dNull(str)>0){
+            try{
+                num = String.valueOf(str);
+            }catch (Exception e){
+                num = "0.0";
+            }
+        }
+        return num;
+    }
+
+    public int iNull(int value){
+        if(value<1) return 0;
+        else return value;
+    }
+
+    public int iNull(String value){
+        int num = 0;
+        if(bNull(xNull(value))){
+            try {
+                num = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                num = 0;
+            }
+        }
+        return iNull(num);
+    }
+
+    public String aNull(int value){
+        String num = "0";
+        if(iNull(value)>0){
+            try{
+                num =  String.valueOf(value);
+            }catch (Exception e){
+                num = "0";
+            }
+        }
+        return num;
+    }
+
+
+    public long lNull(long value){
+        if(value<1)return 0;
+        else return value;
+    }
+
+
+
 }
 
 class LiveTestBody {

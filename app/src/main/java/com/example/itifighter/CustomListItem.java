@@ -3,7 +3,7 @@ package com.example.itifighter;
 public class CustomListItem {
     private boolean paymentStatus;
     private String topicHeader;
-    private String months,month2,month3;
+    private String months, month2, month3;
     private String description;
     private double price;
     private double price2;
@@ -13,20 +13,24 @@ public class CustomListItem {
     private double discount3;
     private int quesCount;
     private int duration;
-    private int MPQ,NOQ;
+    private int MPQ, NOQ;
     private int type;
+
     private int chapterIndex;
     private String imagex;
-    private String coupanCode,coupanActive;
+    private String coupanCode, coupanActive, coupanDiscount;
 
-    public CustomListItem(String topicHeader, double price, double discount){
+    public CustomListItem() {
+    }
+
+    public CustomListItem(String topicHeader, double price, double discount) {
         this.topicHeader = topicHeader;
         this.price = price;
         this.discount = discount;
         type = 2;
     }
 
-    public CustomListItem(String topicHeader, double price, double discount, boolean paymentStatus){
+    public CustomListItem(String topicHeader, double price, double discount, boolean paymentStatus) {
         this.topicHeader = topicHeader;
         this.price = price;
         this.discount = discount;
@@ -34,7 +38,7 @@ public class CustomListItem {
         type = 2;
     }
 
-    public CustomListItem(String topicHeader, String description, double price, double discount, int quesCount, int duration, int MPQ,String imagex){
+    public CustomListItem(String topicHeader, String description, double price, double discount, int quesCount, int duration, int MPQ, String imagex) {
         this.topicHeader = topicHeader;
         this.description = description;
         this.price = price;
@@ -46,7 +50,7 @@ public class CustomListItem {
         this.imagex = imagex;
     }
 
-    public CustomListItem(int chapterIndex, String topicHeader, String description, double price, double discount, int quesCount, int duration, int MPQ,String imagex){
+    public CustomListItem(int chapterIndex, String topicHeader, String description, double price, double discount, int quesCount, int duration, int MPQ, String imagex) {
         this.chapterIndex = chapterIndex;
         this.topicHeader = topicHeader;
         this.description = description;
@@ -59,14 +63,16 @@ public class CustomListItem {
         this.imagex = imagex;
     }
 
-    public CustomListItem(String topicHeader, String description, String imagex){
+    public CustomListItem(String topicHeader, String description, String imagex) {
         this.topicHeader = topicHeader;
         this.description = description;
-        type=0;
+        type = 0;
         this.imagex = imagex;
     }
 
-    public CustomListItem(String topicHeader, String description, String months, double price, double discount, String imagex) {
+    public CustomListItem(int chapterIndex,int quesCount, String topicHeader, String description, String months, double price, double discount, String imagex) {
+        this.chapterIndex = chapterIndex;
+        this.quesCount = quesCount;
         this.topicHeader = topicHeader;
         this.months = months;
         this.description = description;
@@ -76,7 +82,7 @@ public class CustomListItem {
         this.imagex = imagex;
     }
 
-    public CustomListItem(String name, String month1, String month2, String month3, String price1, String price2, String price3, String discount1, String discount2, String discount3, String couponCODE, String couponACTIVE, String noq) {
+    public CustomListItem(String name, String month1, String month2, String month3, String price1, String price2, String price3, String discount1, String discount2, String discount3, String couponCODE, String coupanDiscount, String couponACTIVE, String noq) {
         this.topicHeader = name;
         this.months = month1;
         this.month2 = month2;
@@ -89,13 +95,15 @@ public class CustomListItem {
         this.discount3 = Double.parseDouble(discount3);
         this.coupanCode = couponCODE;
         this.coupanActive = couponACTIVE;
-        this.NOQ = Integer.parseInt(noq);
+        this.coupanDiscount = coupanDiscount;
+        this.NOQ = iNull(noq);
 
     }
 
     public int getType() {
         return type;
     }
+
     public int getChapterIndex() {
         return chapterIndex;
     }
@@ -112,10 +120,21 @@ public class CustomListItem {
         return quesCount;
     }
 
-    public String getTopicHeader() {return topicHeader; }
-    public String getMonths() {return months; }
-    public String getDescription() {return description; }
-    public String getImagex(){return  imagex;}
+    public String getTopicHeader() {
+        return topicHeader;
+    }
+
+    public String getMonths() {
+        return months;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImagex() {
+        return imagex;
+    }
 
     public int getDuration() {
         return this.duration;
@@ -164,7 +183,43 @@ public class CustomListItem {
     public boolean getPaymentStatus() {
         return paymentStatus;
     }
+
     public void setPaymentStatus(boolean paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public String getCoupanDiscount() {
+        return coupanDiscount;
+    }
+
+    public void setCoupanDiscount(String coupanDiscount) {
+        this.coupanDiscount = coupanDiscount;
+    }
+
+    public int iNull(String value) {
+        int num = 0;
+        if (bNull(xNull(value))) {
+            try {
+                num = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                num = 0;
+            }
+        }
+        return iNull(num);
+    }
+
+    public int iNull(int value) {
+        if (value < 1) return 0;
+        else return value;
+    }
+
+    public String xNull(String str) {
+        if (str != null) return str;
+        else return "";
+    }
+
+    public boolean bNull(String str) {
+        if (str == null) return false;
+        else return !str.trim().isEmpty();
     }
 }

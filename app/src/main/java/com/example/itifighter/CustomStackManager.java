@@ -74,28 +74,6 @@ public class CustomStackManager {
     }
 
     public void ReloadCurrent(){
-        /*switch(current_page){
-            case 0:
-                if(PreviousPaper.instance != null)
-                    PreviousPaper.instance.LoadSubjects();
-                break;
-            case 1:
-                if(MockTest.instance != null)
-                    MockTest.instance.LoadSubjects();
-                break;
-            case 2:
-                if(LiveTest.instance != null)
-                    LiveTest.instance.LoadSubjects();
-                break;
-            case 3:
-                if(TestSeries.instance != null)
-                    TestSeries.instance.LoadSubjects();
-                break;
-            case 4:
-                if(MyTestSeries.instance != null)
-                    MyTestSeries.instance.LoadChapters();
-                break;
-        }*/
         ShowLoadingOverlay = false;
         switch(GetSPKeyValue(CURRENT_PAGE_KEY, 2)){
             case 0:

@@ -141,6 +141,10 @@
     <string name="menu_notification">Latest Jobs</string>
     <string name="apply">Apply</string>
     <string name="apply_coupan_code">Apply Coupan Code</string>
+    <string name="payment_information">Payment Information</string>
+    <string name="_20_rs">20 rs</string>
+    <string name="_0">0</string>
+    <string name="u20b9_250">₹ 250</string>
 
 
 </resources>

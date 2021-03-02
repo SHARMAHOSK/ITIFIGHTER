@@ -5,80 +5,79 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
+    android:layout_margin="@dimen/dimen_10dp"
     android:background="@drawable/bg_login"
+    android:orientation="vertical"
     tools:context="com.example.itifighter.PaytmPayment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent">
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_10dp">
+
             <ImageView
                 android:id="@+id/testxy_image_viewx"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
+                android:background="@drawable/backrec"
                 android:contentDescription="@string/todo"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@tools:sample/avatars" />
+                android:padding="1sp"
+                tools:srcCompat="@drawable/quiz" />
+        </LinearLayout>
 
-            <TextView
-                android:id="@+id/testxy_desc_textx"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@+id/testxy_chapter_titlex"
-                app:layout_constraintTop_toBottomOf="@+id/testxy_chapter_titlex"
-                tools:ignore="SmallSp" />
-
-            <TextView
-                android:id="@+id/testxytbatchx"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@+id/testxy_desc_textx"
-                app:layout_constraintTop_toBottomOf="@+id/testxy_desc_textx"
-                tools:ignore="SmallSp" />
-            <TextView
-                android:id="@+id/testxytpricex"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@+id/testxytbatchx"
-                app:layout_constraintTop_toBottomOf="@+id/testxytbatchx" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dimen_10dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/testxy_chapter_titlex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="1sp"
                 android:text="@string/title"
                 android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/testxy_image_viewx"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/testxy_desc_textx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/testxytbatchx"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/testxytpricex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -89,14 +88,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="verdana"
                 android:text="@string/choose_subscription_plan"
                 android:textColor="@color/black"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textSize="20sp"
-                android:fontFamily="verdana"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -106,14 +105,14 @@
             android:id="@+id/optionX1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#BFFFFFFF"
-            android:layout_marginTop="1dp">
+            android:layout_marginTop="1dp"
+            android:background="#BFFFFFFF">
 
             <RadioButton
                 android:id="@+id/ra1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -126,7 +125,7 @@
                 android:layout_marginStart="10sp"
                 android:text="3 Month"
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/ra1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -139,9 +138,10 @@
                 android:id="@+id/descX1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="5dp"
                 android:text="Unlock All test @ 50% \nDiscount"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/monthX1"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/monthX1"
@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/monthX1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -166,7 +166,7 @@
                 android:layout_marginTop="1dp"
                 android:text=" \u20B9 250"
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@id/priceX02"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -180,14 +180,14 @@
             android:id="@+id/optionX2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#BFFFFFFF"
-            android:layout_marginTop="2dp">
+            android:layout_marginTop="2dp"
+            android:background="#BFFFFFFF">
 
             <RadioButton
                 android:id="@+id/ra2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -200,7 +200,7 @@
                 android:layout_marginStart="10sp"
                 android:text="3 Month"
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/ra2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -213,9 +213,10 @@
                 android:id="@+id/descX2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="5dp"
                 android:text="Unlock All test @ 50% \nDiscount"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/monthX2"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/monthX2"
@@ -227,7 +228,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/monthX2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -240,7 +241,7 @@
                 android:layout_marginTop="1dp"
                 android:text=" \u20B9 250"
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@id/priceX12"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -254,14 +255,14 @@
             android:id="@+id/optionX3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#BFFFFFFF"
-            android:layout_marginTop="2dp">
+            android:layout_marginTop="2dp"
+            android:background="#BFFFFFFF">
 
             <RadioButton
                 android:id="@+id/ra3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -274,7 +275,7 @@
                 android:layout_marginStart="10sp"
                 android:text="3 Month"
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/ra3"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -287,9 +288,10 @@
                 android:id="@+id/descX3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="5dp"
                 android:text="Unlock All test @ 50% \nDiscount"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/monthX3"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/monthX3"
@@ -301,7 +303,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/monthX3"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -314,7 +316,7 @@
                 android:layout_marginTop="1dp"
                 android:text=" \u20B9 250"
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@id/priceX22"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -323,24 +325,100 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/coupanMsg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/backrec"
+                android:orientation="horizontal"
+                android:padding="@dimen/dimen_10dp"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/checked" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_10dp"
+                    android:text="promo code Applied successfully"
+                    android:textColor="@color/green"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end">
+
+                    <TextView
+                        android:id="@+id/removeCoupanButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Remove"
+                        android:textColor="@color/blue2"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/textCoupanCode"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:autofillHints=""
+                    android:background="@drawable/backrec"
+                    android:hint="@string/apply_coupan_code"
+                    android:inputType="text"
+                    android:paddingStart="5dp"
+                    android:textSize="12sp"
+                    tools:ignore="RtlSymmetry" />
+
+                <Button
+                    android:id="@+id/coupanClick"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:background="@color/startblue"
+                    android:text="@string/apply"
+                    android:textColor="#ffffff" />
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/sub_deatilsx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="Bill Details"
                 android:textColor="@color/black"
                 android:textSize="14sp"
@@ -354,21 +432,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="Exam Price"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sub_deatilsx"
                 tools:ignore="HardcodedText" />
+
 
             <TextView
                 android:id="@+id/sub_itempricex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="\u20B9 500"
+                android:textSize="@dimen/dimen_12sp"
+                android:layout_marginEnd="@dimen/dimen_10dp"
                 app:layout_constraintBottom_toBottomOf="@+id/sub_itemx"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/finalpricex"
                 app:layout_constraintTop_toTopOf="@+id/sub_itemx" />
 
             <TextView
@@ -378,7 +458,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:text="Taxes &amp; Charges"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sub_itemx"
                 tools:ignore="HardcodedText" />
@@ -387,11 +467,40 @@
                 android:id="@+id/sub_taxpricex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="\u20B9 2.5"
+                android:layout_marginEnd="@dimen/dimen_10dp"
+                android:textSize="@dimen/dimen_12sp"
+                android:text="+ \u20B9 0.0"
+                android:textColor="@color/holo_red_dark"
                 app:layout_constraintBottom_toBottomOf="@+id/sub_taxx"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/finalpricex"
                 app:layout_constraintTop_toTopOf="@+id/sub_taxx" />
+
+            <TextView
+
+                android:id="@+id/coupanCodeMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Coupan Code Discount"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sub_taxx"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+
+                android:id="@+id/coupnCodeDiscount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimen_10dp"
+                android:text="- \u20B9 0"
+                android:textColor="@color/green1"
+                android:textSize="@dimen/dimen_12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/coupanCodeMsg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/coupanCodeMsg"
+                tools:ignore="UnknownIdInLayout" />
 
             <TextView
                 android:id="@+id/sub_discountx"
@@ -399,31 +508,34 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Total Discount"
-                android:textSize="14sp"
+                android:text="Regular Discount"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sub_taxx"
+                app:layout_constraintTop_toBottomOf="@+id/coupanCodeMsg"
                 tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/sub_discountpricex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="\u20B9 250"
+                android:layout_marginEnd="@dimen/dimen_10dp"
+                android:text="- \u20B9 250"
+                android:textColor="@color/green1"
+                android:textSize="@dimen/dimen_12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/sub_discountx"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/finalpricex"
-                app:layout_constraintTop_toTopOf="@+id/sub_discountx" />
+                app:layout_constraintTop_toTopOf="@+id/sub_discountx"
+                tools:ignore="UnknownIdInLayout" />
 
             <TextView
                 android:id="@+id/sub_finalx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
                 android:text="You have to pay only "
-                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sub_discountx"
                 tools:ignore="HardcodedText" />
@@ -432,13 +544,13 @@
                 android:id="@+id/finalpricex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="\u20B9 250"
-                android:textColor="@color/black"
-                android:textSize="25sp"
-                android:textStyle="bold"
                 android:layout_marginBottom="5dp"
-                android:layout_marginEnd="5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="@dimen/dimen_10dp"
+                android:text="@string/u20b9_250"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/sub_finalx"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/sub_finalx" />
 
@@ -446,41 +558,35 @@
 
     </LinearLayout>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="bottom"
-        android:layout_weight="1">
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/cancelx"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:background="@color/startblue"
+            android:text="Cancel"
+            android:textColor="#ffffff"
+            tools:ignore="ButtonStyle,HardcodedText" />
 
-            <Button
-                android:id="@+id/cancelx"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@color/startblue"
-                android:textColor="#ffffff"
-                android:text="Cancel"
-                android:layout_weight="1"
-                tools:ignore="HardcodedText" />
-
-            <Button
-                android:id="@+id/payx"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@color/startblue"
-                android:layout_marginStart="8dp"
-                android:textColor="#ffffff"
-                android:text="Pay"
-                android:layout_weight="1"
-                tools:ignore="HardcodedText" />
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/payx"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@color/startblue"
+            android:text="Pay"
+            android:textColor="#ffffff"
+            tools:ignore="ButtonStyle,HardcodedText" />
 
     </LinearLayout>
 
 </LinearLayout>
+
